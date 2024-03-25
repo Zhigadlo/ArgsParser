@@ -12,12 +12,15 @@
     <ClCompile Include="Example\main.cpp">
       <Filter>src\parser</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Abstractions\Arg.cpp" />
+    <ClCompile Include="Source\Parser\ArgsParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Source\Parser\CMakeLists.txt">
       <Filter>src\parser</Filter>
     </Text>
     <Text Include="CMakeLists.txt" />
+    <Text Include="Example\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Parser\ArgsParser.h" />

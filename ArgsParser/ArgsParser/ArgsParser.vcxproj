@@ -128,10 +128,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Parser\ArgsParser.cpp" />
     <ClCompile Include="Example\main.cpp" />
+    <ClCompile Include="Source\Abstractions\Arg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
+    <Text Include="Example\CMakeLists.txt" />
     <Text Include="Source\Parser\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>

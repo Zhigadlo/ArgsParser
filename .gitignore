@@ -398,4 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 
 #Cmake build folder ignore
-build/
+Build/

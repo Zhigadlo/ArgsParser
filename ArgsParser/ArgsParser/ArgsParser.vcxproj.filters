@@ -9,11 +9,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Example\main.cpp">
       <Filter>src\parser</Filter>
     </ClCompile>
-    <ClCompile Include="CMakeLists.txt">
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Source\Parser\CMakeLists.txt">
       <Filter>src\parser</Filter>
-    </ClCompile>
+    </Text>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Parser\ArgsParser.h" />
   </ItemGroup>
 </Project>

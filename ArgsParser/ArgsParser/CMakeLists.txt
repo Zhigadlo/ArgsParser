@@ -15,4 +15,4 @@ if (MSVC)
     add_compile_options(/utf-8)
 endif()
 
-add_executable(ArgsParser main.cpp)
+add_subdirectory(Example)

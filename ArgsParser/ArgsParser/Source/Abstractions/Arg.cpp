@@ -48,7 +48,7 @@ namespace abstractions
 
 		return info;
 	}
-
+	
 	char Arg::GetShortName()
 	{
 		return shortName;

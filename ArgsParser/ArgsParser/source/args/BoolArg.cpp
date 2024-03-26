@@ -26,6 +26,11 @@ namespace args
 		{
 			return isValueSet;
 		}
+		bool ValueHandling(std::string values) override
+		{
+
+		}
+
 	private:
 		bool value = false;
 		bool isValueSet = false;

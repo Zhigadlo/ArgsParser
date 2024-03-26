@@ -26,9 +26,12 @@ namespace args
 
 			return true;
 		}
+		bool ValueHandling(std::string value) override
+		{
+
+		}
+
 	private: 
 		int value = INT_MAX;
 	};
-
-	
 }

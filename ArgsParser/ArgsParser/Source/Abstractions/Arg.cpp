@@ -1,19 +1,41 @@
 #include <string>
+#include "Arg.hpp"
 
-namespace Abstractions 
+namespace abstractions
 {
-	class Arg 
+	Arg::Arg(char shortName)
 	{
-	public:
-		virtual void AddDescription() = 0;
-		Arg(std::string shortName, std::string fullName)
-		{
-			this->shortName = shortName;
-			this->fullName = fullName;
-		}
-	protected:
-		std::string shortName;
-		std::string fullName;
-	};
+		this->shortName = shortName;
+	}
+	Arg::Arg(std::string fullName)
+	{
+		this->fullName = fullName;
+	}
+	Arg::Arg(char shortName, std::string fullName)
+	{
+		this->shortName = shortName;
+		this->fullName = fullName;
+	}
+	bool Arg::IsShortNameExist()
+	{
+		if (shortName == CHAR_MAX) return false;
 
-}
+		return true;
+	}
+	bool Arg::IsFullNameExist()
+	{
+		if (fullName.empty()) return false;
+
+		return true;
+	}
+
+	char Arg::GetShortName()
+	{
+		return this->shortName;
+	}
+
+	std::string Arg::GetFullName()
+	{
+		return Arg::fullName;
+	}
+};

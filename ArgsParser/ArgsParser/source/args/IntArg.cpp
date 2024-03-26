@@ -25,14 +25,15 @@ namespace args
 			{
 				info += '-';
 				info += GetShortName();
+				info += ' ';
 			}
 			
 			if (IsFullNameExist())
 			{
-				info += ' ';
+				info += "--";
 				info += GetFullName();
+				info += ' ';
 			}
-			info += ' ';
 			info += std::to_string(value);
 			return info;
 		}

@@ -10,8 +10,9 @@ namespace parser
 		{
 
 		}
+		return true;
 	}
-	void ArgsParser::Add(abstractions::Arg& arg)
+	void ArgsParser::Add(abstractions::Arg* arg)
 	{
 		args.push_back(arg);
 	}
@@ -19,7 +20,7 @@ namespace parser
 	{
 		for (int i = 0; i < args.size(); i++)
 		{
-			std::cout << &args[i].GetInfo() << std::endl;
+			std::cout << (*args[i]).GetInfo() << std::endl;
 		}
 	}
 }

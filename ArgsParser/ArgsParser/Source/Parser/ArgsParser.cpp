@@ -1,14 +1,14 @@
 #include "ArgsParser.hpp"
 #include <iostream>
 #include "../abstractions/Arg.hpp"
-#include "../Abstractions/ValueArg.hpp"
+#include "../abstractions/ValueArg.hpp"
 
 namespace parser
 {
 	abstractions::Arg* ArgsParser::FindByShortName(char shortName)
 	{
 		auto it = std::find_if(definedArgs.begin(), definedArgs.end(), [&shortName](abstractions::Arg* obj) { return (*obj).GetShortName() == shortName; });
-		if(it == definedArgs.end()) return nullptr;
+		if (it == definedArgs.end()) return nullptr;
 
 		int index = std::distance(definedArgs.begin(), it);
 		return definedArgs[index];
@@ -23,8 +23,7 @@ namespace parser
 	}
 	bool ArgsParser::Parse(int argC, const char** argV)
 	{
-		int i = 0;
-		while (i < argC)
+		for(int i = 0; i < argC; i++)
 		{
 			abstractions::Arg* arg = nullptr;
 			std::string strArg(argV[i]);
@@ -34,8 +33,9 @@ namespace parser
 			if (strArg[0] == '-' && argLength == 2)
 			{
 				char shortName = strArg[1];
-				abstractions::Arg* arg = FindByShortName(shortName); 
+				abstractions::Arg* arg = FindByShortName(shortName);
 			}
+
 			if (arg == nullptr && strArg.substr(0, 2) == "--")
 			{
 				std::string fullName = strArg.substr(2);
@@ -45,15 +45,19 @@ namespace parser
 			if (arg == nullptr) return false;
 
 			abstractions::ValueArg* valueArg = dynamic_cast<abstractions::ValueArg*>(arg);
-			if (valueArg != nullptr)
-			{
-				i++;
-				std::string param = std::string(argV[i]);
 
-				if (!valueArg->ValueHandling(param)) return false;
+			if (valueArg == nullptr)
+			{
+				passedArgs.push_back(arg);
+				continue;
 			}
 
 			i++;
+			std::string param = std::string(argV[i]);
+
+			if (!valueArg->ValueHandling(param)) return false;
+
+			passedArgs.push_back(valueArg);
 		}
 		return true;
 	}

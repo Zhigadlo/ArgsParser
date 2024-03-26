@@ -5,6 +5,8 @@
     <ClCompile Include="source\parser\ArgsParser.cpp" />
     <ClCompile Include="example\main.cpp" />
     <ClCompile Include="source\args\IntArg.cpp" />
+    <ClCompile Include="source\args\BoolArg.cpp" />
+    <ClCompile Include="source\abstractions\ValueArg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
@@ -14,5 +16,6 @@
   <ItemGroup>
     <ClInclude Include="source\parser\ArgsParser.hpp" />
     <ClInclude Include="source\abstractions\Arg.hpp" />
+    <ClInclude Include="source\abstractions\ValueArg.hpp" />
   </ItemGroup>
 </Project>

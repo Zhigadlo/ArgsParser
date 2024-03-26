@@ -29,13 +29,33 @@ namespace abstractions
 		return true;
 	}
 
+	std::string Arg::GetInfo()
+	{
+		std::string info;
+		if (IsShortNameExist())
+		{
+			info += '-';
+			info += GetShortName();
+			info += ' ';
+		}
+
+		if (IsFullNameExist())
+		{
+			info += "--";
+			info += GetFullName();
+			info += ' ';
+		}
+
+		return info;
+	}
+
 	char Arg::GetShortName()
 	{
-		return this->shortName;
+		return shortName;
 	}
 
 	std::string Arg::GetFullName()
 	{
-		return Arg::fullName;
+		return fullName;
 	}
 };

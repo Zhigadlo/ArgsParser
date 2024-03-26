@@ -17,9 +17,7 @@ namespace abstractions
 		bool IsShortNameExist();
 		bool IsFullNameExist();
 
-		virtual bool IsValueExist() = 0;
-
-		virtual std::string GetInfo() = 0;
+		virtual std::string GetInfo();
 	private:
 		char shortName = CHAR_MAX;
 		std::string fullName;

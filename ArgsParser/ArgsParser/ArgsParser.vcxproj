@@ -128,7 +128,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\args\BoolArg.cpp" />
     <ClCompile Include="source\args\IntArg.cpp" />
+    <ClCompile Include="source\abstractions\ValueArg.cpp" />
     <ClCompile Include="source\parser\ArgsParser.cpp" />
     <ClCompile Include="example\main.cpp" />
     <ClCompile Include="source\abstractions\Arg.cpp" />
@@ -140,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\abstractions\Arg.hpp" />
+    <ClInclude Include="source\abstractions\ValueArg.hpp" />
     <ClInclude Include="source\parser\ArgsParser.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

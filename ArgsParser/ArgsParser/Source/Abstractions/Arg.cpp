@@ -29,6 +29,20 @@ namespace abstractions
 		return true;
 	}
 
+	Arg* Arg::GetCopy()
+	{
+		Arg* copy;
+
+		if (IsShortNameExist() && IsFullNameExist())
+			copy = new Arg(GetShortName(), GetFullName());
+		else if (!IsShortNameExist()) 
+			copy = new Arg(GetFullName());
+		else
+			copy = new Arg(GetShortName());
+
+		return copy;
+	}
+
 	std::string Arg::GetInfo()
 	{
 		std::string info;

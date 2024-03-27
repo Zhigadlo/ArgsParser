@@ -1,4 +1,5 @@
 #include "../abstractions/ValueArg.hpp"
+#include <iostream>
 
 namespace args
 {
@@ -13,7 +14,7 @@ namespace args
 		{
 			std::string info = Arg::GetInfo();
 			if (IsValueSet())
-				info += std::to_string(value);
+				info += value ? "true" : "false";
 
 			return info;
 		}
@@ -34,7 +35,21 @@ namespace args
 			SetValue(boolResult);
 			return true;
 		}
+		Arg* GetCopy() override
+		{
+			BoolArg* copy;
 
+			if (IsShortNameExist() && IsFullNameExist()) 
+				copy = new BoolArg(GetShortName(), GetFullName());
+			else if (!IsShortNameExist()) 
+				copy = new BoolArg(GetFullName());
+			else
+				copy = new BoolArg(GetShortName());
+			
+			if(IsValueSet()) copy->SetValue(this->value);
+
+			return copy;
+		}
 	private:
 		bool value = false;
 		bool isValueSet = false;
@@ -59,7 +74,7 @@ namespace args
 				out = false;
 				return true;
 			}
-
+			std::cerr << "Error: invalid bool string value." << std::endl;
 			return false;
 		}
 	};

@@ -11,7 +11,7 @@ namespace parser
 		if (it == definedArgs.end()) return nullptr;
 
 		int index = std::distance(definedArgs.begin(), it);
-		return definedArgs[index];
+		return definedArgs[index]->GetCopy();
 	}
 	abstractions::Arg* ArgsParser::FindByFullName(std::string fullName)
 	{
@@ -19,9 +19,9 @@ namespace parser
 		if (it == definedArgs.end()) return nullptr;
 
 		int index = std::distance(definedArgs.begin(), it);
-		return definedArgs[index];
+		return definedArgs[index]->GetCopy();
 	}
-	bool ArgsParser::Parse(int argC, const char** argV)
+	bool ArgsParser::Parse(int argC, const char* argV[])
 	{
 		for(int i = 0; i < argC; i++)
 		{
@@ -33,17 +33,16 @@ namespace parser
 			if (strArg[0] == '-' && argLength == 2)
 			{
 				char shortName = strArg[1];
-				abstractions::Arg* arg = FindByShortName(shortName);
+				arg = FindByShortName(shortName);
 			}
 
 			if (arg == nullptr && strArg.substr(0, 2) == "--")
 			{
 				std::string fullName = strArg.substr(2);
-				abstractions::Arg* arg = FindByFullName(fullName);
+				arg = FindByFullName(fullName);
 			}
-
+			
 			if (arg == nullptr) return false;
-
 			abstractions::ValueArg* valueArg = dynamic_cast<abstractions::ValueArg*>(arg);
 
 			if (valueArg == nullptr)

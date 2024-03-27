@@ -28,6 +28,22 @@ namespace args
 
 			return true;
 		}
+		Arg* GetCopy() override
+		{
+			IntArg* copy;
+
+			if (IsShortNameExist() && IsFullNameExist())
+				copy = new IntArg(GetShortName(), GetFullName());
+			else if (IsShortNameExist())
+				copy = new IntArg(GetShortName());
+			else 
+				copy = new IntArg(GetFullName());
+
+			if(IsValueSet()) copy->SetValue(this->value);
+
+			return copy;
+		}
+
 		bool ValueHandling(std::string value) override
 		{
 			int result;
@@ -40,11 +56,11 @@ namespace args
 			}
 			catch (const std::invalid_argument& e)
 			{
-				std::cerr << "Error: Invalid integer string value." << std::endl;
+				std::cerr << "Error: Invalid integer string value - " << value << std::endl;
 			}
 			catch (const std::out_of_range& e)
 			{
-				std::cerr << "Error: The integer value is out of range." << std::endl;
+				std::cerr << "Error: The integer value is out of range - " << value << std::endl;
 			}
 
 			return false;

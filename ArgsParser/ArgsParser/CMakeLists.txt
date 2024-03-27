@@ -15,4 +15,10 @@ if (MSVC)
     add_compile_options(/utf-8)
 endif()
 
-add_subdirectory(Example)
+add_subdirectory(src/abstractions)
+add_subdirectory(src/args)
+add_subdirectory(src/parser)
+
+add_executable(ArgsParser main.cpp)
+
+target_link_libraries(ArgsParser abstractions args parser)

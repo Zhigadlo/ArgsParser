@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\abstractions\CMakeLists.txt" />
     <ClCompile Include="source\args\BoolArg.cpp" />
     <ClCompile Include="source\args\IntArg.cpp" />
     <ClCompile Include="source\abstractions\ValueArg.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
     <Text Include="example\CMakeLists.txt" />
+    <Text Include="source\args\CMakeLists.txt" />
     <Text Include="Source\Parser\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #include "ArgsParser.hpp"
 #include <iostream>
-#include "../abstractions/Arg.hpp"
-#include "../abstractions/ValueArg.hpp"
+#include <abstractions/Arg.hpp>
+#include <abstractions/ValueArg.hpp>
 
 namespace parser
 {
@@ -23,7 +23,8 @@ namespace parser
 	}
 	bool ArgsParser::Parse(int argC, const char* argV[])
 	{
-		for(int i = 0; i < argC; i++)
+		// i = 0 because first argument is ArgsParser.exe
+		for(int i = 1; i < argC; i++)
 		{
 			abstractions::Arg* arg = nullptr;
 			std::string strArg(argV[i]);

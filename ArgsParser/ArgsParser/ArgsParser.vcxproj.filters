@@ -8,11 +8,13 @@
     <ClCompile Include="source\args\BoolArg.cpp" />
     <ClCompile Include="source\abstractions\ValueArg.cpp" />
     <ClCompile Include="source\args\MultiStringArg.cpp" />
+    <ClCompile Include="source\abstractions\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
     <Text Include="example\CMakeLists.txt" />
     <Text Include="Source\Parser\CMakeLists.txt" />
+    <Text Include="source\args\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\parser\ArgsParser.hpp" />

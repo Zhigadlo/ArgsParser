@@ -14,7 +14,7 @@ namespace args
 		std::string GetInfo() override
 		{
 			std::string info = Arg::GetInfo();
-			if (IsValueSet())
+			if (IsDefined())
 				info += std::to_string(value);
 			return info;
 		}
@@ -22,28 +22,6 @@ namespace args
 		{
 			this->value = value;
 		}
-		bool IsValueSet() override
-		{
-			if (value == INT_MAX) return false;
-
-			return true;
-		}
-		Arg* GetCopy() override
-		{
-			IntArg* copy;
-
-			if (IsShortNameExist() && IsFullNameExist())
-				copy = new IntArg(GetShortName(), GetFullName());
-			else if (IsShortNameExist())
-				copy = new IntArg(GetShortName());
-			else 
-				copy = new IntArg(GetFullName());
-
-			if(IsValueSet()) copy->SetValue(this->value);
-
-			return copy;
-		}
-
 		bool ValueHandling(std::string value) override
 		{
 			int result;
@@ -52,6 +30,7 @@ namespace args
 			{
 				result = std::stoi(value);
 				SetValue(result);
+				Define();
 				return true;
 			}
 			catch (const std::invalid_argument& e)
@@ -65,7 +44,10 @@ namespace args
 
 			return false;
 		}
-
+		bool IsOneValueArg() override
+		{
+			return true;
+		}
 	private:
 		int value = INT_MAX;
 	};

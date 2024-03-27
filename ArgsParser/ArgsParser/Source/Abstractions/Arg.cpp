@@ -3,7 +3,7 @@
 
 namespace abstractions
 {
-	Arg::Arg(char shortName)
+	Arg::Arg(char shortName) 
 	{
 		this->shortName = shortName;
 	}
@@ -11,7 +11,7 @@ namespace abstractions
 	{
 		this->fullName = fullName;
 	}
-	Arg::Arg(char shortName, std::string fullName)
+	Arg::Arg(char shortName, std::string fullName) 
 	{
 		this->shortName = shortName;
 		this->fullName = fullName;
@@ -27,20 +27,6 @@ namespace abstractions
 		if (fullName.empty()) return false;
 
 		return true;
-	}
-
-	Arg* Arg::GetCopy()
-	{
-		Arg* copy;
-
-		if (IsShortNameExist() && IsFullNameExist())
-			copy = new Arg(GetShortName(), GetFullName());
-		else if (!IsShortNameExist()) 
-			copy = new Arg(GetFullName());
-		else
-			copy = new Arg(GetShortName());
-
-		return copy;
 	}
 
 	std::string Arg::GetInfo()
@@ -62,7 +48,7 @@ namespace abstractions
 
 		return info;
 	}
-	
+
 	char Arg::GetShortName()
 	{
 		return shortName;
@@ -72,4 +58,12 @@ namespace abstractions
 	{
 		return fullName;
 	}
-};
+	bool Arg::IsDefined()
+	{
+		return isDefined;
+	};
+	void Arg::Define()
+	{
+		isDefined = true;
+	}
+}

@@ -7,6 +7,7 @@
     <ClCompile Include="source\args\IntArg.cpp" />
     <ClCompile Include="source\args\BoolArg.cpp" />
     <ClCompile Include="source\abstractions\ValueArg.cpp" />
+    <ClCompile Include="source\args\MultiStringArg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />

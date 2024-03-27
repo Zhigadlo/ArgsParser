@@ -7,19 +7,19 @@ namespace parser
 {
 	abstractions::Arg* ArgsParser::FindByShortName(char shortName)
 	{
-		auto it = std::find_if(definedArgs.begin(), definedArgs.end(), [&shortName](abstractions::Arg* obj) { return (*obj).GetShortName() == shortName; });
-		if (it == definedArgs.end()) return nullptr;
+		auto it = std::find_if(args.begin(), args.end(), [&shortName](abstractions::Arg* obj) { return (*obj).GetShortName() == shortName; });
+		if (it == args.end()) return nullptr;
 
-		int index = std::distance(definedArgs.begin(), it);
-		return definedArgs[index]->GetCopy();
+		int index = std::distance(args.begin(), it);
+		return args[index];
 	}
 	abstractions::Arg* ArgsParser::FindByFullName(std::string fullName)
 	{
-		auto it = std::find_if(definedArgs.begin(), definedArgs.end(), [&fullName](abstractions::Arg* obj) { return (*obj).GetFullName() == fullName; });
-		if (it == definedArgs.end()) return nullptr;
+		auto it = std::find_if(args.begin(), args.end(), [&fullName](abstractions::Arg* obj) { return (*obj).GetFullName() == fullName; });
+		if (it == args.end()) return nullptr;
 
-		int index = std::distance(definedArgs.begin(), it);
-		return definedArgs[index]->GetCopy();
+		int index = std::distance(args.begin(), it);
+		return args[index];
 	}
 	bool ArgsParser::Parse(int argC, const char* argV[])
 	{
@@ -45,31 +45,41 @@ namespace parser
 			if (arg == nullptr) return false;
 			abstractions::ValueArg* valueArg = dynamic_cast<abstractions::ValueArg*>(arg);
 
+			// arg without value
 			if (valueArg == nullptr)
 			{
-				passedArgs.push_back(arg);
+				if (arg->IsDefined()) return false;
+
+				arg->Define();
 				continue;
+			}
+
+			// one value arg check
+			if (valueArg->IsOneValueArg() && valueArg->IsDefined())
+			{
+				std::cerr << "Error: can't define one value arg more than once." << std::endl;
+				return false;
 			}
 
 			i++;
 			std::string param = std::string(argV[i]);
 
 			if (!valueArg->ValueHandling(param)) return false;
-
-			passedArgs.push_back(valueArg);
 		}
 		return true;
 	}
 
 	void ArgsParser::Add(abstractions::Arg* arg)
 	{
-		definedArgs.push_back(arg);
+		args.push_back(arg);
 	}
 	void ArgsParser::Show()
 	{
-		for (int i = 0; i < passedArgs.size(); i++)
+		for (int i = 0; i < args.size(); i++)
 		{
-			std::cout << (*passedArgs[i]).GetInfo() << std::endl;
+			auto arg = args[i];
+			if(arg->IsDefined())
+				std::cout << arg->GetInfo() << std::endl;
 		}
 	}
 }

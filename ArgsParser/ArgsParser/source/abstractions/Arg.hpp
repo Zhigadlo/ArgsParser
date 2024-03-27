@@ -5,6 +5,9 @@
 
 namespace abstractions
 {
+	/**
+	* @brief Class for arguments without parameters
+	**/
 	class Arg
 	{
 	public:
@@ -17,11 +20,16 @@ namespace abstractions
 
 		bool IsShortNameExist();
 		bool IsFullNameExist();
-
-		virtual Arg* GetCopy();
+		/**
+		* @warning Make sure to call this fuction after argument defined
+		**/
+		void Define();
+		bool IsDefined();
+		
 		virtual std::string GetInfo();
 	private:
 		char shortName = CHAR_MAX;
 		std::string fullName;
+		bool isDefined = false;
 	};
 }

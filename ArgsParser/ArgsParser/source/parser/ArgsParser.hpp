@@ -8,9 +8,7 @@ namespace parser
 	class ArgsParser
 	{
 	private:
-		std::vector<abstractions::Arg*> definedArgs;
-		std::vector<abstractions::Arg*> passedArgs;
-
+		std::vector<abstractions::Arg*> args;
 		abstractions::Arg* FindByShortName(char shortName);
 		abstractions::Arg* FindByFullName(std::string fullName);
 	public:

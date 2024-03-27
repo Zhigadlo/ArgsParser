@@ -13,19 +13,14 @@ namespace args
 		std::string GetInfo() override
 		{
 			std::string info = Arg::GetInfo();
-			if (IsValueSet())
+			if (IsDefined())
 				info += value ? "true" : "false";
 
 			return info;
 		}
 		void SetValue(bool value)
 		{
-			this->isValueSet = true;
 			this->value = value;
-		}
-		bool IsValueSet() override
-		{
-			return isValueSet;
 		}
 		bool ValueHandling(std::string value) override
 		{
@@ -33,27 +28,21 @@ namespace args
 			if (!StringToBool(value, boolResult)) return false;
 
 			SetValue(boolResult);
+			Define();
 			return true;
 		}
-		Arg* GetCopy() override
+		bool IsOneValueArg() override
 		{
-			BoolArg* copy;
-
-			if (IsShortNameExist() && IsFullNameExist()) 
-				copy = new BoolArg(GetShortName(), GetFullName());
-			else if (!IsShortNameExist()) 
-				copy = new BoolArg(GetFullName());
-			else
-				copy = new BoolArg(GetShortName());
-			
-			if(IsValueSet()) copy->SetValue(this->value);
-
-			return copy;
+			return true;
 		}
 	private:
 		bool value = false;
-		bool isValueSet = false;
-
+		/**
+		* @brief Converts string value to bool value
+		* @param str string value for converting
+		* @param out pointer to variable for result
+		* @return true if converting is successfull otherwise returns false
+		**/
 		bool StringToBool(const std::string& str, bool& out)
 		{
 			std::string trimmed_str;

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="source\abstractions\Arg.cpp" />
+    <ClCompile Include="source\parser\ArgsParser.cpp" />
+    <ClCompile Include="example\main.cpp" />
+    <ClCompile Include="source\args\IntArg.cpp" />
+    <ClCompile Include="source\args\BoolArg.cpp" />
+    <ClCompile Include="source\abstractions\ValueArg.cpp" />
+    <ClCompile Include="source\args\MultiStringArg.cpp" />
+    <ClCompile Include="source\abstractions\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+    <Text Include="example\CMakeLists.txt" />
+    <Text Include="Source\Parser\CMakeLists.txt" />
+    <Text Include="source\args\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\parser\ArgsParser.hpp" />
+    <ClInclude Include="source\abstractions\Arg.hpp" />
+    <ClInclude Include="source\abstractions\ValueArg.hpp" />
+  </ItemGroup>
+</Project>

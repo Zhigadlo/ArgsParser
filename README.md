@@ -6,4 +6,4 @@
 -s --string_value - аргумент для нескольких строковых значений<br/>
 
 Пример запуска программы через консоль:<br/>
-ArgsParser.exe -h --string_value test_word --int_value -s second_string -b true -s third_word<br/>
+ArgsParser.exe -h --string_value test_word --int_value 123 -s second_string -b true -s third_word<br/>

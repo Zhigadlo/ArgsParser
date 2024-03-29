@@ -1,50 +1,42 @@
-#include <abstractions/ValueArg.hpp>
+#include <abstractions/Arg.hpp>
+#include "MultiStringArg.hpp"
 #include <vector>
 #include <iostream>
+
 namespace args
 {
-	class MultiStringArg : public abstractions::ValueArg
+	MultiStringArg::MultiStringArg(char shortName) : abstractions::Arg(shortName, true, true) {}
+	MultiStringArg::MultiStringArg(std::string fullName) : abstractions::Arg(fullName, true, true) {}
+	MultiStringArg::MultiStringArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, true, true) {}
+
+	std::string MultiStringArg::GetInfo()
 	{
-	public:
-		MultiStringArg(char shortName) : abstractions::ValueArg(shortName) {}
-		MultiStringArg(std::string fullName) : abstractions::ValueArg(fullName) {}
-		MultiStringArg(char shortName, std::string fullName) : abstractions::ValueArg(shortName, fullName) {}
-
-		std::string GetInfo() override
+		std::string info = Arg::GetInfo();
+		if (IsDefined())
 		{
-			std::string info = Arg::GetInfo();
-			if (IsDefined())
+			for (int i = 0; i < values.size(); i++)
 			{
-				for (int i = 0; i < values.size(); i++)
-				{
-					info += values[i];
-					info += ' ';
-				}
+				info += values[i];
+				info += ' ';
 			}
-			return info;
 		}
-		void SetValue(std::string value)
-		{
-			this->values.push_back(value);
-		}
+		return info;
+	}
 
-		bool ValueHandling(std::string value) override
-		{
-			if (value.empty())
-			{
-				std::cerr << "Error: string value is empty." << std::endl;
-				return false;
-			}
-			SetValue(value);
-			Define();
-			return true;
-		}
+	void MultiStringArg::SetValue(std::string value)
+	{
+		this->values.push_back(value);
+	}
 
-		bool IsOneValueArg() override
+	bool MultiStringArg::Handle(std::string value)
+	{
+		if (value.empty())
 		{
+			std::cerr << "Error: string value is empty." << std::endl;
 			return false;
 		}
-	private:
-		std::vector<std::string> values;
-	};
+		SetValue(value);
+		Define();
+		return true;
+	}
 }

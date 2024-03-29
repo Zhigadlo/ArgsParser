@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../abstractions/Arg.hpp";
+#include <abstractions/Arg.hpp>
 #include <vector>
 
 namespace parser
@@ -13,7 +13,7 @@ namespace parser
 		abstractions::Arg* FindByFullName(std::string fullName);
 	public:
 		bool Parse(int argC, const char* argV[]);
-		void Add(abstractions::Arg* arg);
+		void Add(abstractions::Arg& arg);
 		void Show();
 	};
 }

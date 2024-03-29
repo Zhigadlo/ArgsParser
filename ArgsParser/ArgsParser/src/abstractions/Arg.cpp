@@ -3,19 +3,16 @@
 
 namespace abstractions
 {
-	Arg::Arg(char shortName) 
-	{
-		this->shortName = shortName;
-	}
-	Arg::Arg(std::string fullName)
-	{
-		this->fullName = fullName;
-	}
-	Arg::Arg(char shortName, std::string fullName) 
-	{
-		this->shortName = shortName;
-		this->fullName = fullName;
-	}
+	Arg::Arg(char shortName, bool isReusable, bool isParamArg) : shortName(shortName),
+															     isReusable(isReusable),
+															     isParamArg(isParamArg) {}
+	Arg::Arg(std::string fullName, bool isReusable, bool isParamArg) : fullName(fullName),
+																	   isReusable(isReusable),
+																	   isParamArg(isParamArg) {}
+	Arg::Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg) : shortName(shortName),
+																					   fullName(fullName), 
+																					   isReusable(isReusable),
+																					   isParamArg(isParamArg) {}
 	bool Arg::IsShortNameExist()
 	{
 		if (shortName == CHAR_MAX) return false;
@@ -34,16 +31,16 @@ namespace abstractions
 		std::string info;
 		if (IsShortNameExist())
 		{
-			info += '-';
+			info += SingleArgPrefix;
 			info += GetShortName();
-			info += ' ';
+			info += SpaceChar;
 		}
 
 		if (IsFullNameExist())
 		{
-			info += "--";
+			info += DoubleArgPrefix;
 			info += GetFullName();
-			info += ' ';
+			info += SpaceChar;
 		}
 
 		return info;
@@ -62,6 +59,14 @@ namespace abstractions
 	{
 		return isDefined;
 	};
+	bool Arg::IsReusable()
+	{
+		return isReusable;
+	}
+	bool Arg::IsParamArg()
+	{
+		return isParamArg;
+	}
 	void Arg::Define()
 	{
 		isDefined = true;

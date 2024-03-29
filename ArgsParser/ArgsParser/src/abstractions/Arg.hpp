@@ -11,9 +11,9 @@ namespace abstractions
 	class Arg
 	{
 	public:
-		Arg(char shortName, std::string fullName);
-		Arg(char shortName);
-		Arg(std::string fullName);
+		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg);
+		Arg(char shortName, bool isReusable, bool isParamArg);
+		Arg(std::string fullName, bool isReusable, bool isParamArg);
 
 		char GetShortName();
 		std::string GetFullName();
@@ -25,11 +25,23 @@ namespace abstractions
 		**/
 		void Define();
 		bool IsDefined();
-		
+		bool IsReusable();
+		bool IsParamArg();
+		/**
+		* @brief Handles string value
+		* @return true if value successfuly handled and set to the object, false if value is not valid
+		**/
+		virtual bool Handle(std::string value) = 0;
 		virtual std::string GetInfo();
 	private:
 		char shortName = CHAR_MAX;
 		std::string fullName;
 		bool isDefined = false;
+		bool isReusable;
+		bool isParamArg;
+
+		const std::string DoubleArgPrefix = "--";
+		const char SingleArgPrefix = '-';
+		const char SpaceChar = ' ';
 	};
 }

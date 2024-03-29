@@ -3,10 +3,8 @@ cmake_minimum_required(VERSION 3.28)
 project(abstractions LANGUAGES CXX)
 
 set(SOURCE_FILES
-	Arg.cpp
 	Arg.hpp
-	ValueArg.cpp
-	ValueArg.hpp
+	Arg.cpp
 )
 
 add_library(abstractions ${SOURCE_FILES})

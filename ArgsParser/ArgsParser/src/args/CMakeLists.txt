@@ -3,8 +3,13 @@ cmake_minimum_required(VERSION 3.28)
 project(args LANGUAGES CXX)
 
 set(SOURCE_FILES
+	EmptyArg.hpp
+	EmptyArg.cpp
+	BoolArg.hpp
 	BoolArg.cpp
+	IntArg.hpp
 	IntArg.cpp
+	MultiStringArg.hpp
 	MultiStringArg.cpp
 )
 

@@ -1,4 +1,5 @@
 #include <abstractions/Arg.hpp>
+#include <constants/constants.hpp>
 #include "BoolArg.hpp"
 #include <iostream>
 
@@ -52,12 +53,12 @@ namespace args
 			trimmed_str.push_back(std::tolower(c));
 		}
 
-		if (trimmed_str == TrueString || trimmed_str == "1")
+		if (trimmed_str == TrueString || trimmed_str == TrueIntString)
 		{
 			out = true;
 			return true;
 		}
-		if (trimmed_str == FalseString || trimmed_str == "0")
+		if (trimmed_str == FalseString || trimmed_str == FalseIntString)
 		{
 			out = false;
 			return true;

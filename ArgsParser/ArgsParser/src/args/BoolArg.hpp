@@ -17,8 +17,6 @@ namespace args
 		std::string GetInfo() override;
 	private:
 		bool value = false;
-		const std::string& TrueString = "true";
-		const std::string& FalseString = "false";
 		/**
 		* @brief Converts string value to bool value
 		* @param str string value for converting

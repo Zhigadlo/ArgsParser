@@ -39,9 +39,5 @@ namespace abstractions
 		bool isDefined = false;
 		bool isReusable;
 		bool isParamArg;
-
-		const std::string DoubleArgPrefix = "--";
-		const char SingleArgPrefix = '-';
-		const char SpaceChar = ' ';
 	};
 }

@@ -1,5 +1,6 @@
 #include <abstractions/Arg.hpp>
 #include "MultiStringArg.hpp"
+#include <constants/constants.hpp>
 #include <vector>
 #include <iostream>
 
@@ -17,7 +18,7 @@ namespace args
 			for (int i = 0; i < values.size(); i++)
 			{
 				info += values[i];
-				info += ' ';
+				info += SpaceChar;
 			}
 		}
 		return info;

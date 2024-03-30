@@ -1,5 +1,6 @@
 #include "ArgsParser.hpp"
 #include <abstractions/Arg.hpp>
+#include <constants/constants.hpp>
 #include <iostream>
 
 namespace parser
@@ -23,16 +24,16 @@ namespace parser
 		{
 			abstractions::Arg* arg = nullptr;
 			std::string strArg(argV[i]);
-			int argLength = strArg.length();
+			size_t argLength = strArg.length();
 			if (argLength < 2) return false;
 
-			if (strArg[0] == '-' && argLength == 2)
+			if (strArg[0] == ShortArgumentPrefix && argLength == 2)
 			{
 				char shortName = strArg[1];
 				arg = FindByShortName(shortName);
 			}
 
-			if (arg == nullptr && strArg.substr(0, 2) == "--")
+			if (arg == nullptr && strArg.substr(0, 2) == LongArgumentPrefix)
 			{
 				std::string fullName = strArg.substr(2);
 				arg = FindByFullName(fullName);

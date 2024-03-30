@@ -1,4 +1,5 @@
 #include <string>
+#include <constants/constants.hpp>
 #include "Arg.hpp"
 
 namespace abstractions
@@ -31,14 +32,14 @@ namespace abstractions
 		std::string info;
 		if (IsShortNameExist())
 		{
-			info += SingleArgPrefix;
+			info += ShortArgumentPrefix;
 			info += GetShortName();
 			info += SpaceChar;
 		}
 
 		if (IsFullNameExist())
 		{
-			info += DoubleArgPrefix;
+			info += LongArgumentPrefix;
 			info += GetFullName();
 			info += SpaceChar;
 		}

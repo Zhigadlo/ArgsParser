@@ -19,9 +19,10 @@ int main(int argC, const char* argV[])
 	parser.Add(boolArg);
 	parser.Add(multiStringArg);
 
-	if (parser.Parse(argC, argV))
+	results::HandleResult result = parser.Parse(argC, argV);
+	if (result.IsSucceded())
 		parser.Show();
 	else
-		std::cout << "Fail to parse arguments :(" << std::endl;
+		std::cout << result.GetError() << std::endl;
 }
 

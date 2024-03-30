@@ -1,7 +1,5 @@
-#include <abstractions/Arg.hpp>
 #include <constants/constants.hpp>
 #include "BoolArg.hpp"
-#include <iostream>
 
 namespace args
 {
@@ -21,20 +19,16 @@ namespace args
 	{
 		this->value = value;
 	}
-	bool BoolArg::Handle(std::string value)
+	results::HandleResult BoolArg::Handle(const std::string& value)
 	{
-		if (value.empty())
-		{
-			std::cerr << "Error: string value is empty." << std::endl;
-			return false;
-		}
-
+		if (value.empty()) return results::HandleResult("String value is empty.");
+		
 		bool boolResult;
-		if (!StringToBool(value, boolResult)) return false;
+		if (!StringToBool(value, boolResult)) return results::HandleResult("Failed to convert string value to bool");
 
 		SetValue(boolResult);
 		Define();
-		return true;
+		return results::HandleResult();
 	}
 	/**
 	* @brief Converts string value to bool value, before string try to convert
@@ -61,7 +55,7 @@ namespace args
 			out = false;
 			return true;
 		}
-		std::cerr << "Error: invalid bool string value." << std::endl;
+		
 		return false;
 	}
 }; 

@@ -1,5 +1,4 @@
 #include "ArgsParser.hpp"
-#include <abstractions/Arg.hpp>
 #include <constants/constants.hpp>
 #include <iostream>
 
@@ -17,7 +16,7 @@ namespace parser
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
-	bool ArgsParser::Parse(int argC, const char* argV[])
+	results::HandleResult ArgsParser::Parse(int argC, const char* argV[])
 	{
 		// i = 1 because first argument is ArgsParser.exe with 0 index
 		for(int i = 1; i < argC; i++)
@@ -25,7 +24,7 @@ namespace parser
 			abstractions::Arg* arg = nullptr;
 			std::string strArg(argV[i]);
 			size_t argLength = strArg.length();
-			if (argLength < 2) return false;
+			if (argLength < 2) return results::HandleResult("Argument is too short");
 
 			if (strArg[0] == ShortArgumentPrefix && argLength == 2)
 			{
@@ -39,30 +38,26 @@ namespace parser
 				arg = FindByFullName(fullName);
 			}
 			
-			if (arg == nullptr) return false;
+			if (arg == nullptr) return results::HandleResult("There is no such argument");
 
 			// one value arg check
-			if (!arg->IsReusable() && arg->IsDefined())
-			{
-				std::cerr << "Error: can't define one value arg more than once." << std::endl;
-				return false;
-			}
+			if (!arg->IsReusable() && arg->IsDefined()) 
+				return results::HandleResult("Can't define one value arg more than once.");
 
 			std::string param;
 			// when arg requires param we need to take it, 
 			if (arg->IsParamArg())
 			{
 				if (!arg->IsReusable() && arg->IsDefined())
-				{
-					std::cerr << "Error: not resuable argument is already defined" << std::endl;
-					return false;
-				}
+					return results::HandleResult("Not reusable argument is already defined.");
+				
 				param = std::string(argV[++i]);
 			}
 			// else we pass to Handle method empty string
-			if (!arg->Handle(param)) return false;
+			results::HandleResult result = arg->Handle(param);
+			if (!result.IsSucceded()) return result;
 		}
-		return true;
+		return results::HandleResult();
 	}
 
 	void ArgsParser::Add(abstractions::Arg& arg)

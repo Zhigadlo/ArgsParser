@@ -1,7 +1,5 @@
-#include <abstractions/Arg.hpp>
 #include "IntArg.hpp"
 #include <stdexcept>
-#include <iostream>
 
 namespace args
 {
@@ -20,30 +18,24 @@ namespace args
 	{
 		this->value = value;
 	}
-	bool IntArg::Handle(std::string value)
+	results::HandleResult IntArg::Handle(const std::string& value)
 	{
-		if (value.empty())
-		{
-			std::cerr << "Error: string value is empty." << std::endl;
-			return false;
-		}
-
+		if (value.empty()) return results::HandleResult("String value is empty");
+		
 		try
 		{
 			int result = std::stoi(value);
 			SetValue(result);
 			Define();
-			return true;
+			return results::HandleResult();
 		}
 		catch (const std::invalid_argument& e)
 		{
-			std::cerr << e.what() << value << std::endl;
+			return results::HandleResult(e.what());
 		}
 		catch (const std::out_of_range& e)
 		{
-			std::cerr << e.what() << value << std::endl;
+			return results::HandleResult(e.what());
 		}
-
-		return false;
 	}
 }

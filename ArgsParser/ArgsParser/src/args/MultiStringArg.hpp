@@ -1,8 +1,6 @@
 #pragma once
 
 #include <abstractions/Arg.hpp>
-#include <vector>
-#include <iostream>
 
 namespace args
 {
@@ -16,7 +14,7 @@ namespace args
 		std::string GetInfo() override;
 		void SetValue(std::string value);
 
-		bool Handle(std::string value) override;
+		results::HandleResult Handle(const std::string& value) override;
 	private:
 		std::vector<std::string> values;
 	};

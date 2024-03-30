@@ -12,7 +12,7 @@ namespace parser
 		abstractions::Arg* FindByShortName(char shortName);
 		abstractions::Arg* FindByFullName(std::string fullName);
 	public:
-		bool Parse(int argC, const char* argV[]);
+		results::HandleResult Parse(int argC, const char* argV[]);
 		void Add(abstractions::Arg& arg);
 		void Show();
 	};

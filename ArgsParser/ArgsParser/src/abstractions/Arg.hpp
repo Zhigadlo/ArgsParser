@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <results/HandleResult.hpp>
 #include <vector>
 
 namespace abstractions
@@ -31,7 +31,7 @@ namespace abstractions
 		* @brief Handles string value
 		* @return true if value successfuly handled and set to the object, false if value is not valid
 		**/
-		virtual bool Handle(std::string value) = 0;
+		virtual results::HandleResult Handle(const std::string& value) = 0;
 		virtual std::string GetInfo();
 	private:
 		char shortName = CHAR_MAX;

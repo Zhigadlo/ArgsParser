@@ -1,8 +1,5 @@
-#include <abstractions/Arg.hpp>
 #include "MultiStringArg.hpp"
 #include <constants/constants.hpp>
-#include <vector>
-#include <iostream>
 
 namespace args
 {
@@ -29,15 +26,12 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	bool MultiStringArg::Handle(std::string value)
+	results::HandleResult MultiStringArg::Handle(const std::string& value)
 	{
-		if (value.empty())
-		{
-			std::cerr << "Error: string value is empty." << std::endl;
-			return false;
-		}
+		if (value.empty()) return results::HandleResult("String value is empty");
+		
 		SetValue(value);
 		Define();
-		return true;
+		return results::HandleResult();
 	}
 }

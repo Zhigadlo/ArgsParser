@@ -1,7 +1,6 @@
 #pragma once
 
 #include <abstractions/Arg.hpp>
-#include <iostream>
 
 namespace args
 {
@@ -13,7 +12,7 @@ namespace args
 		BoolArg(char shortName, std::string fullName);
 
 		void SetValue(bool value);
-		bool Handle(std::string value) override;
+		results::HandleResult Handle(const std::string& value) override;
 		std::string GetInfo() override;
 	private:
 		bool value = false;

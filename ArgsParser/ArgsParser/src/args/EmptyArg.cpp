@@ -6,10 +6,10 @@ namespace args
 	EmptyArg::EmptyArg(std::string fullName) : abstractions::Arg(fullName, false, false) {}
 	EmptyArg::EmptyArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, false, false) {}
 
-	bool EmptyArg::Handle(std::string value)
+	results::HandleResult EmptyArg::Handle(const std::string& value)
 	{
-		if (IsDefined()) return false;
+		if (IsDefined()) return results::HandleResult("Value is already defined.");
 		Define();
-		return true;
+		return results::HandleResult();
 	}
 }

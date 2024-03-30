@@ -1,8 +1,6 @@
 #pragma once
 
 #include <abstractions/Arg.hpp>
-#include <stdexcept>
-#include <iostream>
 
 namespace args
 {
@@ -15,7 +13,7 @@ namespace args
 
 		std::string GetInfo() override;
 		void SetValue(int value);
-		bool Handle(std::string value) override;
+		results::HandleResult Handle(const std::string& value) override;
 	private:
 		int value = INT_MAX;
 	};

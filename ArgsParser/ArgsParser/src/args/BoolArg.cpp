@@ -49,10 +49,8 @@ namespace args
 		trimmed_str.reserve(str.size());
 
 		for (char c : str)
-		{
 			trimmed_str.push_back(std::tolower(c));
-		}
-
+		
 		if (trimmed_str == TrueString || trimmed_str == TrueIntString)
 		{
 			out = true;

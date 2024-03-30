@@ -28,11 +28,9 @@ namespace args
 			return false;
 		}
 
-		int result;
-
 		try
 		{
-			result = std::stoi(value);
+			int result = std::stoi(value);
 			SetValue(result);
 			Define();
 			return true;

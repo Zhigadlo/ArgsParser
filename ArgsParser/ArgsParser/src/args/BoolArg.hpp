@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <abstractions/Arg.hpp>
+#include <iostream>
 
 namespace args
 {

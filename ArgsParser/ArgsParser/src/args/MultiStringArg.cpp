@@ -13,14 +13,14 @@ namespace args
 	std::string MultiStringArg::GetInfo()
 	{
 		std::string info = Arg::GetInfo();
-		if (IsDefined())
+		if (!IsDefined()) return info;
+
+		for (int i = 0; i < values.size(); i++)
 		{
-			for (int i = 0; i < values.size(); i++)
-			{
-				info += values[i];
-				info += SpaceChar;
-			}
+			info += values[i];
+			info += SpaceChar;
 		}
+
 		return info;
 	}
 

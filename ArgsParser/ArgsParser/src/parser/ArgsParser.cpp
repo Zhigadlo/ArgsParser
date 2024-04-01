@@ -1,6 +1,7 @@
 #include "ArgsParser.hpp"
 #include <constants/constants.hpp>
 #include <iostream>
+#include <string_view>
 
 namespace parser
 {
@@ -10,9 +11,14 @@ namespace parser
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
-	abstractions::Arg* ArgsParser::FindByFullName(std::string fullName)
+	abstractions::Arg* ArgsParser::FindByFullName(std::string_view fullName)
 	{
-		auto it = std::find_if(args.begin(), args.end(), [&fullName](abstractions::Arg* obj) { return (*obj).GetFullName() == fullName; });
+		auto it = std::find_if(args.begin(), args.end(), [&fullName](abstractions::Arg* obj) 
+		{ 
+		    std::string fullNameString = (*obj).GetFullName();
+		    std::string_view fullNameView = std::string_view(fullNameString);
+		    return fullNameView.find(fullName) != std::string_view::npos; 
+		});
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
@@ -22,19 +28,19 @@ namespace parser
 		for(int i = 1; i < argC; i++)
 		{
 			abstractions::Arg* arg = nullptr;
-			std::string strArg(argV[i]);
-			size_t argLength = strArg.length();
+			std::string_view stringViewArg(argV[i]);
+			size_t argLength = stringViewArg.length();
 			if (argLength < 2) return results::HandleResult("Argument is too short");
 
-			if (strArg[0] == ShortArgumentPrefix && argLength == 2)
+			if (stringViewArg[0] == ShortArgumentPrefix && argLength == 2)
 			{
-				char shortName = strArg[1];
+				char shortName = stringViewArg[1];
 				arg = FindByShortName(shortName);
 			}
 
-			if (arg == nullptr && strArg.substr(0, 2) == LongArgumentPrefix)
+			if (arg == nullptr && stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
 			{
-				std::string fullName = strArg.substr(2);
+				std::string_view fullName = stringViewArg.substr(2);
 				arg = FindByFullName(fullName);
 			}
 			

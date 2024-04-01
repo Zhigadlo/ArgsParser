@@ -24,4 +24,4 @@ add_subdirectory(src/constants)
 add_executable(ArgsParser main.cpp)
 
 target_include_directories(ArgsParser PRIVATE src/abstractions src/args src/parser src/results src/constants)
-target_link_libraries(ArgsParser abstractions args parser results)
+target_link_libraries(ArgsParser PRIVATE abstractions args parser results constants)

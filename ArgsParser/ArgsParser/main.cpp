@@ -10,12 +10,16 @@ int main(int argC, const char* argV[])
 	parser::ArgsParser parser;
 
 	args::EmptyArg helpArg('h');
+	args::EmptyArg testArg('t', "test");
 	args::IntArg intArg("int_value");
+	args::IntArg shortIntArg('k');
 	args::BoolArg boolArg('b', "bool_value");
 	args::MultiStringArg multiStringArg('s', "string_value");
 
 	parser.Add(helpArg);
+	parser.Add(testArg);
 	parser.Add(intArg);
+	parser.Add(shortIntArg);
 	parser.Add(boolArg);
 	parser.Add(multiStringArg);
 

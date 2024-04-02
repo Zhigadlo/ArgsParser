@@ -8,7 +8,6 @@ namespace results
 	{
 	public:
 		ArgumentIsAlreadyDefined(std::string argLongName);
-		ArgumentIsAlreadyDefined(char argShortName);
 	};
 }
 

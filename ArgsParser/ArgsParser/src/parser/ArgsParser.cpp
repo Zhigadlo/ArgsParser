@@ -35,19 +35,21 @@ namespace parser
 		{
 			const char shortName = concatArgs[j];
 			abstractions::Arg* shortArg = FindByShortName(shortName);
-			if (shortArg == nullptr) return results::NoSuchArgument(shortName);
+			if (shortArg == nullptr) return results::NoSuchArgument(shortArg->GetInfo());
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
-				return results::ArgumentIsAlreadyDefined(shortArg->GetShortName());
+				return results::ArgumentIsAlreadyDefined(shortArg->GetInfo());
 
 			std::string param;
 			// when arg requires param we need to take it, 
 			if (shortArg->IsParamArg())
 			{
 				j++;
-				if (j < concatArgs.length() && concatArgs[j] == EqualsChar) j++;
+				if (j < concatArgs.length() && concatArgs[j] == EqualsChar) 
+					j++;
 
-				if (j >= concatArgs.length()) return results::MissingParameter(shortName);
+				if (j >= concatArgs.length()) 
+					return results::MissingParameter(shortArg->GetInfo());
 
 				param = concatArgs.substr(j, concatArgs.length() - j);
 				
@@ -71,7 +73,7 @@ namespace parser
 			std::string param;
 
 			// if < 2 then in stringViewArg only one char
-			if (argLength < 2) return results::NoSuchArgument(stringViewArg[0]);
+			if (argLength < 2) return results::NoSuchArgument(std::string(stringViewArg));
 			// long argument 
 			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
 			{
@@ -83,12 +85,14 @@ namespace parser
 
 			if (arg == nullptr && stringViewArg[0] == ShortArgumentPrefix)
 			{
-				if (argLength == 2) // -h -k -t
+				//short argument -h -k -t
+				if (argLength == 2) 
 				{
 					char shortName = stringViewArg[1];
 					arg = FindByShortName(shortName);
 				}
-				else // -hb0 || -hb=1 || -hb
+				//concat argument -hb0 -hb=1 -hb
+				else 
 				{
 					std::string_view shortNames = stringViewArg.substr(1);
 					results::HandleResult result = ConcatArgsHandle(shortNames);

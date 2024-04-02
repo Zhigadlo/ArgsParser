@@ -7,7 +7,6 @@ namespace results
 	{
 	public:
 		NoSuchArgument(std::string argName);
-		NoSuchArgument(char argName);
 	};
 }
 

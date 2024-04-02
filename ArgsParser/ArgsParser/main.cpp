@@ -5,11 +5,10 @@
 #include <args/EmptyArg.hpp>
 #include <iostream>
 
-int main(int argC/*, const char* argV[]*/)
+int main(/*int argC, const char* argV[] */)
 {
-
-	argC = 8;
-	const char* argV[] = { "ArgsParser.exe", "-b", "true", "--int_", "1", "-h", "--bool_value", "0" };
+	int argC = 8;
+	const char* argV[] = { "ArgsParser.exe", "-hk", "-b", "true", "--int_", "1", "--str", "0123" };
 
 	parser::ArgsParser parser;
 

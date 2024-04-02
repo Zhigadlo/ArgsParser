@@ -1,5 +1,6 @@
 #pragma once
 
+#include <abstractions/IValidator.hpp>
 #include <abstractions/Arg.hpp>
 
 namespace args
@@ -7,9 +8,9 @@ namespace args
 	class IntArg : public abstractions::Arg
 	{
 	public:
-		IntArg(char shortName);
-		IntArg(std::string fullName);
-		IntArg(char shortName, std::string fullName);
+		IntArg(char shortName, abstractions::IValidator* validator);
+		IntArg(std::string fullName, abstractions::IValidator* validator);
+		IntArg(char shortName, std::string fullName, abstractions::IValidator* validator);
 
 		std::string GetInfo() override;
 		void SetValue(int value);

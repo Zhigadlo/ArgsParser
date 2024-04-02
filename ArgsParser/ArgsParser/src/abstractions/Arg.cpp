@@ -3,16 +3,19 @@
 
 namespace abstractions
 {
-	Arg::Arg(char shortName, bool isReusable, bool isParamArg) : shortName(shortName),
-															     isReusable(isReusable),
-															     isParamArg(isParamArg) {}
-	Arg::Arg(std::string fullName, bool isReusable, bool isParamArg) : fullName(fullName),
-																	   isReusable(isReusable),
-																	   isParamArg(isParamArg) {}
-	Arg::Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg) : shortName(shortName),
-																					   fullName(fullName), 
-																					   isReusable(isReusable),
-																					   isParamArg(isParamArg) {}
+	Arg::Arg(char shortName, bool isReusable, bool isParamArg, abstractions::IValidator* validator = nullptr) : shortName(shortName),
+																												isReusable(isReusable),
+																												isParamArg(isParamArg),
+																											    validator(validator) {}
+	Arg::Arg(std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator = nullptr) : fullName(fullName),
+																													  isReusable(isReusable),
+																													  isParamArg(isParamArg),
+																													  validator(validator) {}
+	Arg::Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator = nullptr) : shortName(shortName),
+																																	  fullName(fullName), 
+																																	  isReusable(isReusable),
+																																	  isParamArg(isParamArg),
+																																	  validator(validator) {}
 	bool Arg::IsShortNameExist()
 	{
 		if (shortName == CHAR_MAX) return false;
@@ -50,10 +53,13 @@ namespace abstractions
 	{
 		return shortName;
 	}
-
 	std::string Arg::GetFullName()
 	{
 		return fullName;
+	}
+	IValidator* Arg::GetValidator()
+	{
+		return validator;
 	}
 	bool Arg::IsDefined()
 	{

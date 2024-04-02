@@ -8,7 +8,7 @@
 int main(/*int argC, const char* argV[] */)
 {
 	int argC = 8;
-	const char* argV[] = { "ArgsParser.exe", "-hk", "-b", "true", "--int_", "1", "--str", "0123" };
+	const char* argV[] = { "ArgsParser.exe", "-hk=asd2", "-b", "true", "--int_", "1", "--str", "0123" };
 
 	parser::ArgsParser parser;
 

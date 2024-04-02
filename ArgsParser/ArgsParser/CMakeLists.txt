@@ -31,5 +31,6 @@ add_subdirectory(tests)
 
 add_executable(ArgsParser main.cpp)
 
-target_include_directories(ArgsParser PRIVATE src/abstractions src/args src/parser src/results src/constants, tests)
+target_include_directories(ArgsParser PRIVATE src/abstractions src/args src/parser src/results src/constants tests)
 target_link_libraries(ArgsParser PRIVATE abstractions args parser results constants)
+target_link_libraries(tests PRIVATE abstractions args parser results constants Catch2::Catch2WithMain)

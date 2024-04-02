@@ -5,9 +5,10 @@ project(abstractions LANGUAGES CXX)
 set(SOURCE_FILES
 	Arg.hpp
 	Arg.cpp
+	IValidator.hpp
 )
 
-add_library(abstractions ${SOURCE_FILES})
+add_library(abstractions ${SOURCE_FILES} "")
 
 target_include_directories(abstractions PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <abstractions/IValidator.hpp>
 #include <results/HandleResult.hpp>
 #include <vector>
 
@@ -11,12 +12,13 @@ namespace abstractions
 	class Arg
 	{
 	public:
-		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg);
-		Arg(char shortName, bool isReusable, bool isParamArg);
-		Arg(std::string fullName, bool isReusable, bool isParamArg);
+		Arg(char shortName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
+		Arg(std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
+		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
 
 		char GetShortName();
 		std::string GetFullName();
+		IValidator* GetValidator();
 
 		bool IsShortNameExist();
 		bool IsFullNameExist();
@@ -39,5 +41,6 @@ namespace abstractions
 		bool isDefined = false;
 		bool isReusable;
 		bool isParamArg;
+		abstractions::IValidator* validator;
 	};
 }

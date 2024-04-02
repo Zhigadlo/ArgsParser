@@ -5,9 +5,9 @@
 
 namespace args
 {
-	IntArg::IntArg(char shortName) : abstractions::Arg(shortName, false, true) {}
-	IntArg::IntArg(std::string fullName) : abstractions::Arg(fullName, false, true) {}
-	IntArg::IntArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, false, true) {}
+	IntArg::IntArg(char shortName, abstractions::IValidator* validator = nullptr) : abstractions::Arg(shortName, false, true, validator) {}
+	IntArg::IntArg(std::string fullName, abstractions::IValidator* validator = nullptr) : abstractions::Arg(fullName, false, true, validator) {}
+	IntArg::IntArg(char shortName, std::string fullName, abstractions::IValidator* validator = nullptr) : abstractions::Arg(shortName, fullName, false, true, validator) {}
 
 	std::string IntArg::GetInfo()
 	{
@@ -28,6 +28,9 @@ namespace args
 		{
 			int result = std::stoi(value);
 			SetValue(result);
+			abstractions::IValidator* validator = GetValidator();
+			if (validator != nullptr && !validator->Validate(&result))
+				return results::HandleResult();
 			Define();
 			return results::Success();
 		}

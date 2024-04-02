@@ -22,6 +22,7 @@ namespace parser
 				std::string_view realFullNameView = std::string_view(findedFullName);
 				return realFullNameView.substr(0, fullName.length()).compare(fullName) == 0; // check for string begining match
 			});
+
 		return matchingArgs;
 	}
 	results::HandleResult IsOneValaeArg(abstractions::Arg* arg)
@@ -35,25 +36,24 @@ namespace parser
 	{
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
-			char shortName = concatArgs[j];
+			const char shortName = concatArgs[j];
 			abstractions::Arg* shortArg = FindByShortName(shortName);
 			if (shortArg == nullptr) return results::HandleResult(shortName + ": There is no such argument");
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
-				return results::HandleResult("Can't define one value arg more than once.");
-			
+				return results::HandleResult(std::string(": Can't define one value arg more than once.").insert(0, 1, shortName));
+
 			std::string param;
 			// when arg requires param we need to take it, 
 			if (shortArg->IsParamArg())
 			{
-				if (!shortArg->IsReusable() && shortArg->IsDefined())
-					return results::HandleResult("Not reusable argument is already defined.");
-
 				j++;
-				if (concatArgs[j] == '=')
-					param = concatArgs.substr(++j, concatArgs.length() - j);
-				else
-					param = concatArgs.substr(j, concatArgs.length() - j);
+				if (j < concatArgs.length() && concatArgs[j] == '=') j++;
+
+				if (j >= concatArgs.length()) return results::HandleResult(std::string(": Parameter for value arg is missing").insert(0, 1, shortName));
+
+				param = concatArgs.substr(j, concatArgs.length() - j);
+				
 				return shortArg->Handle(param);
 			}
 			// else we pass to Handle method empty string
@@ -77,7 +77,7 @@ namespace parser
 
 			if (stringViewArg[0] == ShortArgumentPrefix)
 			{
-				if (argLength == 2)
+				if (argLength == 2) // -h -k -t
 				{
 					char shortName = stringViewArg[1];
 					arg = FindByShortName(shortName);
@@ -91,7 +91,7 @@ namespace parser
 					continue;
 				}
 			}
-
+			// long argument 
 			if (arg == nullptr && stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
 			{
 				std::string_view fullName = stringViewArg.substr(2);

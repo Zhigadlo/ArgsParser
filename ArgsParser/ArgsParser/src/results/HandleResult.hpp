@@ -14,7 +14,7 @@ namespace results
 		/**
 		* @brief returns nullptr if there is no errors
 		*/
-		std::string* GetError();
+		std::string& GetError();
 	private:
 		std::string error;
 	};

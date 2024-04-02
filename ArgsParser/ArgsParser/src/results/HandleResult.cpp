@@ -12,10 +12,8 @@ namespace results
 		return false;
 	}
 
-	std::string* HandleResult::GetError()
+	std::string& HandleResult::GetError()
 	{
-		if (error.empty()) return nullptr;
-
-		return &error;
+		return error;
 	}
 }

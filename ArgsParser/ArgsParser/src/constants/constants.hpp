@@ -3,6 +3,7 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+inline constexpr char EqualsChar = '=';
 inline constexpr char ShortArgumentPrefix = '-';
 inline constexpr char SpaceChar = ' ';
 /**

@@ -11,6 +11,10 @@ set(SOURCE_FILES
 	StringValueIsEmpty.cpp
 	ArgumentIsAlreadyDefined.hpp
 	ArgumentIsAlreadyDefined.cpp
+	NoSuchArgument.hpp
+	NoSuchArgument.cpp
+    MissingParameter.hpp
+	MissingParameter.cpp
 )
 
 add_library(results ${SOURCE_FILES})

@@ -1,6 +1,8 @@
 #include "ArgsParser.hpp"
 #include <results/Success.hpp>
 #include <results/ArgumentIsAlreadyDefined.hpp>
+#include <results/MissingParameter.hpp>
+#include <results/NoSuchArgument.hpp>
 #include <constants/constants.hpp>
 #include <iostream>
 #include <string_view>
@@ -27,20 +29,13 @@ namespace parser
 
 		return matchingArgs;
 	}
-	results::HandleResult IsOneValaeArg(abstractions::Arg* arg)
-	{
-		if (!arg->IsReusable() && arg->IsDefined())
-			return results::ArgumentIsAlreadyDefined(arg->GetInfo());
-		return results::Success();
-	}
-
 	results::HandleResult ArgsParser::ConcatArgsHandle(std::string_view concatArgs)
 	{
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
 			const char shortName = concatArgs[j];
 			abstractions::Arg* shortArg = FindByShortName(shortName);
-			if (shortArg == nullptr) return results::HandleResult(shortName + ": There is no such argument");
+			if (shortArg == nullptr) return results::NoSuchArgument(shortName);
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
 				return results::ArgumentIsAlreadyDefined(shortArg->GetShortName());
@@ -50,9 +45,9 @@ namespace parser
 			if (shortArg->IsParamArg())
 			{
 				j++;
-				if (j < concatArgs.length() && concatArgs[j] == '=') j++;
+				if (j < concatArgs.length() && concatArgs[j] == EqualsChar) j++;
 
-				if (j >= concatArgs.length()) return results::HandleResult(std::string(": Parameter for value arg is missing").insert(0, 1, shortName));
+				if (j >= concatArgs.length()) return results::MissingParameter(shortName);
 
 				param = concatArgs.substr(j, concatArgs.length() - j);
 				
@@ -75,7 +70,8 @@ namespace parser
 			size_t argLength = stringViewArg.length();
 			std::string param;
 
-			if (argLength < 2) return results::HandleResult("Argument is too short");
+			// if < 2 then in stringViewArg only one char
+			if (argLength < 2) return results::NoSuchArgument(stringViewArg[0]);
 
 			if (stringViewArg[0] == ShortArgumentPrefix)
 			{
@@ -98,12 +94,9 @@ namespace parser
 			{
 				std::string_view fullName = stringViewArg.substr(2);
 				std::vector<abstractions::Arg*> findedArgs = FindByFullName(fullName);
-				if (findedArgs.size() > 1) return results::HandleResult("Can't choose right argument");
-				if (findedArgs.size() == 0) return results::HandleResult("There is no such argument");
+				if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(fullName));
 				arg = findedArgs.front();
 			}
-
-			if (arg == nullptr) return results::HandleResult("There is no such argument");
 
 			// one value arg check
 			if (!arg->IsReusable() && arg->IsDefined())

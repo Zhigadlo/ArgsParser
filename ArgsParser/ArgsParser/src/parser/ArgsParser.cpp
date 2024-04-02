@@ -72,8 +72,16 @@ namespace parser
 
 			// if < 2 then in stringViewArg only one char
 			if (argLength < 2) return results::NoSuchArgument(stringViewArg[0]);
+			// long argument 
+			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
+			{
+				std::string_view fullName = stringViewArg.substr(2);
+				std::vector<abstractions::Arg*> findedArgs = FindByFullName(fullName);
+				if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(fullName));
+				arg = findedArgs.front();
+			}
 
-			if (stringViewArg[0] == ShortArgumentPrefix)
+			if (arg == nullptr && stringViewArg[0] == ShortArgumentPrefix)
 			{
 				if (argLength == 2) // -h -k -t
 				{
@@ -88,14 +96,6 @@ namespace parser
 					if (!result.IsSucceded()) return result;
 					continue;
 				}
-			}
-			// long argument 
-			if (arg == nullptr && stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
-			{
-				std::string_view fullName = stringViewArg.substr(2);
-				std::vector<abstractions::Arg*> findedArgs = FindByFullName(fullName);
-				if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(fullName));
-				arg = findedArgs.front();
 			}
 
 			// one value arg check

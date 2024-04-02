@@ -15,13 +15,21 @@ if (MSVC)
     add_compile_options(/utf-8)
 endif()
 
+find_package(Catch2 CONFIG REQUIRED)
+
 add_subdirectory(src/abstractions)
 add_subdirectory(src/args)
 add_subdirectory(src/parser)
 add_subdirectory(src/results)
 add_subdirectory(src/constants)
 
+include(CTest)
+include(Catch)
+enable_testing()
+
+add_subdirectory(tests)
+
 add_executable(ArgsParser main.cpp)
 
-target_include_directories(ArgsParser PRIVATE src/abstractions src/args src/parser src/results src/constants)
+target_include_directories(ArgsParser PRIVATE src/abstractions src/args src/parser src/results src/constants, tests)
 target_link_libraries(ArgsParser PRIVATE abstractions args parser results constants)

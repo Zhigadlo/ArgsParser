@@ -1,4 +1,6 @@
 #include "MultiStringArg.hpp"
+#include <results/Success.hpp>
+#include <results/StringValueIsEmpty.hpp>
 #include <constants/constants.hpp>
 
 namespace args
@@ -28,10 +30,10 @@ namespace args
 
 	results::HandleResult MultiStringArg::Handle(const std::string& value)
 	{
-		if (value.empty()) return results::HandleResult("String value is empty");
+		if (value.empty()) return results::StringValueIsEmpty();
 		
 		SetValue(value);
 		Define();
-		return results::HandleResult();
+		return results::Success();
 	}
 }

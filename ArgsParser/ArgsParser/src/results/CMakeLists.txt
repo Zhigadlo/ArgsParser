@@ -5,6 +5,12 @@ project(results LANGUAGES CXX)
 set(SOURCE_FILES
 	HandleResult.hpp
 	HandleResult.cpp
+	Success.hpp
+	Success.cpp
+	StringValueIsEmpty.hpp
+	StringValueIsEmpty.cpp
+	ArgumentIsAlreadyDefined.hpp
+	ArgumentIsAlreadyDefined.cpp
 )
 
 add_library(results ${SOURCE_FILES})

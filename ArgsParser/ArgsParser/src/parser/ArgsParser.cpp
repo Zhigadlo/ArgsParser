@@ -1,4 +1,6 @@
 #include "ArgsParser.hpp"
+#include <results/Success.hpp>
+#include <results/ArgumentIsAlreadyDefined.hpp>
 #include <constants/constants.hpp>
 #include <iostream>
 #include <string_view>
@@ -28,8 +30,8 @@ namespace parser
 	results::HandleResult IsOneValaeArg(abstractions::Arg* arg)
 	{
 		if (!arg->IsReusable() && arg->IsDefined())
-			return results::HandleResult("Can't define one value arg more than once.");
-		return results::HandleResult();
+			return results::ArgumentIsAlreadyDefined(arg->GetInfo());
+		return results::Success();
 	}
 
 	results::HandleResult ArgsParser::ConcatArgsHandle(std::string_view concatArgs)
@@ -41,7 +43,7 @@ namespace parser
 			if (shortArg == nullptr) return results::HandleResult(shortName + ": There is no such argument");
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
-				return results::HandleResult(std::string(": Can't define one value arg more than once.").insert(0, 1, shortName));
+				return results::ArgumentIsAlreadyDefined(shortArg->GetShortName());
 
 			std::string param;
 			// when arg requires param we need to take it, 
@@ -105,21 +107,16 @@ namespace parser
 
 			// one value arg check
 			if (!arg->IsReusable() && arg->IsDefined())
-				return results::HandleResult("Can't define one value arg more than once.");
+				return results::ArgumentIsAlreadyDefined(arg->GetInfo());
 
 			// when arg requires param we need to take it, 
-			if (arg->IsParamArg())
-			{
-				if (!arg->IsReusable() && arg->IsDefined())
-					return results::HandleResult("Not reusable argument is already defined.");
-
-				param = std::string(argV[++i]);
-			}
+			if (arg->IsParamArg()) param = std::string(argV[++i]);
+			
 			// else we pass to Handle method empty string
 			results::HandleResult result = arg->Handle(param);
 			if (!result.IsSucceded()) return result;
 		}
-		return results::HandleResult();
+		return results::Success();
 	}
 
 	void ArgsParser::Add(abstractions::Arg& arg)

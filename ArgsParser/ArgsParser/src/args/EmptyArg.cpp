@@ -1,4 +1,6 @@
 #include "EmptyArg.hpp"
+#include <results/StringValueIsEmpty.hpp>
+#include <results/Success.hpp>
 
 namespace args
 {
@@ -8,8 +10,8 @@ namespace args
 
 	results::HandleResult EmptyArg::Handle(const std::string& value)
 	{
-		if (IsDefined()) return results::HandleResult("Value is already defined.");
+		if (IsDefined()) return results::StringValueIsEmpty();
 		Define();
-		return results::HandleResult();
+		return results::Success();
 	}
 }

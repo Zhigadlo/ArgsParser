@@ -1,4 +1,6 @@
 #include "IntArg.hpp"
+#include <results/StringValueIsEmpty.hpp>
+#include <results/Success.hpp>
 #include <stdexcept>
 
 namespace args
@@ -20,14 +22,14 @@ namespace args
 	}
 	results::HandleResult IntArg::Handle(const std::string& value)
 	{
-		if (value.empty()) return results::HandleResult("String value is empty");
+		if (value.empty()) return results::StringValueIsEmpty();
 		
 		try
 		{
 			int result = std::stoi(value);
 			SetValue(result);
 			Define();
-			return results::HandleResult();
+			return results::Success();
 		}
 		catch (const std::invalid_argument& e)
 		{

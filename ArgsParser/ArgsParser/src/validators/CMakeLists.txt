@@ -5,6 +5,8 @@ project(validators LANGUAGES CXX)
 set(SOURCE_FILES
 	PositiveIntValidator.hpp
 	PositiveIntValidator.cpp
+	StringLengthValidator.hpp
+	StringLengthValidator.cpp
 )
 
 add_library(validators ${SOURCE_FILES})

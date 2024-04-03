@@ -85,15 +85,8 @@ namespace parser
 
 			if (arg == nullptr && stringViewArg[0] == ShortArgumentPrefix)
 			{
-				//short argument -h -k -t
-				if (argLength == 2)
-				{
-					char shortName = stringViewArg[1];
-					arg = FindByShortName(shortName);
-					
-				}
 				//concat argument -hb0 -hb=1 -hb
-				else
+				if (argLength != 2)
 				{
 					std::string_view shortNames = stringViewArg.substr(1);
 					results::HandleResult result = ConcatArgsHandle(shortNames);
@@ -101,6 +94,9 @@ namespace parser
 					if (!result.IsSucceded()) return result;
 					continue;
 				}
+				//short argument -h -k -t
+				char shortName = stringViewArg[1];
+				arg = FindByShortName(shortName);
 			}
 
 			if (arg == nullptr) return results::NoSuchArgument(argV[i]);

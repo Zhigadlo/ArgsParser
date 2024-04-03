@@ -1,6 +1,7 @@
 #include "MultiStringArg.hpp"
 #include <results/Success.hpp>
 #include <results/StringValueIsEmpty.hpp>
+#include <results/NotValid.hpp>
 #include <constants/constants.hpp>
 
 namespace args
@@ -32,6 +33,9 @@ namespace args
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 		
+		abstractions::IValidator* validator = GetValidator();
+		if(!validator->Validate(&value))
+			return results::NotValid(value);
 		SetValue(value);
 		Define();
 		return results::Success();

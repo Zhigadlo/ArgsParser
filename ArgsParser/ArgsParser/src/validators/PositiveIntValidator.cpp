@@ -2,9 +2,9 @@
 
 namespace validators
 {
-	bool PositiveIntValidator::Validate(void* value)
+	bool PositiveIntValidator::Validate(const void* value) const
 	{
-		int* intValue = static_cast<int*>(value);
+		const int* intValue = static_cast<const int*>(value);
 		if (intValue == nullptr) return false;
 		return *intValue > 0;
 	}

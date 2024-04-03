@@ -4,7 +4,7 @@
 
 namespace validators
 {
-	StringLengthValidator::StringLengthValidator(int maxStringLength) : maxStringLength(maxStringLength) {}
+	StringLengthValidator::StringLengthValidator(unsigned int maxStringLength) : maxStringLength(maxStringLength) {}
 
 	bool StringLengthValidator::Validate(const void* value) const
 	{

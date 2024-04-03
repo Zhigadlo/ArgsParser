@@ -7,11 +7,11 @@ namespace validators
 	class StringLengthValidator : public abstractions::IValidator
 	{
 	public:
-		StringLengthValidator(int maxStringLength);
+		StringLengthValidator(unsigned int maxStringLength);
 
 		virtual bool Validate(const void* value) const override;
 
 	private:
-		int maxStringLength;
+		unsigned int maxStringLength;
 	};
 }

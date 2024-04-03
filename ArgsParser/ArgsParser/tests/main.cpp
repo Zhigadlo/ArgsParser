@@ -4,134 +4,205 @@
 #include <args/EmptyArg.hpp>
 #include <args/MultiStringArg.hpp>
 #include <results/HandleResult.hpp>
+#include <results/MissingParameter.hpp>
 #include <validators/PositiveIntValidator.hpp>
+#include <validators/StringLengthValidator.hpp>
+#include <validators/IntRangeValidator.hpp>
 
 #include <catch2/catch_all.hpp>
 
 #include <iostream>
 #include <memory>
 
-TEST_CASE("Dummy", "[dummy]")
+TEST_CASE("parser tests", "[parser][args][validator]")
 {
 	parser::ArgsParser parser;
 
-	args::EmptyArg helpArg('h');
-	args::EmptyArg testArg('t', "test");
-	args::IntArg intArg("int_value");
-	args::IntArg shortIntArg('k');
-	args::BoolArg boolArg('b', "bool_value");
-	args::MultiStringArg multiStringArg('s', "string_value");
+	validators::PositiveIntValidator positiveValidator;
 
-	parser.Add(helpArg);
-	parser.Add(testArg);
-	parser.Add(intArg);
-	parser.Add(shortIntArg);
+	int minVal = -10;
+	int maxVal = 76;
+	validators::IntRangeValidator rangeValidator{ minVal, maxVal };
+
+	unsigned int maxLen = 7;
+	validators::StringLengthValidator lengthValidator(maxLen);
+
+	args::EmptyArg testEmptyArg('e');
+	args::IntArg intRangeArg("test_int_range", &rangeValidator);
+	args::IntArg intPositiveArg('p', &positiveValidator);
+	args::BoolArg boolArg('b', "bool_test");
+	args::MultiStringArg multiStringLengthArg('s', "string_test", &lengthValidator);
+
+	parser.Add(testEmptyArg);
+	parser.Add(intRangeArg);
+	parser.Add(intPositiveArg);
 	parser.Add(boolArg);
-	parser.Add(multiStringArg);
+	parser.Add(multiStringLengthArg);
 
-	SECTION("test section")
+	SECTION("empty arg test")
 	{
-		int argC = 10;
-		const char* argV[] = { "ArgsParser.exe", "-hk=2", "-b", "true", "--int_", "1", "--str", "0123", "-s", "test", };
+		int argC = 2;
+		const char* argV[] = { "ArgsParser.exe", "-e" };
 
 		results::HandleResult result = parser.Parse(argC, argV);
 		bool successful = result.IsSucceded();
-		std::cout << "inside test section: " << successful << std::endl;
-		REQUIRE(successful == true);
+		std::cout << "inside empty arg section: " << successful << std::endl;
+		REQUIRE(successful);
 	}
-}
 
-TEST_CASE("Section example", "[dummy][section]")
-{
-	int a = 0;
-	int b = 1;
-	std::cout << "before all sections: " << a << ", " << b << std::endl;
-
-	SECTION("The first section")
+	SECTION("int arg test")
 	{
-		REQUIRE(a != b);
+		SECTION("int positive arg test")
+		{
+			int argC = 3;
+			const char* argV[] = { "ArgsParser.exe", "-p", "value" };
+			SECTION("The not int section")
+			{
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the not int section: " << argV[2] << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+			SECTION("The positive section")
+			{
+				argV[2] = "432";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the positive section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+			SECTION("The negative section")
+			{
+				argV[2] = "-6748";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the negative section: " << argV[2] << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+			SECTION("The more than max length section")
+			{
+				argV[2] = "0";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the zero section: " << argV[2] << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+		}
 
-		a = 10;
-		b = a;
-		std::cout << "inside the first section: " << a << ", " << b << std::endl;
+		SECTION("range int arg test")
+		{
+			int argC = 3;
+			const char* argV[] = { "ArgsParser.exe", "--test_int_", "43" };
+			SECTION("The in range section")
+			{
+				argV[2] = "43";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the in ragne section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
 
-		REQUIRE(a == b);
+			SECTION("The in max value section")
+			{
+				argV[2] = "76";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the in max value section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+
+			SECTION("The in min value section")
+			{
+				argV[2] = "-10";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the in min value section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+
+			SECTION("The not in range section")
+			{
+				argV[2] = "-6789";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the not in range section: " << argV[2] << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+		}
+
+		SECTION("multi length string arg test")
+		{
+			int argC = 5;
+			const char* argV[] = { "ArgsParser.exe", "-s", "valid", "--str", "not_valid" };
+			SECTION("The too long section")
+			{
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the too long section: " << argV[2] << " " << argV[4] << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+			SECTION("The valid strings section")
+			{
+				argV[4] = "_VaLiD_";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the valid strings section: " << argV[2] << " " << argV[4] << std::endl;
+				REQUIRE(successful);
+			}
+			SECTION("The missing parameter section")
+			{
+				argV[4] = "";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the missing parameter section: " << successful << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+		}
+
+		SECTION("bool arg test")
+		{
+			int argC = 3;
+			const char* argV[] = { "ArgsParser.exe", "--bool", "true" };
+			SECTION("valid true section")
+			{
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the valid true section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+			SECTION("valid false section")
+			{
+				argV[2] = "false";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the valid false section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+			SECTION("valid int true section")
+			{
+				argV[2] = "0";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the valid int true section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+			SECTION("valid int false section")
+			{
+				argV[2] = "0";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the valid int false section: " << argV[2] << std::endl;
+				REQUIRE(successful);
+			}
+
+			SECTION("not valid bool section")
+			{
+				argV[2] = "not_valid_string";
+				results::HandleResult result = parser.Parse(argC, argV);
+				bool successful = result.IsSucceded();
+				std::cout << "inside the not valid bool section: " << argV[2] << std::endl;
+				REQUIRE_FALSE(successful);
+			}
+		}
 	}
-
-	SECTION("The second section")
-	{
-		REQUIRE(a != b);
-
-		b = 0;
-		std::cout << "inside the second section: " << a << ", " << b << std::endl;
-
-		REQUIRE(a == b);
-
-		SECTION("A nested section #1")
-		{
-			std::cout << "on enter into nested #1: " << a << ", " << b << std::endl;
-
-			a = 3;
-			b = 4;
-
-			REQUIRE(a != b);
-		}
-
-		SECTION("A nested section #2")
-		{
-			std::cout << "on enter into nested #2: " << a << ", " << b << std::endl;
-
-			a = 5;
-			b = 6;
-
-			REQUIRE(a != b);
-		}
-
-		SECTION("A nested section #3")
-		{
-			std::cout << "on enter into nested #3: " << a << ", " << b << std::endl;
-
-			a = 7;
-			b = 8;
-
-			REQUIRE(a != b);
-		}
-	}
-}
-
-TEST_CASE("Assertions for negation", "[require_false]")
-{
-	std::unique_ptr<int> d/*{ new int(10) }*/;
-	REQUIRE_FALSE(d);
-}
-
-TEST_CASE("Assertions for exceptions", "[throws]")
-{
-	REQUIRE_NOTHROW([] {}());
-
-	REQUIRE_THROWS(
-		[] { throw std::runtime_error{ "Dummy" }; }());
-
-	REQUIRE_THROWS_AS(
-		[] { throw std::runtime_error{ "Dummy" }; }(),
-		std::runtime_error);
-
-	REQUIRE_THROWS_WITH(
-		[] { throw std::runtime_error{ "Dummy" }; }(),
-		"Dummy");
-
-	REQUIRE_THROWS_WITH(
-		[] { throw std::runtime_error{ "Message with Dummy inside" }; }(),
-		Catch::Matchers::StartsWith("Message") &&
-		Catch::Matchers::ContainsSubstring("Dummy"));
-}
-
-TEST_CASE("Assertions with matchers", "[require_that][matchers]")
-{
-	std::string value{ "This is a dummy value" };
-
-	REQUIRE_THAT(value,
-		Catch::Matchers::StartsWith("This") &&
-		Catch::Matchers::ContainsSubstring("dummy") &&
-		Catch::Matchers::EndsWith("value"));
 }

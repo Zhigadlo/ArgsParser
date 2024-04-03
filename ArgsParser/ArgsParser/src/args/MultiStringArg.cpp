@@ -34,7 +34,7 @@ namespace args
 		if (value.empty()) return results::StringValueIsEmpty();
 		
 		abstractions::IValidator* validator = GetValidator();
-		if(!validator->Validate(&value))
+		if(validator != nullptr && !validator->Validate(&value))
 			return results::NotValid(value);
 		SetValue(value);
 		Define();

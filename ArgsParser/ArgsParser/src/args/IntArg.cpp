@@ -1,13 +1,14 @@
 #include "IntArg.hpp"
 #include <results/StringValueIsEmpty.hpp>
+#include <results/NotValid.hpp>
 #include <results/Success.hpp>
 #include <stdexcept>
 
 namespace args
 {
-	IntArg::IntArg(char shortName, abstractions::IValidator* validator = nullptr) : abstractions::Arg(shortName, false, true, validator) {}
-	IntArg::IntArg(std::string fullName, abstractions::IValidator* validator = nullptr) : abstractions::Arg(fullName, false, true, validator) {}
-	IntArg::IntArg(char shortName, std::string fullName, abstractions::IValidator* validator = nullptr) : abstractions::Arg(shortName, fullName, false, true, validator) {}
+	IntArg::IntArg(char shortName, abstractions::IValidator* validator ) : abstractions::Arg(shortName, false, true, validator) {}
+	IntArg::IntArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, false, true, validator) {}
+	IntArg::IntArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, false, true, validator) {}
 
 	std::string IntArg::GetInfo()
 	{
@@ -30,7 +31,7 @@ namespace args
 			SetValue(result);
 			abstractions::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
-				return results::HandleResult();
+				return results::NotValid(std::to_string(result));
 			Define();
 			return results::Success();
 		}

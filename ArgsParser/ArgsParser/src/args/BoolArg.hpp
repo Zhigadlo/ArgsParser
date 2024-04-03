@@ -7,9 +7,9 @@ namespace args
 	class BoolArg : public abstractions::Arg
 	{
 	public:
-		BoolArg(char shortName);
-		BoolArg(std::string fullName);
-		BoolArg(char shortName, std::string fullName);
+		BoolArg(char shortName, abstractions::IValidator* validator = nullptr);
+		BoolArg(std::string fullName, abstractions::IValidator* validator = nullptr);
+		BoolArg(char shortName, std::string fullName, abstractions::IValidator* validator = nullptr);
 
 		void SetValue(bool value);
 		results::HandleResult Handle(const std::string& value) override;

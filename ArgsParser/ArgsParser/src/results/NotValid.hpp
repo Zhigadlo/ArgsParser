@@ -4,9 +4,9 @@
 
 namespace results
 {
-	public NotValid : public HandleResult
+	class NotValid : public HandleResult
 	{
 	public:
-		NotValid(std::string argName);
+		NotValid(std::string value);
 	};
 }

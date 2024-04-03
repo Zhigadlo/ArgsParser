@@ -15,6 +15,9 @@ set(SOURCE_FILES
 	NoSuchArgument.cpp
     MissingParameter.hpp
 	MissingParameter.cpp
+    NotValid.hpp
+	NotValid.cpp
+
 )
 
 add_library(results ${SOURCE_FILES})

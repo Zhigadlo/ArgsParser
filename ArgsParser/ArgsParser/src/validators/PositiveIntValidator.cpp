@@ -2,10 +2,10 @@
 
 namespace validators
 {
-	bool PositiveIntValidator::Validate(void* value) override
+	bool PositiveIntValidator::Validate(void* value)
 	{
-		if (value == nullptr) return false;
 		int* intValue = static_cast<int*>(value);
+		if (intValue == nullptr) return false;
 		return *intValue > 0;
 	}
 }

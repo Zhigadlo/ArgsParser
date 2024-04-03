@@ -5,9 +5,9 @@
 
 namespace args
 {
-	MultiStringArg::MultiStringArg(char shortName) : abstractions::Arg(shortName, true, true) {}
-	MultiStringArg::MultiStringArg(std::string fullName) : abstractions::Arg(fullName, true, true) {}
-	MultiStringArg::MultiStringArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, true, true) {}
+	MultiStringArg::MultiStringArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, true, true, validator) {}
+	MultiStringArg::MultiStringArg(std::string fullName, abstractions::IValidator* validator ) : abstractions::Arg(fullName, true, true, validator) {}
+	MultiStringArg::MultiStringArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, true, true, validator) {}
 
 	std::string MultiStringArg::GetInfo()
 	{

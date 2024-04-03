@@ -7,7 +7,6 @@ namespace validators
 	class PositiveIntValidator : public abstractions::IValidator
 	{
 	public:
-		bool abstractions::IValidator::Validate(void* value) override;
+		virtual bool Validate(void* value) override;
 	};
-
 }

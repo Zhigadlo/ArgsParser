@@ -8,9 +8,9 @@ namespace args
 	class IntArg : public abstractions::Arg
 	{
 	public:
-		IntArg(char shortName, abstractions::IValidator* validator);
-		IntArg(std::string fullName, abstractions::IValidator* validator);
-		IntArg(char shortName, std::string fullName, abstractions::IValidator* validator);
+		IntArg(char shortName, abstractions::IValidator* validator = nullptr);
+		IntArg(std::string fullName, abstractions::IValidator* validator = nullptr);
+		IntArg(char shortName, std::string fullName, abstractions::IValidator* validator = nullptr);
 
 		std::string GetInfo() override;
 		void SetValue(int value);

@@ -3,19 +3,23 @@
 #include <args/MultiStringArg.hpp>
 #include <args/BoolArg.hpp>
 #include <args/EmptyArg.hpp>
+#include <validators/PositiveIntValidator.hpp>
 #include <iostream>
 
 int main(/*int argC, const char* argV[] */)
 {
-	int argC = 8;
-	const char* argV[] = { "ArgsParser.exe", "-hk=asd2", "-b", "true", "--int_", "1", "--str", "0123" };
+	int argC = 10;
+	const char* argV[] = { "ArgsParser.exe", "pos", "-5", "-hk=2", "-b", "true", "--int_", "1", "--str", "0123" };
 
 	parser::ArgsParser parser;
+
+	validators::PositiveIntValidator* posValidator = new validators::PositiveIntValidator();
 
 	args::EmptyArg helpArg('h');
 	args::EmptyArg testArg('t', "test");
 	args::IntArg intArg("int_value");
 	args::IntArg shortIntArg('k');
+	args::IntArg positiveIntArg("positive_int", posValidator);
 	args::BoolArg boolArg('b', "bool_value");
 	args::MultiStringArg multiStringArg('s', "string_value");
 
@@ -23,6 +27,7 @@ int main(/*int argC, const char* argV[] */)
 	parser.Add(testArg);
 	parser.Add(intArg);
 	parser.Add(shortIntArg);
+	parser.Add(positiveIntArg);
 	parser.Add(boolArg);
 	parser.Add(multiStringArg);
 

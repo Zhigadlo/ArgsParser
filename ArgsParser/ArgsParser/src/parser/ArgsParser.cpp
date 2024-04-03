@@ -90,6 +90,7 @@ namespace parser
 				{
 					char shortName = stringViewArg[1];
 					arg = FindByShortName(shortName);
+					
 				}
 				//concat argument -hb0 -hb=1 -hb
 				else
@@ -101,6 +102,8 @@ namespace parser
 					continue;
 				}
 			}
+
+			if (arg == nullptr) return results::NoSuchArgument(argV[i]);
 
 			// one value arg check
 			if (!arg->IsReusable() && arg->IsDefined())

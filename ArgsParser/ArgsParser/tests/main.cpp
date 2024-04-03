@@ -4,6 +4,7 @@
 #include <args/EmptyArg.hpp>
 #include <args/MultiStringArg.hpp>
 #include <results/HandleResult.hpp>
+#include <validators/PositiveIntValidator.hpp>
 
 #include <catch2/catch_all.hpp>
 

@@ -5,9 +5,9 @@
 
 namespace args
 {
-	BoolArg::BoolArg(char shortName) : abstractions::Arg(shortName, false, true) {}
-	BoolArg::BoolArg(std::string fullName) : abstractions::Arg(fullName, false, true) {}
-	BoolArg::BoolArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, false, true) {}
+	BoolArg::BoolArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, false, true, validator) {}
+	BoolArg::BoolArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, false, true, validator) {}
+	BoolArg::BoolArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, false, true, validator) {}
 
 	std::string BoolArg::GetInfo()
 	{

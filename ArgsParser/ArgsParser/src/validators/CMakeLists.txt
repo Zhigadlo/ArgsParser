@@ -7,6 +7,8 @@ set(SOURCE_FILES
 	PositiveIntValidator.cpp
 	StringLengthValidator.hpp
 	StringLengthValidator.cpp
+	IntRangeValidator.cpp
+	IntRangeValidator.hpp
 )
 
 add_library(validators ${SOURCE_FILES})

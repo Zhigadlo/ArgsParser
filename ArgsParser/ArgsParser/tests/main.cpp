@@ -14,122 +14,117 @@
 #include <iostream>
 #include <memory>
 
-TEST_CASE("parser tests", "[parser][args][validator]")
+TEST_CASE("tests", "[parser][args][validator]")
 {
-	parser::ArgsParser parser;
-
-	validators::PositiveIntValidator positiveValidator;
-
-	int minVal = -10;
-	int maxVal = 76;
-	validators::IntRangeValidator rangeValidator{ minVal, maxVal };
-
-	unsigned int maxLen = 7;
-	validators::StringLengthValidator lengthValidator(maxLen);
-
-	args::EmptyArg testEmptyArg('e');
-	args::IntArg intRangeArg("test_int_range", &rangeValidator);
-	args::IntArg intPositiveArg('p', &positiveValidator);
-	args::BoolArg boolArg('b', "bool_test");
-	args::MultiStringArg multiStringLengthArg('s', "string_test", &lengthValidator);
-
-	parser.Add(testEmptyArg);
-	parser.Add(intRangeArg);
-	parser.Add(intPositiveArg);
-	parser.Add(boolArg);
-	parser.Add(multiStringLengthArg);
-
-	SECTION("empty arg test")
+	SECTION("args test")
 	{
-		int argC = 2;
-		const char* argV[] = { "ArgsParser.exe", "-e" };
+		validators::PositiveIntValidator positiveValidator;
 
-		results::HandleResult result = parser.Parse(argC, argV);
-		bool successful = result.IsSucceded();
-		std::cout << "inside empty arg section: " << successful << std::endl;
-		REQUIRE(successful);
-	}
+		int minVal = -10;
+		int maxVal = 76;
+		validators::IntRangeValidator rangeValidator{ minVal, maxVal };
 
-	SECTION("int arg test")
-	{
-		SECTION("int positive arg test")
+		unsigned int maxLen = 7;
+		validators::StringLengthValidator lengthValidator(maxLen);
+		parser::ArgsParser parser;
+
+		args::EmptyArg testEmptyArg('e');
+		args::IntArg intRangeArg("test_int_range", &rangeValidator);
+		args::IntArg intPositiveArg('p', &positiveValidator);
+		args::BoolArg boolArg('b', "bool_test");
+		args::MultiStringArg multiStringLengthArg('s', "string_test", &lengthValidator);
+
+		parser.Add(testEmptyArg);
+		parser.Add(intRangeArg);
+		parser.Add(intPositiveArg);
+		parser.Add(boolArg);
+		parser.Add(multiStringLengthArg);
+		SECTION("empty arg test")
 		{
-			int argC = 3;
-			const char* argV[] = { "ArgsParser.exe", "-p", "value" };
-			SECTION("The not int section")
+			int argC = 2;
+			const char* argV[] = { "ArgsParser.exe", "-e" };
+
+			results::HandleResult result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside empty arg section: " << successful << std::endl;
+			REQUIRE(successful);
+		}
+		SECTION("int arg test")
+		{
+			SECTION("int positive arg test")
 			{
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the not int section: " << argV[2] << std::endl;
-				REQUIRE_FALSE(successful);
+				int argC = 3;
+				const char* argV[] = { "ArgsParser.exe", "-p", "value" };
+				SECTION("The not int section")
+				{
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the not int section: " << argV[2] << std::endl;
+					REQUIRE_FALSE(successful);
+				}
+				SECTION("The positive section")
+				{
+					argV[2] = "432";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the positive section: " << argV[2] << std::endl;
+					REQUIRE(successful);
+				}
+				SECTION("The negative section")
+				{
+					argV[2] = "-6748";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the negative section: " << argV[2] << std::endl;
+					REQUIRE_FALSE(successful);
+				}
+				SECTION("The more than max length section")
+				{
+					argV[2] = "0";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the zero section: " << argV[2] << std::endl;
+					REQUIRE_FALSE(successful);
+				}
 			}
-			SECTION("The positive section")
+			SECTION("range int arg test")
 			{
-				argV[2] = "432";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the positive section: " << argV[2] << std::endl;
-				REQUIRE(successful);
-			}
-			SECTION("The negative section")
-			{
-				argV[2] = "-6748";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the negative section: " << argV[2] << std::endl;
-				REQUIRE_FALSE(successful);
-			}
-			SECTION("The more than max length section")
-			{
-				argV[2] = "0";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the zero section: " << argV[2] << std::endl;
-				REQUIRE_FALSE(successful);
+				int argC = 3;
+				const char* argV[] = { "ArgsParser.exe", "--test_int_", "43" };
+				SECTION("The in range section")
+				{
+					argV[2] = "43";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the in ragne section: " << argV[2] << std::endl;
+					REQUIRE(successful);
+				}
+				SECTION("The in max value section")
+				{
+					argV[2] = "76";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the in max value section: " << argV[2] << std::endl;
+					REQUIRE(successful);
+				}
+				SECTION("The in min value section")
+				{
+					argV[2] = "-10";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the in min value section: " << argV[2] << std::endl;
+					REQUIRE(successful);
+				}
+				SECTION("The not in range section")
+				{
+					argV[2] = "-6789";
+					results::HandleResult result = parser.Parse(argC, argV);
+					bool successful = result.IsSucceded();
+					std::cout << "inside the not in range section: " << argV[2] << std::endl;
+					REQUIRE_FALSE(successful);
+				}
 			}
 		}
-
-		SECTION("range int arg test")
-		{
-			int argC = 3;
-			const char* argV[] = { "ArgsParser.exe", "--test_int_", "43" };
-			SECTION("The in range section")
-			{
-				argV[2] = "43";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the in ragne section: " << argV[2] << std::endl;
-				REQUIRE(successful);
-			}
-
-			SECTION("The in max value section")
-			{
-				argV[2] = "76";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the in max value section: " << argV[2] << std::endl;
-				REQUIRE(successful);
-			}
-
-			SECTION("The in min value section")
-			{
-				argV[2] = "-10";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the in min value section: " << argV[2] << std::endl;
-				REQUIRE(successful);
-			}
-
-			SECTION("The not in range section")
-			{
-				argV[2] = "-6789";
-				results::HandleResult result = parser.Parse(argC, argV);
-				bool successful = result.IsSucceded();
-				std::cout << "inside the not in range section: " << argV[2] << std::endl;
-				REQUIRE_FALSE(successful);
-			}
-		}
-
 		SECTION("multi length string arg test")
 		{
 			int argC = 5;
@@ -158,7 +153,6 @@ TEST_CASE("parser tests", "[parser][args][validator]")
 				REQUIRE_FALSE(successful);
 			}
 		}
-
 		SECTION("bool arg test")
 		{
 			int argC = 3;
@@ -194,7 +188,6 @@ TEST_CASE("parser tests", "[parser][args][validator]")
 				std::cout << "inside the valid int false section: " << argV[2] << std::endl;
 				REQUIRE(successful);
 			}
-
 			SECTION("not valid bool section")
 			{
 				argV[2] = "not_valid_string";
@@ -203,6 +196,61 @@ TEST_CASE("parser tests", "[parser][args][validator]")
 				std::cout << "inside the not valid bool section: " << argV[2] << std::endl;
 				REQUIRE_FALSE(successful);
 			}
+		}
+	}
+
+	SECTION("concat args test")
+	{
+		parser::ArgsParser parser;
+
+		args::EmptyArg testEmptyArg('e');
+		args::EmptyArg testEmptyArg2('v');
+		args::EmptyArg testEmptyLongArg('l', "long_empty");
+		args::IntArg intRangeArg("test_int_range");
+		args::IntArg intPositiveArg('p');
+		args::BoolArg boolArg('b', "bool_test");
+		args::MultiStringArg multiStringLengthArg('s', "string_test");
+
+		parser.Add(testEmptyArg);
+		parser.Add(testEmptyLongArg);
+		parser.Add(intRangeArg);
+		parser.Add(intPositiveArg);
+		parser.Add(boolArg);
+		parser.Add(multiStringLengthArg);
+		int argC = 2;
+		const char* argV[] = { "ArgsParser.exe", "-ep=5" };
+		SECTION("valid concat arg section")
+		{
+			results::HandleResult result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside the valid concat arg section: " << argV[1] << std::endl;
+			REQUIRE(successful);
+			
+			argV[1] = "-lbTRUE";
+			result = parser.Parse(argC, argV);
+			successful = result.IsSucceded();
+			std::cout << "inside the valid concat arg section: " << argV[1] << std::endl;
+			REQUIRE(successful);
+		}
+		SECTION("already defined args section")
+		{
+			argV[1] = "-es12fpk";
+			results::HandleResult result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside the already defined args section: " << argV[1] << std::endl;
+			REQUIRE(successful);
+			
+			argV[1] = "-es3";
+			result = parser.Parse(argC, argV);
+			successful = result.IsSucceded();
+			std::cout << "inside the already defined args section: " << argV[1] << std::endl;
+			REQUIRE_FALSE(successful);
+			
+			argV[1] = "-vs=123";
+			result = parser.Parse(argC, argV);
+			successful = result.IsSucceded();
+			std::cout << "inside the already defined args section: " << argV[1] << std::endl;
+			REQUIRE_FALSE(successful);
 		}
 	}
 }

@@ -12,7 +12,7 @@ namespace parser
 {
 	abstractions::Arg* ArgsParser::FindByShortName(char shortName)
 	{
-		auto it = std::find_if(args.begin(), args.end(), [&shortName](abstractions::Arg* obj) { return (*obj).GetShortName() == shortName; });
+		auto it = std::find_if(args.begin(), args.end(), [&shortName](abstractions::Arg* obj) { return obj->GetShortName() == shortName; });
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
@@ -22,7 +22,7 @@ namespace parser
 		std::copy_if(args.begin(), args.end(), std::back_inserter(matchingArgs),
 			[&fullName](abstractions::Arg* obj)
 			{
-				std::string findedFullName = (*obj).GetFullName();
+				std::string findedFullName = obj->GetFullName();
 				std::string_view realFullNameView = std::string_view(findedFullName);
 				return realFullNameView.substr(0, fullName.length()).compare(fullName) == 0; // check for string begining match
 			});
@@ -35,7 +35,7 @@ namespace parser
 		{
 			const char shortName = concatArgs[j];
 			abstractions::Arg* shortArg = FindByShortName(shortName);
-			if (shortArg == nullptr) return results::NoSuchArgument(shortArg->GetInfo());
+			if (shortArg == nullptr) return results::NoSuchArgument(std::to_string(shortName));
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
 				return results::ArgumentIsAlreadyDefined(shortArg->GetInfo());

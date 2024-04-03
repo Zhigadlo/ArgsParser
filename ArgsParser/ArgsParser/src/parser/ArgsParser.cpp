@@ -44,13 +44,13 @@ namespace parser
 			// when arg requires param we need to take it, 
 			if (shortArg->IsParamArg())
 			{
-				j++;
+				j++; // go to next char and if it's = then go to another one
 				if (j < concatArgs.length() && concatArgs[j] == EqualsChar)
 					j++;
 
-				if (j >= concatArgs.length())
+				if (j >= concatArgs.length()) // if there is no param after value arg return 
 					return results::MissingParameter(shortArg->GetInfo());
-
+				// get all chars after last argument or after =
 				param = concatArgs.substr(j, concatArgs.length() - j);
 
 				return shortArg->Handle(param);

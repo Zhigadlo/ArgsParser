@@ -22,6 +22,6 @@ namespace args
 		* @param out pointer to variable for result
 		* @return true if converting is successfull otherwise returns false
 		**/
-		bool StringToBool(const std::string& str, bool& out);
+		[[nodiscard]] static bool StringToBool(const std::string& str, bool& out);
 	};
 }

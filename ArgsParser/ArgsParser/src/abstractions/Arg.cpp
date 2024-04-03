@@ -38,7 +38,7 @@ namespace abstractions
 			info += GetShortName();
 			info += SpaceChar;
 		}
-
+		
 		if (IsFullNameExist())
 		{
 			info += LongArgumentPrefix;

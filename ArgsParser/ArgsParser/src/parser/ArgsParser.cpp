@@ -62,6 +62,7 @@ namespace parser
 
 		return results::HandleResult();
 	}
+	
 	results::HandleResult ArgsParser::Parse(int argC, const char* argV[])
 	{
 		// i = 1 because first argument is ArgsParser.exe with 0 index
@@ -74,7 +75,7 @@ namespace parser
 
 			// if < 2 then in stringViewArg only one char
 			if (argLength < 2) return results::NoSuchArgument(std::string(stringViewArg));
-			// long argument 
+			// --string --out - long args
 			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
 			{
 				std::string_view fullName = stringViewArg.substr(2);
@@ -82,7 +83,7 @@ namespace parser
 				if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(fullName));
 				arg = findedArgs.front();
 			}
-
+			// -h -hcv=3 -jh -hc23 - short and concat args
 			if (arg == nullptr && stringViewArg[0] == ShortArgumentPrefix)
 			{
 				//concat argument -hb0 -hb=1 -hb
@@ -100,7 +101,7 @@ namespace parser
 			}
 
 			if (arg == nullptr) return results::NoSuchArgument(argV[i]);
-
+			
 			// one value arg check
 			if (!arg->IsReusable() && arg->IsDefined())
 				return results::ArgumentIsAlreadyDefined(arg->GetInfo());

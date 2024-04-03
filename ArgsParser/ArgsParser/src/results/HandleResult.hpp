@@ -10,7 +10,7 @@ namespace results
 		HandleResult();
 		HandleResult(std::string error);
 
-		bool IsSucceded();
+		[[nodiscard]] bool IsSucceded();
 		/**
 		* @brief returns nullptr if there is no errors
 		*/

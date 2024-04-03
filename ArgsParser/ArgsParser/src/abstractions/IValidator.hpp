@@ -5,6 +5,6 @@ namespace abstractions
 	class IValidator
 	{
 	public:
-		virtual bool Validate(const void* value) const = 0;
+		[[nodiscard]] virtual bool Validate(const void* value) const = 0;
 	};
 }

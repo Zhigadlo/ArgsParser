@@ -8,11 +8,8 @@
 #include <validators/IntRangeValidator.hpp>
 #include <iostream>
 
-int main(/*int argC, const char* argV[] */)
+int main(int argC, const char* argV[])
 {
-	int argC = 12;
-	const char* argV[] = { "ArgsParser.exe", "--pos", "5", "-hk=7", "-b", "true", "--int_", "1", "--str", "0123", "-s", "test"};
-
 	parser::ArgsParser parser;
 
 	validators::PositiveIntValidator* posValidator = new validators::PositiveIntValidator();

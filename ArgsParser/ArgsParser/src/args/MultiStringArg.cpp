@@ -1,50 +1,43 @@
-#include <abstractions/ValueArg.hpp>
-#include <vector>
-#include <iostream>
+#include "MultiStringArg.hpp"
+#include <results/Success.hpp>
+#include <results/StringValueIsEmpty.hpp>
+#include <results/NotValid.hpp>
+#include <constants/constants.hpp>
+
 namespace args
 {
-	class MultiStringArg : public abstractions::ValueArg
+	MultiStringArg::MultiStringArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, true, true, validator) {}
+	MultiStringArg::MultiStringArg(std::string fullName, abstractions::IValidator* validator ) : abstractions::Arg(fullName, true, true, validator) {}
+	MultiStringArg::MultiStringArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, true, true, validator) {}
+
+	std::string MultiStringArg::GetInfo()
 	{
-	public:
-		MultiStringArg(char shortName) : abstractions::ValueArg(shortName) {}
-		MultiStringArg(std::string fullName) : abstractions::ValueArg(fullName) {}
-		MultiStringArg(char shortName, std::string fullName) : abstractions::ValueArg(shortName, fullName) {}
+		std::string info = Arg::GetInfo();
+		if (!IsDefined()) return info;
 
-		std::string GetInfo() override
+		for (int i = 0; i < values.size(); i++)
 		{
-			std::string info = Arg::GetInfo();
-			if (IsDefined())
-			{
-				for (int i = 0; i < values.size(); i++)
-				{
-					info += values[i];
-					info += ' ';
-				}
-			}
-			return info;
-		}
-		void SetValue(std::string value)
-		{
-			this->values.push_back(value);
+			info += values[i];
+			info += SpaceChar;
 		}
 
-		bool ValueHandling(std::string value) override
-		{
-			if (value.empty())
-			{
-				std::cerr << "Error: string value is empty." << std::endl;
-				return false;
-			}
-			SetValue(value);
-			Define();
-			return true;
-		}
+		return info;
+	}
 
-		bool IsOneValueArg() override
-		{
-			return false;
-		}
-	private:
-		std::vector<std::string> values;
-	};
+	void MultiStringArg::SetValue(std::string value)
+	{
+		this->values.push_back(value);
+	}
+
+	results::HandleResult MultiStringArg::Handle(const std::string& value)
+	{
+		if (value.empty()) return results::StringValueIsEmpty();
+		
+		abstractions::IValidator* validator = GetValidator();
+		if(validator != nullptr && !validator->Validate(&value))
+			return results::NotValid(value);
+		SetValue(value);
+		Define();
+		return results::Success();
+	}
 }

@@ -1,0 +1,9 @@
+conan install . --output-folder=build_release --build=missing -c tools.cmake.cmaketoolchain:generator="Ninja" --profile default
+cmake --preset conan-release
+cmake --build --preset conan-release
+ctest --test-dir build_release\build\Release
+
+conan install . --output-folder=build_debug --build=missing -c tools.cmake.cmaketoolchain:generator="Ninja" --profile debug
+cmake --preset conan-debug
+cmake --build --preset conan-debug
+ctest --test-dir build_debug\build\Debug

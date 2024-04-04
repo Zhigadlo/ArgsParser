@@ -1,6 +1,7 @@
 #pragma once
 
-#include <string>
+#include <abstractions/IValidator.hpp>
+#include <results/HandleResult.hpp>
 #include <vector>
 
 namespace abstractions
@@ -11,25 +12,35 @@ namespace abstractions
 	class Arg
 	{
 	public:
-		Arg(char shortName, std::string fullName);
-		Arg(char shortName);
-		Arg(std::string fullName);
+		Arg(char shortName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
+		Arg(std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
+		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
 
-		char GetShortName();
-		std::string GetFullName();
+		[[nodiscard]] char GetShortName();
+		[[nodiscard]] std::string GetFullName();
+		[[nodiscard]] IValidator* GetValidator();
 
-		bool IsShortNameExist();
-		bool IsFullNameExist();
+		[[nodiscard]] bool IsShortNameExist();
+		[[nodiscard]] bool IsFullNameExist();
 		/**
 		* @warning Make sure to call this fuction after argument defined
 		**/
 		void Define();
-		bool IsDefined();
-		
-		virtual std::string GetInfo();
+		[[nodiscard]] bool IsDefined();
+		[[nodiscard]] bool IsReusable();
+		[[nodiscard]] bool IsParamArg();
+		/**
+		* @brief Handles string value
+		* @return true if value successfuly handled and set to the object, false if value is not valid
+		**/
+		[[nodiscard]] virtual results::HandleResult Handle(const std::string& value) = 0;
+		[[nodiscard]] virtual std::string GetInfo();
 	private:
 		char shortName = CHAR_MAX;
 		std::string fullName;
 		bool isDefined = false;
+		bool isReusable;
+		bool isParamArg;
+		abstractions::IValidator* validator;
 	};
 }

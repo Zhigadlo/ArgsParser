@@ -1,54 +1,47 @@
-#include <abstractions/ValueArg.hpp>
+#include "IntArg.hpp"
+#include <results/StringValueIsEmpty.hpp>
+#include <results/NotValid.hpp>
+#include <results/Success.hpp>
 #include <stdexcept>
-#include <iostream>
 
 namespace args
 {
-	class IntArg : public abstractions::ValueArg
+	IntArg::IntArg(char shortName, abstractions::IValidator* validator ) : abstractions::Arg(shortName, false, true, validator) {}
+	IntArg::IntArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, false, true, validator) {}
+	IntArg::IntArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, false, true, validator) {}
+
+	std::string IntArg::GetInfo()
 	{
-	public:
-		IntArg(char shortName) : abstractions::ValueArg(shortName) {}
-		IntArg(std::string fullName) : abstractions::ValueArg(fullName) {}
-		IntArg(char shortName, std::string fullName) : abstractions::ValueArg(shortName, fullName) {}
-
-		std::string GetInfo() override
+		std::string info = Arg::GetInfo();
+		if (IsDefined())
+			info += std::to_string(value);
+		return info;
+	}
+	void IntArg::SetValue(int value)
+	{
+		this->value = value;
+	}
+	results::HandleResult IntArg::Handle(const std::string& value)
+	{
+		if (value.empty()) return results::StringValueIsEmpty();
+		
+		try
 		{
-			std::string info = Arg::GetInfo();
-			if (IsDefined())
-				info += std::to_string(value);
-			return info;
+			int result = std::stoi(value);
+			SetValue(result);
+			abstractions::IValidator* validator = GetValidator();
+			if (validator != nullptr && !validator->Validate(&result))
+				return results::NotValid(std::to_string(result));
+			Define();
+			return results::Success();
 		}
-		void SetValue(int value)
+		catch (const std::invalid_argument& e)
 		{
-			this->value = value;
+			return results::HandleResult(e.what());
 		}
-		bool ValueHandling(std::string value) override
+		catch (const std::out_of_range& e)
 		{
-			int result;
-
-			try
-			{
-				result = std::stoi(value);
-				SetValue(result);
-				Define();
-				return true;
-			}
-			catch (const std::invalid_argument& e)
-			{
-				std::cerr << "Error: Invalid integer string value - " << value << std::endl;
-			}
-			catch (const std::out_of_range& e)
-			{
-				std::cerr << "Error: The integer value is out of range - " << value << std::endl;
-			}
-
-			return false;
+			return results::HandleResult(e.what());
 		}
-		bool IsOneValueArg() override
-		{
-			return true;
-		}
-	private:
-		int value = INT_MAX;
-	};
+	}
 }

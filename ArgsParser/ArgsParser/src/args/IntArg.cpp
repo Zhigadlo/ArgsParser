@@ -34,10 +34,10 @@ namespace args
 		try
 		{
 			int result = std::stoi(value);
-			SetValue(result);
 			abstractions::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
 				return results::NotValid(std::to_string(result));
+			SetValue(result);
 			Define();
 			return results::Success();
 		}

@@ -24,6 +24,23 @@ namespace args
 		return info;
 	}
 
+	std::string& MultiStringArg::GetValue()
+	{
+		std::string strValue;
+
+		if (IsDefined())
+		{
+			for (size_t i = 0; i < values.size(); ++i)
+			{
+				strValue += values[i];
+				if (i < values.size() - 1)
+					strValue += SpaceChar;
+			}
+		}
+
+		return strValue;
+	}
+
 	void MultiStringArg::SetValue(std::string value)
 	{
 		this->values.push_back(value);

@@ -15,6 +15,7 @@ namespace args
 		void SetValue(std::string value);
 
 		results::HandleResult Handle(const std::string& value) override;
+		std::string& GetValue() override;
 	private:
 		std::vector<std::string> values;
 	};

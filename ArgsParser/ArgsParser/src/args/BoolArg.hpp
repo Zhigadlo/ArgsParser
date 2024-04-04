@@ -14,6 +14,7 @@ namespace args
 		void SetValue(bool value);
 		results::HandleResult Handle(const std::string& value) override;
 		std::string GetInfo() override;
+		std::string& GetValue() override;
 	private:
 		bool value = false;
 		/**

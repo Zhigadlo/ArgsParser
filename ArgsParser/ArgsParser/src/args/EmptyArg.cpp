@@ -14,4 +14,10 @@ namespace args
 		Define();
 		return results::Success();
 	}
+
+	std::string& EmptyArg::GetValue()
+	{
+		std::string strValue;
+		return strValue;
+	}
 }

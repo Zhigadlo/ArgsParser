@@ -13,13 +13,20 @@ namespace args
 	std::string IntArg::GetInfo()
 	{
 		std::string info = Arg::GetInfo();
-		if (IsDefined())
-			info += std::to_string(value);
+		info += GetValue();
 		return info;
 	}
 	void IntArg::SetValue(int value)
 	{
 		this->value = value;
+	}
+	std::string& IntArg::GetValue()
+	{
+		std::string strValue;
+
+		if (IsDefined()) strValue = std::to_string(value);
+
+		return strValue;
 	}
 	results::HandleResult IntArg::Handle(const std::string& value)
 	{

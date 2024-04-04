@@ -14,7 +14,7 @@ namespace args
 		std::string GetInfo() override;
 		void SetValue(int value);
 		
-		results::HandleResult Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] std::vector<int> GetValues() const;
 	private:
 		std::vector<int> values;

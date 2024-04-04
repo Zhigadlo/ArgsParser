@@ -12,7 +12,7 @@ namespace args
 		BoolArg(char shortName, std::string fullName);
 
 		void SetValue(bool value);
-		results::HandleResult Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		std::string GetInfo() override;
 		/**
 		* Before calling this function make sure to check if value is defined

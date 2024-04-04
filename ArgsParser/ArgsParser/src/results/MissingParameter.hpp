@@ -4,7 +4,7 @@
 
 namespace results
 {
-	class MissingParameter : public HandleResult
+	class MissingParameter : public Result
 	{
 	public:
 		MissingParameter(std::string argName);

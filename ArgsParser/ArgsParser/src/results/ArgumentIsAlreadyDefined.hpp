@@ -4,7 +4,7 @@
 
 namespace results
 {
-	class ArgumentIsAlreadyDefined : public HandleResult
+	class ArgumentIsAlreadyDefined : public Result
 	{
 	public:
 		ArgumentIsAlreadyDefined(std::string argLongName);

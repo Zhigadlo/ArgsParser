@@ -4,7 +4,7 @@
 
 namespace results
 {
-	class StringValueIsEmpty : public HandleResult
+	class StringValueIsEmpty : public Result
 	{
 	public:
 		StringValueIsEmpty();

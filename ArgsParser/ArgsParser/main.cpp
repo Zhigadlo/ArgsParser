@@ -32,7 +32,7 @@ int main(int argC, const char* argV[])
 	parser.Add(boolArg);
 	parser.Add(multiStringArg);
 
-	results::HandleResult result = parser.Parse(argC, argV);
+	results::Result result = parser.Parse(argC, argV);
 	if (result.IsSucceded())
 		parser.Show();
 	else

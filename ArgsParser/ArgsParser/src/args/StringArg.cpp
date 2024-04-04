@@ -29,7 +29,7 @@ namespace args
 		this->value = value;
 	}
 
-	results::HandleResult StringArg::Handle(const std::string& value)
+	results::Result StringArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 

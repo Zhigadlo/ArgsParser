@@ -14,7 +14,7 @@ namespace args
 
 		std::string GetInfo() override;
 		void SetValue(int value);
-		results::HandleResult Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] int GetValue() const;
 	private:
 		int value = INT_MAX;

@@ -13,7 +13,7 @@ namespace args
 		std::string GetInfo() override;
 		void SetValue(std::string value);
 
-		results::HandleResult Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] std::string GetValue() const;
 	private:
 		std::string value;

@@ -29,7 +29,7 @@ namespace parser
 
 		return matchingArgs;
 	}
-	results::HandleResult ArgsParser::SingleArgHandle(abstractions::Arg* arg, int* index, const char* argV[])
+	results::Result ArgsParser::SingleArgHandle(abstractions::Arg* arg, int* index, const char* argV[])
 	{
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
@@ -41,7 +41,7 @@ namespace parser
 		// else we pass to Handle method empty string
 		return arg->Handle(param);
 	}
-	results::HandleResult ArgsParser::ConcatArgsHandle(std::string_view concatArgs)
+	results::Result ArgsParser::ConcatArgsHandle(std::string_view concatArgs)
 	{
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
@@ -67,26 +67,26 @@ namespace parser
 				return shortArg->Handle(param);
 			}
 			// else we pass to Handle method empty string
-			results::HandleResult result = shortArg->Handle(param);
+			results::Result result = shortArg->Handle(param);
 			if (!result.IsSucceded()) return result;
 		}
 
 		return results::Success();
 	}
-	results::HandleResult ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[])
+	results::Result ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[])
 	{
 		std::vector<abstractions::Arg*> findedArgs = FindByFullName(longName);
 		if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(longName));
 		abstractions::Arg* arg = findedArgs.front();
 		return SingleArgHandle(arg, index, argV);
 	}
-	results::HandleResult ArgsParser::ShortArgHandle(const char shortName, int* index, const char* argV[])
+	results::Result ArgsParser::ShortArgHandle(const char shortName, int* index, const char* argV[])
 	{
 		abstractions::Arg* arg = FindByShortName(shortName);
 		if (arg == nullptr) return results::NoSuchArgument(std::string(argV[*index]));
 		return SingleArgHandle(arg, index, argV);
 	}
-	results::HandleResult ArgsParser::Parse(int argC, const char* argV[])
+	results::Result ArgsParser::Parse(int argC, const char* argV[])
 	{
 		// i = 1 because first argument is ArgsParser.exe with 0 index
 		for (int i = 1; i < argC; i++)
@@ -102,33 +102,49 @@ namespace parser
 			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
 			{
 				std::string_view fullName = stringViewArg.substr(2);
-				results::HandleResult result = LongArgHandle(fullName, &i, argV);
+				results::Result result = LongArgHandle(fullName, &i, argV);
 				if (result.IsSucceded()) continue;
 			}
 			// -h -hcv=3 -jh -hc23 - short and concat args
-			if (stringViewArg[0] != ShortArgumentPrefix) return results::HandleResult(std::string(stringViewArg) + ": Argument without prefix");
+			if (stringViewArg[0] != ShortArgumentPrefix) return results::Result(std::string(stringViewArg) + ": Argument without prefix");
 
 			//concat argument -hb0 -hb=1 -hb
 			if (argLength == 2)
 			{
 				//short argument -h -k -t
 				char shortName = stringViewArg[1];
-				results::HandleResult result = ShortArgHandle(shortName, &i, argV);
+				results::Result result = ShortArgHandle(shortName, &i, argV);
 				if (!result.IsSucceded()) return result;
 			}
 			else
 			{
 				std::string_view shortNames = stringViewArg.substr(1); // get all chars after - like this -htk=4 -> htk=4
-				results::HandleResult result = ConcatArgsHandle(shortNames);
+				results::Result result = ConcatArgsHandle(shortNames);
 				if (!result.IsSucceded()) return result;
 			}
 		}
 		return results::Success();
 	}
 
-	void ArgsParser::Add(abstractions::Arg& arg)
+	results::Result ArgsParser::Add(abstractions::Arg& arg)
 	{
+		// Check if an argument with the same name already exists
+		auto it = std::find_if(args.begin(), args.end(),[&arg](abstractions::Arg* a) 
+			{
+				if (a->IsFullNameExist() && arg.IsFullNameExist())
+					return a->GetFullName() == arg.GetFullName();
+
+				if (a->IsShortNameExist() && arg.IsShortNameExist())
+					return a->GetShortName() == arg.GetShortName();
+
+				return false; 
+			});
+		if (it != args.end())
+			return results::Result(arg.GetInfo() + ": Argument with such name is already exist");
+		
 		args.push_back(&arg);
+
+		return results::Success();
 	}
 	void ArgsParser::Show()
 	{

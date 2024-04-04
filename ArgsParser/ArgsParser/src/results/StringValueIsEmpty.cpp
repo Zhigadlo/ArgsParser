@@ -2,5 +2,5 @@
 
 namespace results
 {
-	StringValueIsEmpty::StringValueIsEmpty() : HandleResult("String value is empty") {}
+	StringValueIsEmpty::StringValueIsEmpty() : Result("String value is empty") {}
 }

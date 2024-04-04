@@ -21,13 +21,13 @@ namespace args
 		this->value = value;
 	}
 	/**
-	* If value is not defined returns INT_MAX
+	* @brief If value is not defined returns INT_MAX
 	**/
 	int IntArg::GetValue() const
 	{
 		return value;
 	}
-	results::HandleResult IntArg::Handle(const std::string& value)
+	results::Result IntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 		
@@ -43,11 +43,11 @@ namespace args
 		}
 		catch (const std::invalid_argument& e)
 		{
-			return results::HandleResult(e.what());
+			return results::Result(e.what());
 		}
 		catch (const std::out_of_range& e)
 		{
-			return results::HandleResult(e.what());
+			return results::Result(e.what());
 		}
 	}
 }

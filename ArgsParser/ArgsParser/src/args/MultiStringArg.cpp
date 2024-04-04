@@ -34,7 +34,7 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	results::HandleResult MultiStringArg::Handle(const std::string& value)
+	results::Result MultiStringArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 		

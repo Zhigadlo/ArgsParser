@@ -35,7 +35,7 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	results::HandleResult MultiIntArg::Handle(const std::string& value)
+	results::Result MultiIntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 		try
@@ -50,11 +50,11 @@ namespace args
 		}
 		catch (const std::invalid_argument& e)
 		{
-			return results::HandleResult(e.what());
+			return results::Result(e.what());
 		}
 		catch (const std::out_of_range& e)
 		{
-			return results::HandleResult(e.what());
+			return results::Result(e.what());
 		}
 	}
 }

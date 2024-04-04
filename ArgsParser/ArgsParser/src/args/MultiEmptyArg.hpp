@@ -12,7 +12,7 @@ namespace args
 		MultiEmptyArg(char shortName, std::string fullName);
 
 		std::string GetInfo() override;
-		results::HandleResult Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] int GetHandleCount() const;
 	private:
 		int handleCount = 0;

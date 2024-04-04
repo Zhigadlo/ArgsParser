@@ -4,11 +4,11 @@
 
 namespace results
 {
-	class HandleResult
+	class Result
 	{
 	public:
-		HandleResult();
-		HandleResult(std::string error);
+		Result();
+		Result(std::string error);
 
 		[[nodiscard]] bool IsSucceded();
 		/**

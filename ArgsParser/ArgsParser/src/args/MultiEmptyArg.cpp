@@ -24,7 +24,7 @@ namespace args
 		return handleCount;
 	}
 
-	results::HandleResult MultiEmptyArg::Handle(const std::string& value)
+	results::Result MultiEmptyArg::Handle(const std::string& value)
 	{
 		if (!IsDefined()) Define();
 		handleCount++;

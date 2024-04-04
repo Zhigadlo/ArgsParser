@@ -67,6 +67,7 @@ TEST_CASE("args test", "[args]")
 				bool successful = result.IsSucceded();
 				std::cout << "inside the positive section: " << argV[2] << std::endl;
 				REQUIRE(successful);
+				REQUIRE(intPositiveArg.GetValue() == 432);
 			}
 			SECTION("The negative section")
 			{
@@ -96,6 +97,7 @@ TEST_CASE("args test", "[args]")
 				bool successful = result.IsSucceded();
 				std::cout << "inside the in ragne section: " << argV[2] << std::endl;
 				REQUIRE(successful);
+				REQUIRE(intRangeArg.GetValue() == 43);
 			}
 			SECTION("The in max value section")
 			{
@@ -104,6 +106,7 @@ TEST_CASE("args test", "[args]")
 				bool successful = result.IsSucceded();
 				std::cout << "inside the in max value section: " << argV[2] << std::endl;
 				REQUIRE(successful);
+				REQUIRE(intRangeArg.GetValue() == 76);
 			}
 			SECTION("The in min value section")
 			{
@@ -112,6 +115,7 @@ TEST_CASE("args test", "[args]")
 				bool successful = result.IsSucceded();
 				std::cout << "inside the in min value section: " << argV[2] << std::endl;
 				REQUIRE(successful);
+				REQUIRE(intRangeArg.GetValue() == -10);
 			}
 			SECTION("The not in range section")
 			{
@@ -141,6 +145,9 @@ TEST_CASE("args test", "[args]")
 			bool successful = result.IsSucceded();
 			std::cout << "inside the valid strings section: " << argV[2] << " " << argV[4] << std::endl;
 			REQUIRE(successful);
+			std::vector<std::string> values = multiStringLengthArg.GetValues();
+			REQUIRE(values[0] == "valid");
+			REQUIRE(values[1] == "_VaLiD_");
 		}
 		SECTION("The missing parameter section")
 		{
@@ -161,6 +168,7 @@ TEST_CASE("args test", "[args]")
 			bool successful = result.IsSucceded();
 			std::cout << "inside the valid true section: " << argV[2] << std::endl;
 			REQUIRE(successful);
+			REQUIRE(boolArg.GetValue() == true);
 		}
 		SECTION("valid false section")
 		{
@@ -169,14 +177,16 @@ TEST_CASE("args test", "[args]")
 			bool successful = result.IsSucceded();
 			std::cout << "inside the valid false section: " << argV[2] << std::endl;
 			REQUIRE(successful);
+			REQUIRE(boolArg.GetValue() == false);
 		}
 		SECTION("valid int true section")
 		{
-			argV[2] = "0";
+			argV[2] = "1";
 			results::HandleResult result = parser.Parse(argC, argV);
 			bool successful = result.IsSucceded();
 			std::cout << "inside the valid int true section: " << argV[2] << std::endl;
 			REQUIRE(successful);
+			REQUIRE(boolArg.GetValue() == true);
 		}
 		SECTION("valid int false section")
 		{
@@ -185,6 +195,7 @@ TEST_CASE("args test", "[args]")
 			bool successful = result.IsSucceded();
 			std::cout << "inside the valid int false section: " << argV[2] << std::endl;
 			REQUIRE(successful);
+			REQUIRE(boolArg.GetValue() == false);
 		}
 		SECTION("not valid bool section")
 		{
@@ -249,6 +260,8 @@ TEST_CASE("concat args test", "[concat args]")
 		successful = result.IsSucceded();
 		std::cout << "inside the already defined args section: " << argV[1] << std::endl;
 		REQUIRE_FALSE(successful);
+		auto values = multiStringLengthArg.GetValues();
+		REQUIRE(values[0] == "12fpk");
 	}
 }
 

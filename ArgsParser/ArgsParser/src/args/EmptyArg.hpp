@@ -12,6 +12,5 @@ namespace args
 		EmptyArg(char shortName, std::string fullName);
 
 		results::HandleResult Handle(const std::string& value) override;
-		std::string& GetValue() override;
 	};
 }

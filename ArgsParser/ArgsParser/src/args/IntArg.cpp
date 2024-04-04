@@ -20,13 +20,12 @@ namespace args
 	{
 		this->value = value;
 	}
-	std::string& IntArg::GetValue()
+	/**
+	* If value is not defined returns INT_MAX
+	**/
+	int IntArg::GetValue() const
 	{
-		std::string strValue;
-
-		if (IsDefined()) strValue = std::to_string(value);
-
-		return strValue;
+		return value;
 	}
 	results::HandleResult IntArg::Handle(const std::string& value)
 	{

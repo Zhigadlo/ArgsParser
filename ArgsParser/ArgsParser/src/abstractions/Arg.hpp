@@ -35,8 +35,6 @@ namespace abstractions
 		**/
 		[[nodiscard]] virtual results::HandleResult Handle(const std::string& value) = 0;
 		[[nodiscard]] virtual std::string GetInfo();
-
-		[[nodiscard]] virtual std::string& GetValue() = 0;
 	private:
 		char shortName = CHAR_MAX;
 		std::string fullName;

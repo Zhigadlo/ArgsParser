@@ -14,7 +14,11 @@ namespace args
 		void SetValue(bool value);
 		results::HandleResult Handle(const std::string& value) override;
 		std::string GetInfo() override;
-		std::string& GetValue() override;
+		/**
+		* Before calling this function make sure to check if value is defined
+		* @return argument defined value, if not defined returns false
+		**/
+		[[nodiscard]] bool GetValue() const;
 	private:
 		bool value = false;
 		/**

@@ -18,11 +18,9 @@ namespace args
 		return info;
 	}
 
-	std::string& BoolArg::GetValue()
+	bool BoolArg::GetValue() const
 	{
-		std::string strValue;
-		if (IsDefined()) strValue = std::to_string(value);
-		return strValue;
+		return value;
 	}
 	void BoolArg::SetValue(bool value)
 	{

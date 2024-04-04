@@ -2,5 +2,5 @@
 
 namespace results
 {
-	Success::Success() : HandleResult() {}
+	Success::Success() : Result() {}
 }

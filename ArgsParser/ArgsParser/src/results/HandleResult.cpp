@@ -2,17 +2,17 @@
 
 namespace results
 {
-	HandleResult::HandleResult() {}
-	HandleResult::HandleResult(std::string error) : error(error) {}
+	Result::Result() {}
+	Result::Result(std::string error) : error(error) {}
 
-	bool HandleResult::IsSucceded()
+	bool Result::IsSucceded()
 	{
 		if (error.empty()) return true;
 		
 		return false;
 	}
 
-	std::string& HandleResult::GetError()
+	std::string& Result::GetError()
 	{
 		return error;
 	}

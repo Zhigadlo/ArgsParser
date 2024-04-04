@@ -9,8 +9,15 @@ set(SOURCE_FILES
 	BoolArg.cpp
 	IntArg.hpp
 	IntArg.cpp
+	StringArg.hpp
+	StringArg.cpp
+	MultiIntArg.hpp
+	MultiIntArg.cpp
+	MultiEmptyArg.hpp
+	MultiEmptyArg.cpp
 	MultiStringArg.hpp
 	MultiStringArg.cpp
+	
 )
 
 add_library(args ${SOURCE_FILES})

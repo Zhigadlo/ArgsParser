@@ -2,5 +2,5 @@
 
 namespace results
 {
-	NotValid::NotValid(std::string value) : HandleResult(value + ": Value is not valid") {}
+	NotValid::NotValid(std::string value) : Result(value + ": Value is not valid") {}
 }

@@ -4,7 +4,7 @@
 
 namespace results
 {
-	class NotValid : public HandleResult
+	class NotValid : public Result
 	{
 	public:
 		NotValid(std::string value);

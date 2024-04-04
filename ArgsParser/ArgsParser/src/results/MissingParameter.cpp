@@ -2,5 +2,5 @@
 
 namespace results
 {
-	MissingParameter::MissingParameter(std::string argName) : HandleResult(argName + ": Parameter is missing") {}
+	MissingParameter::MissingParameter(std::string argName) : Result(argName + ": Parameter is missing") {}
 }

@@ -33,7 +33,7 @@ namespace abstractions
 		* @brief Handles string value
 		* @return true if value successfuly handled and set to the object, false if value is not valid
 		**/
-		[[nodiscard]] virtual results::HandleResult Handle(const std::string& value) = 0;
+		[[nodiscard]] virtual results::Result Handle(const std::string& value) = 0;
 		[[nodiscard]] virtual std::string GetInfo();
 	private:
 		char shortName = CHAR_MAX;

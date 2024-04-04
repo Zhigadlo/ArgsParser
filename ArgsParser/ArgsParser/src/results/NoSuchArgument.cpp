@@ -2,5 +2,5 @@
 
 namespace results
 {
-	NoSuchArgument::NoSuchArgument(std::string argName) : HandleResult(argName + ": No such argument") {}
+	NoSuchArgument::NoSuchArgument(std::string argName) : Result(argName + ": No such argument") {}
 }

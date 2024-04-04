@@ -13,35 +13,41 @@ namespace args
 	std::string IntArg::GetInfo()
 	{
 		std::string info = Arg::GetInfo();
-		if (IsDefined())
-			info += std::to_string(value);
+		info += std::to_string(GetValue());
 		return info;
 	}
 	void IntArg::SetValue(int value)
 	{
 		this->value = value;
 	}
-	results::HandleResult IntArg::Handle(const std::string& value)
+	/**
+	* @brief If value is not defined returns INT_MAX
+	**/
+	int IntArg::GetValue() const
+	{
+		return value;
+	}
+	results::Result IntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 		
 		try
 		{
 			int result = std::stoi(value);
-			SetValue(result);
 			abstractions::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
 				return results::NotValid(std::to_string(result));
+			SetValue(result);
 			Define();
 			return results::Success();
 		}
 		catch (const std::invalid_argument& e)
 		{
-			return results::HandleResult(e.what());
+			return results::Result(e.what());
 		}
 		catch (const std::out_of_range& e)
 		{
-			return results::HandleResult(e.what());
+			return results::Result(e.what());
 		}
 	}
 }

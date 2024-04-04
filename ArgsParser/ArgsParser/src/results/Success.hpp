@@ -4,7 +4,7 @@
 
 namespace results
 {
-	class Success : public HandleResult
+	class Success : public Result
 	{
 	public:
 		Success();

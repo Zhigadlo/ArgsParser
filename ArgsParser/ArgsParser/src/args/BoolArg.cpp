@@ -17,16 +17,21 @@ namespace args
 
 		return info;
 	}
+
+	bool BoolArg::GetValue() const
+	{
+		return value;
+	}
 	void BoolArg::SetValue(bool value)
 	{
 		this->value = value;
 	}
-	results::HandleResult BoolArg::Handle(const std::string& value)
+	results::Result BoolArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::StringValueIsEmpty();
 		
 		bool boolResult;
-		if (!StringToBool(value, boolResult)) return results::HandleResult("Failed to convert string value to bool");
+		if (!StringToBool(value, boolResult)) return results::Result("Failed to convert string value to bool");
 
 		SetValue(boolResult);
 		Define();

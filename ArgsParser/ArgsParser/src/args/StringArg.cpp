@@ -6,9 +6,9 @@
 
 namespace args
 {
-	StringArg::StringArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, true, true, validator) {}
-	StringArg::StringArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, true, true, validator) {}
-	StringArg::StringArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, true, true, validator) {}
+	StringArg::StringArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, false, true, validator) {}
+	StringArg::StringArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, false, true, validator) {}
+	StringArg::StringArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, false, true, validator) {}
 
 	std::string StringArg::GetInfo()
 	{

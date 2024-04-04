@@ -2,7 +2,10 @@
 #include <args/IntArg.hpp>
 #include <args/BoolArg.hpp>
 #include <args/EmptyArg.hpp>
+#include <args/StringArg.hpp>
 #include <args/MultiStringArg.hpp>
+#include <args/MultiIntArg.hpp>
+#include <args/MultiEmptyArg.hpp>
 #include <results/HandleResult.hpp>
 #include <results/MissingParameter.hpp>
 #include <validators/PositiveIntValidator.hpp>
@@ -30,13 +33,20 @@ TEST_CASE("args test", "[args]")
 	args::IntArg intRangeArg("test_int_range", &rangeValidator);
 	args::IntArg intPositiveArg('p', &positiveValidator);
 	args::BoolArg boolArg('b', "bool_test");
+	args::StringArg stringArg('S');
 	args::MultiStringArg multiStringLengthArg('s', "string_test", &lengthValidator);
+	args::MultiEmptyArg multiEmptyArg('m', "multi_empty");
+	args::MultiIntArg multiIntArg('i', "multi_int");
 
 	parser.Add(testEmptyArg);
 	parser.Add(intRangeArg);
 	parser.Add(intPositiveArg);
 	parser.Add(boolArg);
+	parser.Add(stringArg);
 	parser.Add(multiStringLengthArg);
+	parser.Add(multiEmptyArg);
+	parser.Add(multiIntArg);
+
 	SECTION("empty arg test")
 	{
 		int argC = 2;
@@ -203,6 +213,67 @@ TEST_CASE("args test", "[args]")
 			results::Result result = parser.Parse(argC, argV);
 			bool successful = result.IsSucceded();
 			std::cout << "inside the not valid bool section: " << argV[2] << std::endl;
+			REQUIRE_FALSE(successful);
+		}
+	}
+	SECTION("multi empty arg test")
+	{
+		int argC = 5;
+		const char* argV[] = { "ArgsParser.exe", "-m", "--multi_e", "--multi_emp", "-mmmm" };
+		SECTION("The valid count section")
+		{
+			results::Result result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside the valid count section: " << multiEmptyArg.GetInfo() << std::endl;
+			REQUIRE(successful);
+			REQUIRE(multiEmptyArg.GetHandleCount() == 7);
+		}
+	}
+	SECTION("multi int arg test")
+	{
+		int argC = 5;
+		const char* argV[] = { "ArgsParser.exe", "-i=5", "--multi_i", "123", "-mmmi500" };
+		SECTION("The valid int values section")
+		{
+			results::Result result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside the valid int values section: " << multiIntArg.GetInfo() << std::endl;
+			REQUIRE(successful);
+			std::vector<int> values = multiIntArg.GetValues();
+			REQUIRE(values[0] == 5);
+			REQUIRE(values[1] == 123);
+			REQUIRE(values[2] == 500);
+		}
+	}
+	SECTION("Argument prefix test")
+	{
+		int argC = 2;
+		const char* argV[] = { "ArgsParser.exe", "--multi_" };
+
+		results::Result result = parser.Parse(argC, argV);
+		bool successful = result.IsSucceded();
+		std::cout << "inside the argument prefix section: " << successful << std::endl;
+		REQUIRE_FALSE(successful);
+	}
+	SECTION("String arg test")
+	{
+		int argC = 3;
+		const char* argV[] = { "ArgsParser.exe", "-s=5", "-S=500" };
+		SECTION("The valid string value section")
+		{
+			results::Result result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside the valid int values section: " << stringArg.GetInfo() << std::endl;
+			REQUIRE(successful);
+			std::string value = stringArg.GetValue();
+			REQUIRE(value == "500");
+		}
+		SECTION("The not valid string value section")
+		{
+			argV[1] = "-S=5";
+			results::Result result = parser.Parse(argC, argV);
+			bool successful = result.IsSucceded();
+			std::cout << "inside the not valid int values section: " << stringArg.GetInfo() << std::endl;
 			REQUIRE_FALSE(successful);
 		}
 	}

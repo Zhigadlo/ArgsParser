@@ -13,7 +13,7 @@ namespace args
 	std::string IntArg::GetInfo()
 	{
 		std::string info = Arg::GetInfo();
-		info += GetValue();
+		info += std::to_string(GetValue());
 		return info;
 	}
 	void IntArg::SetValue(int value)

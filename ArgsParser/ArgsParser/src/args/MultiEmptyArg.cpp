@@ -6,9 +6,9 @@
 
 namespace args
 {
-	MultiEmptyArg::MultiEmptyArg(char shortName) : abstractions::Arg(shortName, true, true, nullptr) {}
-	MultiEmptyArg::MultiEmptyArg(std::string fullName) : abstractions::Arg(fullName, true, true, nullptr) {}
-	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, true, true, nullptr) {}
+	MultiEmptyArg::MultiEmptyArg(char shortName) : abstractions::Arg(shortName, true, false, nullptr) {}
+	MultiEmptyArg::MultiEmptyArg(std::string fullName) : abstractions::Arg(fullName, true, false, nullptr) {}
+	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, true, false, nullptr) {}
 
 	std::string MultiEmptyArg::GetInfo()
 	{

@@ -1,6 +1,6 @@
 # Аргументы для парсера
  
--h - аргумент без параметров<br/>
+-h --help - аргумент без параметров, допускает повторения<br/>
 -t --test - еще один аргумент без параметров<br/>
 --int_value - аргумент для интового значения, можно вводить только один раз<br/>
 -k - аргумент для интового значения в диапазоне от -5 до 5 включая крайние значения, можно вводить только один раз<br/>
@@ -14,10 +14,21 @@
 
 
 Пример запуска программы через консоль:<br/>
-ArgsParser.exe -hteek5 -eei=123 -s=test1 --m_s test2 --int 45 -ei=-54 --pos 1 -eeeeb=false --m_e --m_in -120<br/>
+ArgsParser.exe -hteek5 -eei=123 -s=test1 --m_s test2 --help --int 45 -ei=-54 --pos 1 -eeeeb=false --m_e --m_in -120<br/>
 <br/>
 Вывод:<br/>
--h<br/>
+Arguments info<br/>
+--------------------<br/>
+-h --help<br/>
+-t --test<br/>
+--int_value<br/>
+-k<br/>
+--positive_int<br/>
+-b --bool_value<br/>
+-s --m_string<br/>
+-e --m_empty<br/>
+-i --m_int<br/>
+--------------------<br/>
 -t --test<br/>
 --int_value 45<br/>
 -k 5<br/>

@@ -7,6 +7,7 @@
 #include <args/MultiIntArg.hpp>
 #include <args/BoolArg.hpp>
 #include <args/EmptyArg.hpp>
+#include <args/HelpArg.hpp>
 #include <validators/PositiveIntValidator.hpp>
 #include <validators/StringLengthValidator.hpp>
 #include <validators/IntRangeValidator.hpp>
@@ -41,7 +42,7 @@ results::Result ConfigureParser(parser::ArgsParser& parser)
 	validators::IntRangeValidator* rangeValidator = new validators::IntRangeValidator(-5, 5);
 	validators::StringLengthValidator* multiStringLenValidator = new validators::StringLengthValidator(8);
 	
-	args::EmptyArg* helpArg = new args::EmptyArg('h');
+	args::HelpArg* helpArg = new args::HelpArg('h', "help", arguments);
 	args::EmptyArg* testArg = new args::EmptyArg('t', "test");
 	args::IntArg* intArg = new args::IntArg("int_value");
 	args::IntArg* shortIntArg = new args::IntArg('k', rangeValidator);

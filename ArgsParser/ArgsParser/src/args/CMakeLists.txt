@@ -5,6 +5,8 @@ project(args LANGUAGES CXX)
 set(SOURCE_FILES
 	EmptyArg.hpp
 	EmptyArg.cpp
+	HelpArg.hpp
+	HelpArg.cpp
 	BoolArg.hpp
 	BoolArg.cpp
 	IntArg.hpp

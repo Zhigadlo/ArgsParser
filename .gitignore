@@ -399,3 +399,4 @@ FodyWeavers.xsd
 
 #Cmake build folder ignore
 build/
+CMakeUserPresets.json

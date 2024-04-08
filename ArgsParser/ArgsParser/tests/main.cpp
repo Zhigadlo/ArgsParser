@@ -1,9 +1,7 @@
 #include <parser/ArgsParser.hpp>
 #include <args/Args.hpp>
+#include <validators/Validators.hpp>
 #include <results/Result.hpp>
-#include <validators/PositiveIntValidator.hpp>
-#include <validators/StringLengthValidator.hpp>
-#include <validators/IntRangeValidator.hpp>
 
 #include <catch2/catch_all.hpp>
 

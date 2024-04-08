@@ -1,7 +1,4 @@
 #include "MultiStringArg.hpp"
-#include <results/Success.hpp>
-#include <results/StringValueIsEmpty.hpp>
-#include <results/NotValid.hpp>
 #include <constants/constants.hpp>
 
 namespace args
@@ -36,13 +33,13 @@ namespace args
 
 	results::Result MultiStringArg::Handle(const std::string& value)
 	{
-		if (value.empty()) return results::StringValueIsEmpty();
+		if (value.empty()) return results::Result::StringValueIsEmpty();
 		
 		abstractions::IValidator* validator = GetValidator();
 		if(validator != nullptr && !validator->Validate(&value))
-			return results::NotValid(value);
+			return results::Result::NotValid(value);
 		SetValue(value);
 		Define();
-		return results::Success();
+		return results::Result::Success();
 	}
 }

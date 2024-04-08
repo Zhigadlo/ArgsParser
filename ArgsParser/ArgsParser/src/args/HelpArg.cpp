@@ -1,6 +1,4 @@
 #include "HelpArg.hpp"
-#include <results/ArgumentIsAlreadyDefined.hpp>
-#include <results/Success.hpp>
 #include <abstractions/Arg.hpp>
 #include <constants/constants.hpp>
 #include <sstream>
@@ -33,6 +31,6 @@ namespace args
 	results::Result HelpArg::Handle(const std::string& value)
 	{
 		if (!IsDefined()) Define();
-		return results::Success();
+		return results::Result::Success();
 	}
 }

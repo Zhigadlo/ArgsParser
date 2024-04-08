@@ -1,7 +1,6 @@
-#include <string>
+#pragma once
 
-#ifndef CONSTANTS_HPP
-#define CONSTANTS_HPP
+#include <string>
 
 inline constexpr char EqualsChar = '=';
 inline constexpr char ShortArgumentPrefix = '-';
@@ -23,4 +22,3 @@ inline const std::string TrueString = "true";
 */
 inline const std::string FalseString = "false";
 inline const std::string LongArgumentPrefix = "--";
-#endif 

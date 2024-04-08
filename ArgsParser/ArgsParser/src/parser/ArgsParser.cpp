@@ -1,8 +1,5 @@
 #include "ArgsParser.hpp"
-#include <results/Success.hpp>
-#include <results/ArgumentIsAlreadyDefined.hpp>
-#include <results/MissingParameter.hpp>
-#include <results/NoSuchArgument.hpp>
+#include <results/Result.hpp>
 #include <constants/constants.hpp>
 #include <iostream>
 #include <string_view>
@@ -22,8 +19,7 @@ namespace parser
 		std::copy_if(args.begin(), args.end(), std::back_inserter(matchingArgs),
 			[&fullName](abstractions::Arg* obj)
 			{
-				std::string findedFullName = obj->GetFullName();
-				std::string_view realFullNameView = std::string_view(findedFullName);
+				std::string_view realFullNameView = std::string_view(obj->GetFullName());
 				return realFullNameView.substr(0, fullName.length()).compare(fullName) == 0; // check for string begining match
 			});
 
@@ -33,7 +29,7 @@ namespace parser
 	{
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
-			return results::ArgumentIsAlreadyDefined(arg->GetInfo());
+			return results::Result::ArgumentIsAlreadyDefined(arg->GetInfo());
 		std::string param;
 		// when arg requires param we need to take it, 
 		if (arg->IsParamArg() && (*index)+1 < argC)
@@ -48,10 +44,10 @@ namespace parser
 		{
 			const char shortName = concatArgs[j];
 			abstractions::Arg* shortArg = FindByShortName(shortName);
-			if (shortArg == nullptr) return results::NoSuchArgument(std::to_string(shortName));
+			if (shortArg == nullptr) return results::Result::NoSuchArgument(std::to_string(shortName));
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
-				return results::ArgumentIsAlreadyDefined(shortArg->GetInfo());
+				return results::Result::ArgumentIsAlreadyDefined(shortArg->GetInfo());
 
 			std::string param;
 			// when arg requires param we need to take it, 
@@ -61,7 +57,7 @@ namespace parser
 				if (j < concatArgs.length() && concatArgs[j] == EqualsChar) j++;
 
 				if (j >= concatArgs.length()) // if there is no param after value arg return 
-					return results::MissingParameter(shortArg->GetInfo());
+					return results::Result::MissingParameter(shortArg->GetInfo());
 				// get all chars after last argument or after =
 				param = concatArgs.substr(j, concatArgs.length() - j);
 
@@ -72,19 +68,19 @@ namespace parser
 			if (!result.IsSucceded()) return result;
 		}
 
-		return results::Success();
+		return results::Result::Success();
 	}
 	results::Result ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC)
 	{
 		std::vector<abstractions::Arg*> findedArgs = FindByFullName(longName);
-		if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(longName));
+		if (findedArgs.size() != 1) return results::Result::NoSuchArgument(std::string(longName));
 		abstractions::Arg* arg = findedArgs.front();
 		return SingleArgHandle(arg, index, argV, argC);
 	}
 	results::Result ArgsParser::ShortArgHandle(const char shortName, int* index, const char* argV[], int argC)
 	{
 		abstractions::Arg* arg = FindByShortName(shortName);
-		if (arg == nullptr) return results::NoSuchArgument(std::string(argV[*index]));
+		if (arg == nullptr) return results::Result::NoSuchArgument(std::string(argV[*index]));
 		return SingleArgHandle(arg, index, argV, argC);
 	}
 	results::Result ArgsParser::Parse(int argC, const char* argV[])
@@ -98,7 +94,7 @@ namespace parser
 			std::string param;
 
 			// if < 2 then in stringViewArg only one char
-			if (argLength < 2) return results::NoSuchArgument(std::string(stringViewArg));
+			if (argLength < 2) return results::Result::NoSuchArgument(std::string(stringViewArg));
 			// --string --out - long args
 			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
 			{
@@ -108,7 +104,7 @@ namespace parser
 				return result;
 			}
 			// -h -hcv=3 -jh -hc23 - short and concat args
-			if (stringViewArg[0] != ShortArgumentPrefix) return results::Result(std::string(stringViewArg) + ": Argument without prefix");
+			if (stringViewArg[0] != ShortArgumentPrefix) return results::Result::ArgumentWithoutPrefix(std::string(stringViewArg));
 
 			//concat argument -hb0 -hb=1 -hb
 			if (argLength == 2)
@@ -125,7 +121,7 @@ namespace parser
 				if (!result.IsSucceded()) return result;
 			}
 		}
-		return results::Success();
+		return results::Result::Success();
 	}
 
 	results::Result ArgsParser::Add(abstractions::Arg& arg)
@@ -146,7 +142,7 @@ namespace parser
 		
 		args.push_back(&arg);
 
-		return results::Success();
+		return results::Result::Success();
 	}
 	void ArgsParser::Show()
 	{

@@ -16,13 +16,13 @@ namespace abstractions
 																																	  isReusable(isReusable),
 																																	  isParamArg(isParamArg),
 																																	  validator(validator) {}
-	bool Arg::IsShortNameExist()
+	bool Arg::IsShortNameExist() const
 	{
 		if (shortName == CHAR_MAX) return false;
 
 		return true;
 	}
-	bool Arg::IsFullNameExist()
+	bool Arg::IsFullNameExist() const
 	{
 		if (fullName.empty()) return false;
 
@@ -49,15 +49,15 @@ namespace abstractions
 		return info;
 	}
 
-	char Arg::GetShortName()
+	char Arg::GetShortName() const
 	{
 		return shortName;
 	}
-	std::string Arg::GetFullName()
+	const std::string& Arg::GetFullName() const
 	{
 		return fullName;
 	}
-	IValidator* Arg::GetValidator()
+	IValidator* Arg::GetValidator() const
 	{
 		return validator;
 	}

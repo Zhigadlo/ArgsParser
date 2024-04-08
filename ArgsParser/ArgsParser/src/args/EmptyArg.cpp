@@ -1,6 +1,4 @@
 #include "EmptyArg.hpp"
-#include <results/ArgumentIsAlreadyDefined.hpp>
-#include <results/Success.hpp>
 
 namespace args
 {
@@ -10,8 +8,8 @@ namespace args
 
 	results::Result EmptyArg::Handle(const std::string& value)
 	{
-		if (IsDefined()) return results::ArgumentIsAlreadyDefined(GetInfo());
+		if (IsDefined()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
 		Define();
-		return results::Success();
+		return results::Result::Success();
 	}
 }

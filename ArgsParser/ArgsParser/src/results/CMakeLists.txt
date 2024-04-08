@@ -3,21 +3,8 @@ cmake_minimum_required(VERSION 3.28)
 project(results LANGUAGES CXX)
 
 set(SOURCE_FILES
-	HandleResult.hpp
-	HandleResult.cpp
-	Success.hpp
-	Success.cpp
-	StringValueIsEmpty.hpp
-	StringValueIsEmpty.cpp
-	ArgumentIsAlreadyDefined.hpp
-	ArgumentIsAlreadyDefined.cpp
-	NoSuchArgument.hpp
-	NoSuchArgument.cpp
-    MissingParameter.hpp
-	MissingParameter.cpp
-    NotValid.hpp
-	NotValid.cpp
-
+	Result.hpp
+	Result.cpp
 )
 
 add_library(results ${SOURCE_FILES})

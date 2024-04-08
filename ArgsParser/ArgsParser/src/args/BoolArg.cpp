@@ -1,6 +1,4 @@
 #include <constants/constants.hpp>
-#include <results/Success.hpp>
-#include <results/StringValueIsEmpty.hpp>
 #include "BoolArg.hpp"
 
 namespace args
@@ -28,14 +26,14 @@ namespace args
 	}
 	results::Result BoolArg::Handle(const std::string& value)
 	{
-		if (value.empty()) return results::StringValueIsEmpty();
+		if (value.empty()) return results::Result::StringValueIsEmpty();
 		
 		bool boolResult;
-		if (!StringToBool(value, boolResult)) return results::Result("Failed to convert string value to bool");
+		if (!StringToBool(value, boolResult)) return results::Result::ConvertFail("string", "bool");
 
 		SetValue(boolResult);
 		Define();
-		return results::Success();
+		return results::Result::Success();
 	}
 	/**
 	* @brief Converts string value to bool value, before string try to convert

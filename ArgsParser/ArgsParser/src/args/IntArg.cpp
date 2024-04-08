@@ -1,7 +1,4 @@
 #include "IntArg.hpp"
-#include <results/StringValueIsEmpty.hpp>
-#include <results/NotValid.hpp>
-#include <results/Success.hpp>
 #include <stdexcept>
 
 namespace args
@@ -29,17 +26,17 @@ namespace args
 	}
 	results::Result IntArg::Handle(const std::string& value)
 	{
-		if (value.empty()) return results::StringValueIsEmpty();
+		if (value.empty()) return results::Result::StringValueIsEmpty();
 		
 		try
 		{
 			int result = std::stoi(value);
 			abstractions::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
-				return results::NotValid(std::to_string(result));
+				return results::Result::NotValid(std::to_string(result));
 			SetValue(result);
 			Define();
-			return results::Success();
+			return results::Result::Success();
 		}
 		catch (const std::invalid_argument& e)
 		{

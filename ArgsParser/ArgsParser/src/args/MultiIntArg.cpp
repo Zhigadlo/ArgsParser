@@ -1,7 +1,4 @@
 #include "MultiIntArg.hpp"
-#include <results/Success.hpp>
-#include <results/StringValueIsEmpty.hpp>
-#include <results/NotValid.hpp>
 #include <constants/constants.hpp>
 #include <stdexcept>
 
@@ -37,16 +34,16 @@ namespace args
 
 	results::Result MultiIntArg::Handle(const std::string& value)
 	{
-		if (value.empty()) return results::StringValueIsEmpty();
+		if (value.empty()) return results::Result::StringValueIsEmpty();
 		try
 		{
 			int result = std::stoi(value);
 			abstractions::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
-				return results::NotValid(std::to_string(result));
+				return results::Result::NotValid(std::to_string(result));
 			this->values.push_back(result);
 			Define();
-			return results::Success();
+			return results::Result::Success();
 		}
 		catch (const std::invalid_argument& e)
 		{

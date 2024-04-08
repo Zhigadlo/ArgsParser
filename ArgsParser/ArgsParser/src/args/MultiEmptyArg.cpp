@@ -1,7 +1,4 @@
 #include "MultiEmptyArg.hpp"
-#include <results/Success.hpp>
-#include <results/StringValueIsEmpty.hpp>
-#include <results/NotValid.hpp>
 #include <constants/constants.hpp>
 
 namespace args
@@ -28,6 +25,6 @@ namespace args
 	{
 		if (!IsDefined()) Define();
 		handleCount++;
-		return results::Success();
+		return results::Result::Success();
 	}
 }

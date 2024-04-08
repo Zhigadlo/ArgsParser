@@ -1,7 +1,7 @@
 #pragma once
 
 #include <abstractions/IValidator.hpp>
-#include <results/HandleResult.hpp>
+#include <results/Result.hpp>
 #include <vector>
 
 namespace abstractions
@@ -16,12 +16,12 @@ namespace abstractions
 		Arg(std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
 		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, abstractions::IValidator* validator);
 
-		[[nodiscard]] char GetShortName();
-		[[nodiscard]] std::string GetFullName();
-		[[nodiscard]] IValidator* GetValidator();
+		[[nodiscard]] char GetShortName() const;
+		[[nodiscard]] const std::string& GetFullName() const;
+		[[nodiscard]] IValidator* GetValidator() const;
 
-		[[nodiscard]] bool IsShortNameExist();
-		[[nodiscard]] bool IsFullNameExist();
+		[[nodiscard]] bool IsShortNameExist() const;
+		[[nodiscard]] bool IsFullNameExist() const;
 		/**
 		* @warning Make sure to call this fuction after argument defined
 		**/

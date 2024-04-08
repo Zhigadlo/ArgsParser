@@ -34,6 +34,6 @@ namespace parser
 		/**
 		* @brief Shows in console info about all defined arguments
 		**/
-		void Show();
+		void Show() const;
 	};
 }

@@ -34,8 +34,8 @@ namespace args
 		* @brief Handles string value
 		* @return true if value successfuly handled and set to the object, false if value is not valid
 		**/
-		[[nodiscard]] virtual const results::Result& Handle(const std::string& value) = 0;
-		[[nodiscard]] virtual const std::string& GetInfo() const;
+		[[nodiscard]] virtual results::Result Handle(const std::string& value) = 0;
+		[[nodiscard]] virtual std::string GetInfo() const;
 	private:
 		char shortName = CHAR_MAX;
 		std::string fullName;
@@ -51,7 +51,7 @@ namespace args
 		EmptyArg(std::string fullName);
 		EmptyArg(char shortName, std::string fullName);
 
-		const results::Result& Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 	};
 
 	class HelpArg : public Arg
@@ -61,9 +61,9 @@ namespace args
 		HelpArg(std::string fullName, const std::vector<Arg*>& args);
 		HelpArg(char shortName, std::string fullName, const std::vector<Arg*>& args);
 
-		const std::string& GetInfo() const override;
+		std::string GetInfo() const override;
 
-		const results::Result& Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 	private:
 		const std::vector<Arg*>& allArgs;
 	};
@@ -76,8 +76,8 @@ namespace args
 		BoolArg(char shortName, std::string fullName);
 
 		void SetValue(bool value);
-		const results::Result& Handle(const std::string& value) override;
-		const std::string& GetInfo() const override;
+		results::Result Handle(const std::string& value) override;
+		std::string GetInfo() const override;
 		/**
 		* Before calling this function make sure to check if value is defined
 		* @return argument defined value, if not defined returns false
@@ -101,9 +101,9 @@ namespace args
 		IntArg(std::string fullName, validators::IValidator* validator = nullptr);
 		IntArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
-		const std::string& GetInfo() const override;
+		std::string GetInfo() const override;
 		void SetValue(int value);
-		const results::Result& Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] int GetValue() const;
 	private:
 		int value = INT_MAX;
@@ -116,8 +116,8 @@ namespace args
 		MultiEmptyArg(std::string fullName);
 		MultiEmptyArg(char shortName, std::string fullName);
 
-		const std::string& GetInfo() const override;
-		const results::Result& Handle(const std::string& value) override;
+		std::string GetInfo() const override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] int GetHandleCount() const;
 	private:
 		int handleCount = 0;
@@ -130,10 +130,10 @@ namespace args
 		MultiIntArg(std::string fullName, validators::IValidator* validator = nullptr);
 		MultiIntArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
-		const std::string& GetInfo() const override;
+		std::string GetInfo() const override;
 		void SetValue(int value);
 
-		const results::Result& Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] std::vector<int> GetValues() const;
 	private:
 		std::vector<int> values;
@@ -146,10 +146,10 @@ namespace args
 		MultiStringArg(std::string fullName, validators::IValidator* validator = nullptr);
 		MultiStringArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
-		const std::string& GetInfo() const override;
+		std::string GetInfo() const override;
 		void SetValue(std::string value);
 
-		const results::Result& Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] std::vector<std::string> GetValues() const;
 	private:
 		std::vector<std::string> values;
@@ -162,10 +162,10 @@ namespace args
 		StringArg(std::string fullName, validators::IValidator* validator = nullptr);
 		StringArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
-		const std::string& GetInfo() const override;
+		std::string GetInfo() const override;
 		void SetValue(std::string value);
 
-		const results::Result& Handle(const std::string& value) override;
+		results::Result Handle(const std::string& value) override;
 		[[nodiscard]] std::string GetValue() const;
 	private:
 		std::string value;

@@ -14,15 +14,15 @@ namespace results
 		/**
 		* @brief returns nullptr if there is no errors
 		*/
-		std::string& GetError();
-		[[nodiscard]] static const Result& NotValid(std::string value);
-		[[nodiscard]] static const Result& NoSuchArgument(std::string argName);
-		[[nodiscard]] static const Result& MissingParameter(std::string argName);
-		[[nodiscard]] static const Result& ArgumentIsAlreadyDefined(std::string argName);
-		[[nodiscard]] static const Result& ArgumentWithoutPrefix(std::string argName);
-		[[nodiscard]] static const Result& ConvertFail(std::string from, std::string to);
-		[[nodiscard]] static const Result& StringValueIsEmpty();
-		[[nodiscard]] static const Result& Success();
+		[[nodiscard]] const std::string& GetError() const;
+		[[nodiscard]] static const Result NotValid(std::string value);
+		[[nodiscard]] static const Result NoSuchArgument(std::string argName);
+		[[nodiscard]] static const Result MissingParameter(std::string argName);
+		[[nodiscard]] static const Result ArgumentIsAlreadyDefined(std::string argName);
+		[[nodiscard]] static const Result ArgumentWithoutPrefix(std::string argName);
+		[[nodiscard]] static const Result ConvertFail(std::string from, std::string to);
+		[[nodiscard]] static const Result StringValueIsEmpty();
+		[[nodiscard]] static const Result Success();
 	private:
 		std::string error;
 	};

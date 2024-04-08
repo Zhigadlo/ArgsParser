@@ -38,7 +38,7 @@ namespace args
 		return true;
 	}
 
-	const std::string& Arg::GetInfo() const
+	std::string Arg::GetInfo() const
 	{
 		std::string info;
 		if (IsShortNameExist())
@@ -92,7 +92,7 @@ namespace args
 	BoolArg::BoolArg(std::string fullName) : Arg(fullName, false, true, nullptr) {}
 	BoolArg::BoolArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, true, nullptr) {}
 
-	const std::string& BoolArg::GetInfo() const
+	std::string BoolArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (IsDefined())
@@ -109,7 +109,7 @@ namespace args
 	{
 		this->value = value;
 	}
-	const results::Result& BoolArg::Handle(const std::string& value)
+	results::Result BoolArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
@@ -154,7 +154,7 @@ namespace args
 	EmptyArg::EmptyArg(std::string fullName) : Arg(fullName, false, false, nullptr) {}
 	EmptyArg::EmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, false, nullptr) {}
 
-	const results::Result& EmptyArg::Handle(const std::string& value)
+	results::Result EmptyArg::Handle(const std::string& value)
 	{
 		if (IsDefined()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
 		Define();
@@ -166,7 +166,7 @@ namespace args
 	HelpArg::HelpArg(std::string fullName, const std::vector<Arg*>& args) : Arg(fullName, true, false, nullptr), allArgs(args) {}
 	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<Arg*>& args) : Arg(shortName, fullName, true, false, nullptr), allArgs(args) {}
 
-	const std::string& HelpArg::GetInfo() const
+	std::string HelpArg::GetInfo() const
 	{
 		std::string str;
 		str += "Arguments info\n";
@@ -185,7 +185,7 @@ namespace args
 		return str;
 	}
 
-	const results::Result& HelpArg::Handle(const std::string& value)
+	results::Result HelpArg::Handle(const std::string& value)
 	{
 		if (!IsDefined()) Define();
 		return results::Result::Success();
@@ -196,7 +196,7 @@ namespace args
 	IntArg::IntArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, false, true, validator) {}
 	IntArg::IntArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, false, true, validator) {}
 
-	const std::string& IntArg::GetInfo() const
+	std::string IntArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		info += std::to_string(GetValue());
@@ -213,7 +213,7 @@ namespace args
 	{
 		return value;
 	}
-	const results::Result& IntArg::Handle(const std::string& value)
+	results::Result IntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
@@ -243,7 +243,7 @@ namespace args
 	StringArg::StringArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, false, true, validator) {}
 	StringArg::StringArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, false, true, validator) {}
 
-	const std::string& StringArg::GetInfo() const
+	std::string StringArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (IsDefined())
@@ -262,7 +262,7 @@ namespace args
 		this->value = value;
 	}
 
-	const results::Result& StringArg::Handle(const std::string& value)
+	results::Result StringArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
@@ -279,7 +279,7 @@ namespace args
 	MultiEmptyArg::MultiEmptyArg(std::string fullName) : Arg(fullName, true, false, nullptr) {}
 	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, true, false, nullptr) {}
 
-	const std::string& MultiEmptyArg::GetInfo() const
+	std::string MultiEmptyArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (IsDefined())
@@ -293,7 +293,7 @@ namespace args
 		return handleCount;
 	}
 
-	const results::Result& MultiEmptyArg::Handle(const std::string& value)
+	results::Result MultiEmptyArg::Handle(const std::string& value)
 	{
 		if (!IsDefined()) Define();
 		handleCount++;
@@ -306,7 +306,7 @@ namespace args
 	MultiIntArg::MultiIntArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, true, true, validator) {}
 	MultiIntArg::MultiIntArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, true, true, validator) {}
 
-	const std::string& MultiIntArg::GetInfo() const
+	std::string MultiIntArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (!IsDefined()) return info;
@@ -330,7 +330,7 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	const results::Result& MultiIntArg::Handle(const std::string& value)
+	results::Result MultiIntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 		try
@@ -359,7 +359,7 @@ namespace args
 	MultiStringArg::MultiStringArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, true, true, validator) {}
 	MultiStringArg::MultiStringArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, true, true, validator) {}
 
-	const std::string& MultiStringArg::GetInfo() const
+	std::string MultiStringArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (!IsDefined()) return info;
@@ -383,7 +383,7 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	const results::Result& MultiStringArg::Handle(const std::string& value)
+	results::Result MultiStringArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 

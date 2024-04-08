@@ -1,10 +1,16 @@
 #pragma once
 
-#include <abstractions/IValidator.hpp>
-
 namespace validators
 {
-	class IntRangeValidator : public abstractions::IValidator
+	class IValidator
+	{
+	public:
+		/**
+		* @todo remake on templates
+		**/
+		[[nodiscard]] virtual bool Validate(const void* value) const = 0;
+	};
+	class IntRangeValidator : public IValidator
 	{
 	public:
 		IntRangeValidator(int minValue, int maxValue);
@@ -15,13 +21,13 @@ namespace validators
 		int maxValue;
 	};
 
-	class PositiveIntValidator : public abstractions::IValidator
+	class PositiveIntValidator : public IValidator
 	{
 	public:
 		virtual bool Validate(const void* value) const override;
 	};
 
-	class StringLengthValidator : public abstractions::IValidator
+	class StringLengthValidator : public IValidator
 	{
 	public:
 		StringLengthValidator(unsigned int maxStringLength);

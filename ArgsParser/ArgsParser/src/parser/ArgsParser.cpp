@@ -1,5 +1,4 @@
 #include "ArgsParser.hpp"
-#include <results/Result.hpp>
 #include <constants/constants.hpp>
 #include <iostream>
 #include <string_view>
@@ -7,17 +6,17 @@
 
 namespace parser
 {
-	abstractions::Arg* ArgsParser::FindByShortName(const char shortName) const
+	args::Arg* ArgsParser::FindByShortName(const char shortName) const
 	{
-		auto it = std::find_if(args.begin(), args.end(), [&shortName](abstractions::Arg* obj) { return obj->GetShortName() == shortName; });
+		auto it = std::find_if(args.begin(), args.end(), [&shortName](args::Arg* obj) { return obj->GetShortName() == shortName; });
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
-	std::vector<abstractions::Arg*> ArgsParser::FindByFullName(const std::string_view& fullName) const
+	std::vector<args::Arg*> ArgsParser::FindByFullName(const std::string_view& fullName) const
 	{
-		std::vector<abstractions::Arg*> matchingArgs;
+		std::vector<args::Arg*> matchingArgs;
 		std::copy_if(args.begin(), args.end(), std::back_inserter(matchingArgs),
-			[&fullName](abstractions::Arg* obj)
+			[&fullName](args::Arg* obj)
 			{
 				std::string_view realFullNameView = std::string_view(obj->GetFullName());
 				return realFullNameView.substr(0, fullName.length()).compare(fullName) == 0; // check for string begining match
@@ -25,7 +24,7 @@ namespace parser
 
 		return matchingArgs;
 	}
-	results::Result ArgsParser::SingleArgHandle(abstractions::Arg* arg, int* index, const char* argV[], int argC)
+	results::Result ArgsParser::SingleArgHandle(args::Arg* arg, int* index, const char* argV[], int argC)
 	{
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
@@ -43,7 +42,7 @@ namespace parser
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
 			const char shortName = concatArgs[j];
-			abstractions::Arg* shortArg = FindByShortName(shortName);
+			args::Arg* shortArg = FindByShortName(shortName);
 			if (shortArg == nullptr) return results::Result::NoSuchArgument(std::to_string(shortName));
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
@@ -64,7 +63,7 @@ namespace parser
 				return shortArg->Handle(param);
 			}
 			// else we pass to Handle method empty string
-			results::Result result = shortArg->Handle(param);
+			const results::Result& result = shortArg->Handle(param);
 			if (!result.IsSucceded()) return result;
 		}
 
@@ -72,14 +71,14 @@ namespace parser
 	}
 	results::Result ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC)
 	{
-		std::vector<abstractions::Arg*> findedArgs = FindByFullName(longName);
+		std::vector<args::Arg*> findedArgs = FindByFullName(longName);
 		if (findedArgs.size() != 1) return results::Result::NoSuchArgument(std::string(longName));
-		abstractions::Arg* arg = findedArgs.front();
+		args::Arg* arg = findedArgs.front();
 		return SingleArgHandle(arg, index, argV, argC);
 	}
 	results::Result ArgsParser::ShortArgHandle(const char shortName, int* index, const char* argV[], int argC)
 	{
-		abstractions::Arg* arg = FindByShortName(shortName);
+		args::Arg* arg = FindByShortName(shortName);
 		if (arg == nullptr) return results::Result::NoSuchArgument(std::string(argV[*index]));
 		return SingleArgHandle(arg, index, argV, argC);
 	}
@@ -88,7 +87,7 @@ namespace parser
 		// i = 1 because first argument is ArgsParser.exe with 0 index
 		for (int i = 1; i < argC; i++)
 		{
-			abstractions::Arg* arg = nullptr;
+			args::Arg* arg = nullptr;
 			std::string_view stringViewArg(argV[i]);
 			size_t argLength = stringViewArg.length();
 			std::string param;
@@ -124,10 +123,10 @@ namespace parser
 		return results::Result::Success();
 	}
 
-	results::Result ArgsParser::Add(abstractions::Arg& arg)
+	results::Result ArgsParser::Add(args::Arg& arg)
 	{
 		// Check if an argument with the same name already exists
-		auto it = std::find_if(args.begin(), args.end(),[&arg](abstractions::Arg* a) 
+		auto it = std::find_if(args.begin(), args.end(),[&arg](args::Arg* a)
 			{
 				if (a->IsFullNameExist() && arg.IsFullNameExist())
 					return a->GetFullName() == arg.GetFullName();

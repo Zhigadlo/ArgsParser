@@ -1,15 +1,98 @@
 #include "Args.hpp"
 #include <constants/constants.hpp>
+#include <results/Result.hpp>
 #include <sstream>
 
 namespace args
 {
-	// Bool arg realisation
-	BoolArg::BoolArg(char shortName) : abstractions::Arg(shortName, false, true, nullptr) {}
-	BoolArg::BoolArg(std::string fullName) : abstractions::Arg(fullName, false, true, nullptr) {}
-	BoolArg::BoolArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, false, true, nullptr) {}
+#pragma region Abstract arg realisation
+	Arg::Arg(char shortName, bool isReusable, bool isParamArg, validators::IValidator* validator = nullptr) : shortName(shortName),
+		isReusable(isReusable),
+		isParamArg(isParamArg),
+		validator(validator)
+	{
+	}
+	Arg::Arg(std::string fullName, bool isReusable, bool isParamArg, validators::IValidator* validator = nullptr) : fullName(fullName),
+		isReusable(isReusable),
+		isParamArg(isParamArg),
+		validator(validator)
+	{
+	}
+	Arg::Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, validators::IValidator* validator = nullptr) : shortName(shortName),
+		fullName(fullName),
+		isReusable(isReusable),
+		isParamArg(isParamArg),
+		validator(validator)
+	{
+	}
+	bool Arg::IsShortNameExist() const
+	{
+		if (shortName == CHAR_MAX) return false;
 
-	std::string BoolArg::GetInfo()
+		return true;
+	}
+	bool Arg::IsFullNameExist() const
+	{
+		if (fullName.empty()) return false;
+
+		return true;
+	}
+
+	const std::string& Arg::GetInfo() const
+	{
+		std::string info;
+		if (IsShortNameExist())
+		{
+			info += ShortArgumentPrefix;
+			info += GetShortName();
+			info += SpaceChar;
+		}
+
+		if (IsFullNameExist())
+		{
+			info += LongArgumentPrefix;
+			info += GetFullName();
+			info += SpaceChar;
+		}
+
+		return info;
+	}
+
+	char Arg::GetShortName() const
+	{
+		return shortName;
+	}
+	const std::string& Arg::GetFullName() const
+	{
+		return fullName;
+	}
+	validators::IValidator* Arg::GetValidator() const
+	{
+		return validator;
+	}
+	bool Arg::IsDefined() const
+	{
+		return isDefined;
+	};
+	bool Arg::IsReusable() const
+	{
+		return isReusable;
+	}
+	bool Arg::IsParamArg() const
+	{
+		return isParamArg;
+	}
+	void Arg::Define()
+	{
+		isDefined = true;
+	}
+#pragma endregion
+#pragma region Bool arg realisation
+	BoolArg::BoolArg(char shortName) : Arg(shortName, false, true, nullptr) {}
+	BoolArg::BoolArg(std::string fullName) : Arg(fullName, false, true, nullptr) {}
+	BoolArg::BoolArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, true, nullptr) {}
+
+	const std::string& BoolArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (IsDefined())
@@ -26,7 +109,7 @@ namespace args
 	{
 		this->value = value;
 	}
-	results::Result BoolArg::Handle(const std::string& value)
+	const results::Result& BoolArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
@@ -65,55 +148,55 @@ namespace args
 
 		return false;
 	}
+#pragma endregion
+#pragma region Empty arg realisation
+	EmptyArg::EmptyArg(char shortName) : Arg(shortName, false, false, nullptr) {}
+	EmptyArg::EmptyArg(std::string fullName) : Arg(fullName, false, false, nullptr) {}
+	EmptyArg::EmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, false, nullptr) {}
 
-	// Empty arg realisation
-	EmptyArg::EmptyArg(char shortName) : abstractions::Arg(shortName, false, false, nullptr) {}
-	EmptyArg::EmptyArg(std::string fullName) : abstractions::Arg(fullName, false, false, nullptr) {}
-	EmptyArg::EmptyArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, false, false, nullptr) {}
-
-	results::Result EmptyArg::Handle(const std::string& value)
+	const results::Result& EmptyArg::Handle(const std::string& value)
 	{
 		if (IsDefined()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
 		Define();
 		return results::Result::Success();
 	}
+#pragma endregion
+#pragma region Help arg realisation
+	HelpArg::HelpArg(char shortName, const std::vector<Arg*>& args) : Arg(shortName, true, false, nullptr), allArgs(args) {}
+	HelpArg::HelpArg(std::string fullName, const std::vector<Arg*>& args) : Arg(fullName, true, false, nullptr), allArgs(args) {}
+	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<Arg*>& args) : Arg(shortName, fullName, true, false, nullptr), allArgs(args) {}
 
-	// Help arg realisation
-	HelpArg::HelpArg(char shortName, const std::vector<abstractions::Arg*>& args) : abstractions::Arg(shortName, true, false, nullptr), allArgs(args) {}
-	HelpArg::HelpArg(std::string fullName, const std::vector<abstractions::Arg*>& args) : abstractions::Arg(fullName, true, false, nullptr), allArgs(args) {}
-	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<abstractions::Arg*>& args) : abstractions::Arg(shortName, fullName, true, false, nullptr), allArgs(args) {}
-
-	std::string HelpArg::GetInfo()
+	const std::string& HelpArg::GetInfo() const
 	{
-		std::stringstream ss;
-		ss << "Arguments info" << std::endl;
-		ss << "--------------------" << std::endl;
+		std::string str;
+		str += "Arguments info\n";
+		str += "--------------------\n";
 
 		for (int i = 0; i < allArgs.size(); i++)
 		{
-			if (allArgs[i]->IsShortNameExist()) ss << ShortArgumentPrefix << allArgs[i]->GetShortName() << SpaceChar;
+			if (allArgs[i]->IsShortNameExist()) str += ShortArgumentPrefix + allArgs[i]->GetShortName() + SpaceChar;
 
-			if (allArgs[i]->IsFullNameExist()) ss << LongArgumentPrefix << allArgs[i]->GetFullName() << SpaceChar;
+			if (allArgs[i]->IsFullNameExist()) str += LongArgumentPrefix + allArgs[i]->GetFullName() + SpaceChar;
 
-			ss << std::endl;
+			str += "\n";
 		}
-		ss << "--------------------" << std::endl;
+		str += "--------------------\n";
 
-		return ss.str();
+		return str;
 	}
 
-	results::Result HelpArg::Handle(const std::string& value)
+	const results::Result& HelpArg::Handle(const std::string& value)
 	{
 		if (!IsDefined()) Define();
 		return results::Result::Success();
 	}
+#pragma endregion
+#pragma region Int arg realisation
+	IntArg::IntArg(char shortName, validators::IValidator* validator) : Arg(shortName, false, true, validator) {}
+	IntArg::IntArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, false, true, validator) {}
+	IntArg::IntArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, false, true, validator) {}
 
-	// Int arg realisation
-	IntArg::IntArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, false, true, validator) {}
-	IntArg::IntArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, false, true, validator) {}
-	IntArg::IntArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, false, true, validator) {}
-
-	std::string IntArg::GetInfo()
+	const std::string& IntArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		info += std::to_string(GetValue());
@@ -130,14 +213,14 @@ namespace args
 	{
 		return value;
 	}
-	results::Result IntArg::Handle(const std::string& value)
+	const results::Result& IntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
 		try
 		{
 			int result = std::stoi(value);
-			abstractions::IValidator* validator = GetValidator();
+			validators::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
 				return results::Result::NotValid(std::to_string(result));
 			SetValue(result);
@@ -153,14 +236,14 @@ namespace args
 			return results::Result(e.what());
 		}
 	}
+#pragma endregion
+#pragma region String arg realisation
 
-	// String arg realisation
+	StringArg::StringArg(char shortName, validators::IValidator* validator) : Arg(shortName, false, true, validator) {}
+	StringArg::StringArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, false, true, validator) {}
+	StringArg::StringArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, false, true, validator) {}
 
-	StringArg::StringArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, false, true, validator) {}
-	StringArg::StringArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, false, true, validator) {}
-	StringArg::StringArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, false, true, validator) {}
-
-	std::string StringArg::GetInfo()
+	const std::string& StringArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (IsDefined())
@@ -179,24 +262,24 @@ namespace args
 		this->value = value;
 	}
 
-	results::Result StringArg::Handle(const std::string& value)
+	const results::Result& StringArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
-		abstractions::IValidator* validator = GetValidator();
+		validators::IValidator* validator = GetValidator();
 		if (validator != nullptr && !validator->Validate(&value))
 			return results::Result::NotValid(value);
 		SetValue(value);
 		Define();
 		return results::Result::Success();
 	}
+#pragma endregion
+#pragma region Multi empty arg
+	MultiEmptyArg::MultiEmptyArg(char shortName) : Arg(shortName, true, false, nullptr) {}
+	MultiEmptyArg::MultiEmptyArg(std::string fullName) : Arg(fullName, true, false, nullptr) {}
+	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, true, false, nullptr) {}
 
-	// Multi empty arg
-	MultiEmptyArg::MultiEmptyArg(char shortName) : abstractions::Arg(shortName, true, false, nullptr) {}
-	MultiEmptyArg::MultiEmptyArg(std::string fullName) : abstractions::Arg(fullName, true, false, nullptr) {}
-	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : abstractions::Arg(shortName, fullName, true, false, nullptr) {}
-
-	std::string MultiEmptyArg::GetInfo()
+	const std::string& MultiEmptyArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (IsDefined())
@@ -210,20 +293,20 @@ namespace args
 		return handleCount;
 	}
 
-	results::Result MultiEmptyArg::Handle(const std::string& value)
+	const results::Result& MultiEmptyArg::Handle(const std::string& value)
 	{
 		if (!IsDefined()) Define();
 		handleCount++;
 		return results::Result::Success();
 	}
+#pragma endregion
+#pragma region Multi int arg realisation
 
-	// Multi int arg realisation
+	MultiIntArg::MultiIntArg(char shortName, validators::IValidator* validator) : Arg(shortName, true, true, validator) {}
+	MultiIntArg::MultiIntArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, true, true, validator) {}
+	MultiIntArg::MultiIntArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, true, true, validator) {}
 
-	MultiIntArg::MultiIntArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, true, true, validator) {}
-	MultiIntArg::MultiIntArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, true, true, validator) {}
-	MultiIntArg::MultiIntArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, true, true, validator) {}
-
-	std::string MultiIntArg::GetInfo()
+	const std::string& MultiIntArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (!IsDefined()) return info;
@@ -247,13 +330,13 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	results::Result MultiIntArg::Handle(const std::string& value)
+	const results::Result& MultiIntArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 		try
 		{
 			int result = std::stoi(value);
-			abstractions::IValidator* validator = GetValidator();
+			validators::IValidator* validator = GetValidator();
 			if (validator != nullptr && !validator->Validate(&result))
 				return results::Result::NotValid(std::to_string(result));
 			this->values.push_back(result);
@@ -269,14 +352,14 @@ namespace args
 			return results::Result(e.what());
 		}
 	}
+#pragma endregion
+#pragma region Multi string arg realisation
 
-	// Multi string arg realisation
+	MultiStringArg::MultiStringArg(char shortName, validators::IValidator* validator) : Arg(shortName, true, true, validator) {}
+	MultiStringArg::MultiStringArg(std::string fullName, validators::IValidator* validator) : Arg(fullName, true, true, validator) {}
+	MultiStringArg::MultiStringArg(char shortName, std::string fullName, validators::IValidator* validator) : Arg(shortName, fullName, true, true, validator) {}
 
-	MultiStringArg::MultiStringArg(char shortName, abstractions::IValidator* validator) : abstractions::Arg(shortName, true, true, validator) {}
-	MultiStringArg::MultiStringArg(std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(fullName, true, true, validator) {}
-	MultiStringArg::MultiStringArg(char shortName, std::string fullName, abstractions::IValidator* validator) : abstractions::Arg(shortName, fullName, true, true, validator) {}
-
-	std::string MultiStringArg::GetInfo()
+	const std::string& MultiStringArg::GetInfo() const
 	{
 		std::string info = Arg::GetInfo();
 		if (!IsDefined()) return info;
@@ -300,15 +383,16 @@ namespace args
 		this->values.push_back(value);
 	}
 
-	results::Result MultiStringArg::Handle(const std::string& value)
+	const results::Result& MultiStringArg::Handle(const std::string& value)
 	{
 		if (value.empty()) return results::Result::StringValueIsEmpty();
 
-		abstractions::IValidator* validator = GetValidator();
+		validators::IValidator* validator = GetValidator();
 		if (validator != nullptr && !validator->Validate(&value))
 			return results::Result::NotValid(value);
 		SetValue(value);
 		Define();
 		return results::Result::Success();
 	}
+#pragma endregion
 }

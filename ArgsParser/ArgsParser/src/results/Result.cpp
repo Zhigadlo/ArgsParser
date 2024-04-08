@@ -5,7 +5,7 @@ namespace results
 	Result::Result() {}
 	Result::Result(std::string error) : error(std::move(error)) {}
 
-	bool Result::IsSucceded()
+	bool Result::IsSucceded() const
 	{
 		if (error.empty()) return true;
 		

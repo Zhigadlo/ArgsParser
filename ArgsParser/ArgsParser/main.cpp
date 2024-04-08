@@ -5,7 +5,7 @@
 #include <iostream>
 
 results::Result ConfigureParser(parser::ArgsParser& parser);
-std::vector<abstractions::Arg*> arguments;
+std::vector<args::Arg*> arguments;
 
 int main(int argC, const char* argV[])
 {

@@ -1,13 +1,6 @@
 #include <parser/ArgsParser.hpp>
-#include <args/IntArg.hpp>
-#include <args/BoolArg.hpp>
-#include <args/EmptyArg.hpp>
-#include <args/StringArg.hpp>
-#include <args/MultiStringArg.hpp>
-#include <args/MultiIntArg.hpp>
-#include <args/MultiEmptyArg.hpp>
-#include <results/HandleResult.hpp>
-#include <results/MissingParameter.hpp>
+#include <args/Args.hpp>
+#include <results/Result.hpp>
 #include <validators/PositiveIntValidator.hpp>
 #include <validators/StringLengthValidator.hpp>
 #include <validators/IntRangeValidator.hpp>

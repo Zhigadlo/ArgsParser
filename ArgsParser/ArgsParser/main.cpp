@@ -1,13 +1,6 @@
-#include <results/Success.hpp>
 #include <parser/ArgsParser.hpp>
-#include <args/IntArg.hpp>
-#include <args/StringArg.hpp>
-#include <args/MultiStringArg.hpp>
-#include <args/MultiEmptyArg.hpp>
-#include <args/MultiIntArg.hpp>
-#include <args/BoolArg.hpp>
-#include <args/EmptyArg.hpp>
-#include <args/HelpArg.hpp>
+#include <results/Result.hpp>
+#include <args/Args.hpp>
 #include <validators/PositiveIntValidator.hpp>
 #include <validators/StringLengthValidator.hpp>
 #include <validators/IntRangeValidator.hpp>
@@ -68,5 +61,5 @@ results::Result ConfigureParser(parser::ArgsParser& parser)
 		if (!result.IsSucceded()) return result;
 	}
 
-	return results::Success();
+	return results::Result::Success();
 }

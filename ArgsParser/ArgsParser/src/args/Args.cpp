@@ -6,19 +6,22 @@
 namespace args
 {
 #pragma region Abstract arg realisation
-	Arg::Arg(char shortName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator = nullptr) : shortName(shortName),
+	Arg::Arg(char shortName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator) 
+	  : shortName(shortName),
 		isReusable(isReusable),
 		isParamArg(isParamArg),
 		validator(std::move(validator))
 	{
 	}
-	Arg::Arg(std::string fullName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator = nullptr) : fullName(fullName),
+	Arg::Arg(std::string fullName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator) 
+	  : fullName(fullName),
 		isReusable(isReusable),
 		isParamArg(isParamArg),
 		validator(std::move(validator))
 	{
 	}
-	Arg::Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator = nullptr) : shortName(shortName),
+	Arg::Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator) 
+	  : shortName(shortName),
 		fullName(fullName),
 		isReusable(isReusable),
 		isParamArg(isParamArg),
@@ -88,9 +91,9 @@ namespace args
 	}
 #pragma endregion
 #pragma region Bool arg realisation
-	BoolArg::BoolArg(char shortName) : Arg(shortName, false, true, nullptr) {}
-	BoolArg::BoolArg(std::string fullName) : Arg(fullName, false, true, nullptr) {}
-	BoolArg::BoolArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, true, nullptr) {}
+	BoolArg::BoolArg(char shortName) : Arg(shortName, false, true) {}
+	BoolArg::BoolArg(std::string fullName) : Arg(fullName, false, true) {}
+	BoolArg::BoolArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, true) {}
 
 	std::string BoolArg::GetInfo() const
 	{
@@ -150,9 +153,9 @@ namespace args
 	}
 #pragma endregion
 #pragma region Empty arg realisation
-	EmptyArg::EmptyArg(char shortName) : Arg(shortName, false, false, nullptr) {}
-	EmptyArg::EmptyArg(std::string fullName) : Arg(fullName, false, false, nullptr) {}
-	EmptyArg::EmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, false, nullptr) {}
+	EmptyArg::EmptyArg(char shortName) : Arg(shortName, false, false) {}
+	EmptyArg::EmptyArg(std::string fullName) : Arg(fullName, false, false) {}
+	EmptyArg::EmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, false, false) {}
 
 	results::Result EmptyArg::Handle(const std::string& value)
 	{
@@ -162,9 +165,12 @@ namespace args
 	}
 #pragma endregion
 #pragma region Help arg realisation
-	HelpArg::HelpArg(char shortName, const std::vector<Arg*>& args) : Arg(shortName, true, false, nullptr), allArgs(args) {}
-	HelpArg::HelpArg(std::string fullName, const std::vector<Arg*>& args) : Arg(fullName, true, false, nullptr), allArgs(args) {}
-	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<Arg*>& args) : Arg(shortName, fullName, true, false, nullptr), allArgs(args) {}
+	HelpArg::HelpArg(char shortName, const std::vector<Arg*>& args) 
+		       : Arg(shortName, true, false), allArgs(args) {}
+	HelpArg::HelpArg(std::string fullName, const std::vector<Arg*>& args) 
+		       : Arg(fullName, true, false), allArgs(args) {}
+	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<Arg*>& args) 
+		       : Arg(shortName, fullName, true, false), allArgs(args) {}
 
 	std::string HelpArg::GetInfo() const
 	{
@@ -192,9 +198,9 @@ namespace args
 	}
 #pragma endregion
 #pragma region Int arg realisation
-	IntArg::IntArg(char shortName, std::unique_ptr<validators::IValidator> validator = nullptr) : Arg(shortName, false, true, std::move(validator)) {}
-	IntArg::IntArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = nullptr) : Arg(fullName, false, true, std::move(validator)) {}
-	IntArg::IntArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = nullptr) : Arg(shortName, fullName, false, true, std::move(validator)) {}
+	IntArg::IntArg(char shortName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, false, true, std::move(validator)) {}
+	IntArg::IntArg(std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(fullName, false, true, std::move(validator)) {}
+	IntArg::IntArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, fullName, false, true, std::move(validator)) {}
 
 	std::string IntArg::GetInfo() const
 	{
@@ -239,9 +245,9 @@ namespace args
 #pragma endregion
 #pragma region String arg realisation
 
-	StringArg::StringArg(char shortName, std::unique_ptr<validators::IValidator> validator = nullptr) : Arg(shortName, false, true, std::move(validator)) {}
-	StringArg::StringArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = nullptr) : Arg(fullName, false, true, std::move(validator)) {}
-	StringArg::StringArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = nullptr) : Arg(shortName, fullName, false, true, std::move(validator)) {}
+	StringArg::StringArg(char shortName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, false, true, std::move(validator)) {}
+	StringArg::StringArg(std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(fullName, false, true, std::move(validator)) {}
+	StringArg::StringArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, fullName, false, true, std::move(validator)) {}
 
 	std::string StringArg::GetInfo() const
 	{
@@ -275,9 +281,9 @@ namespace args
 	}
 #pragma endregion
 #pragma region Multi empty arg
-	MultiEmptyArg::MultiEmptyArg(char shortName) : Arg(shortName, true, false, std::unique_ptr<validators::IValidator>()) {}
-	MultiEmptyArg::MultiEmptyArg(std::string fullName) : Arg(fullName, true, false, std::unique_ptr<validators::IValidator>()) {}
-	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, true, false, std::unique_ptr<validators::IValidator>()) {}
+	MultiEmptyArg::MultiEmptyArg(char shortName) : Arg(shortName, true, false) {}
+	MultiEmptyArg::MultiEmptyArg(std::string fullName) : Arg(fullName, true, false) {}
+	MultiEmptyArg::MultiEmptyArg(char shortName, std::string fullName) : Arg(shortName, fullName, true, false) {}
 
 	std::string MultiEmptyArg::GetInfo() const
 	{
@@ -302,9 +308,9 @@ namespace args
 #pragma endregion
 #pragma region Multi int arg realisation
 
-	MultiIntArg::MultiIntArg(char shortName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>()) : Arg(shortName, true, true, std::move(validator)) {}
-	MultiIntArg::MultiIntArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>()) : Arg(fullName, true, true, std::move(validator)) {}
-	MultiIntArg::MultiIntArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>()) : Arg(shortName, fullName, true, true, std::move(validator)) {}
+	MultiIntArg::MultiIntArg(char shortName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, true, true, std::move(validator)) {}
+	MultiIntArg::MultiIntArg(std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(fullName, true, true, std::move(validator)) {}
+	MultiIntArg::MultiIntArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, fullName, true, true, std::move(validator)) {}
 
 	std::string MultiIntArg::GetInfo() const
 	{
@@ -355,9 +361,9 @@ namespace args
 #pragma endregion
 #pragma region Multi string arg realisation
 
-	MultiStringArg::MultiStringArg(char shortName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>()) : Arg(shortName, true, true, std::move(validator)) {}
-	MultiStringArg::MultiStringArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>()) : Arg(fullName, true, true, std::move(validator)) {}
-	MultiStringArg::MultiStringArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>()) : Arg(shortName, fullName, true, true, std::move(validator)) {}
+	MultiStringArg::MultiStringArg(char shortName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, true, true, std::move(validator)) {}
+	MultiStringArg::MultiStringArg(std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(fullName, true, true, std::move(validator)) {}
+	MultiStringArg::MultiStringArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator) : Arg(shortName, fullName, true, true, std::move(validator)) {}
 
 	std::string MultiStringArg::GetInfo() const
 	{

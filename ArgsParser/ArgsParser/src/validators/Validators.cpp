@@ -5,26 +5,20 @@ namespace validators
 {
 	IntRangeValidator::IntRangeValidator(int minValue, int maxValue) : minValue(minValue), maxValue(maxValue) {}
 
-	bool IntRangeValidator::Validate(const void* value) const
+	bool IntRangeValidator::Validate(int value) const
 	{
-		const int* intValue = static_cast<const int*>(value);
-		if (intValue == nullptr) return false;
-		return *intValue >= minValue && *intValue <= maxValue;
+		return value >= minValue && value <= maxValue;
 	}
 
-	bool PositiveIntValidator::Validate(const void* value) const
+	bool PositiveIntValidator::Validate(int value) const
 	{
-		const int* intValue = static_cast<const int*>(value);
-		if (intValue == nullptr) return false;
-		return *intValue > 0;
+		return value > 0;
 	}
 
 	StringLengthValidator::StringLengthValidator(unsigned int maxStringLength) : maxStringLength(maxStringLength) {}
 
-	bool StringLengthValidator::Validate(const void* value) const
+	bool StringLengthValidator::Validate(std::string value) const
 	{
-		const std::string* stringValue = static_cast<const std::string*>(value);
-		if (stringValue == nullptr) return false;
-		return stringValue->length() <= maxStringLength;
+		return value.length() <= maxStringLength;
 	}
 }

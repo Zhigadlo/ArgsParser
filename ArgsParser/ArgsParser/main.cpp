@@ -25,32 +25,32 @@ int main(int argC, const char* argV[])
 
 results::Result ConfigureParser(parser::ArgsParser& parser)
 {
-	std::unique_ptr<validators::PositiveIntValidator> posValidator(new validators::PositiveIntValidator());
-	std::unique_ptr<validators::StringLengthValidator> lenValidator(new validators::StringLengthValidator(5));
-	std::unique_ptr<validators::IntRangeValidator> rangeValidator(new validators::IntRangeValidator(-5, 5));
-	std::unique_ptr<validators::StringLengthValidator> multiStringLenValidator(new validators::StringLengthValidator(8));
+	validators::PositiveIntValidator posValidator;
+	validators::StringLengthValidator lenValidator(5);
+	validators::IntRangeValidator rangeValidator(-5, 5);
+	validators::StringLengthValidator multiStringLenValidator(8);
 	
-	std::unique_ptr<args::HelpArg> helpArg(new args::HelpArg('h', "help", arguments));
-	std::unique_ptr<args::EmptyArg> testArg(new args::EmptyArg('t', "test"));
-	std::unique_ptr<args::IntArg> intArg(new args::IntArg("int_value"));
-	std::unique_ptr<args::IntArg> shortIntArg(new args::IntArg('k', std::move(rangeValidator)));
-	std::unique_ptr<args::IntArg> positiveIntArg(new args::IntArg("positive_int", std::move(posValidator)));
-	std::unique_ptr<args::BoolArg> boolArg(new args::BoolArg('b', "bool_value"));
-	std::unique_ptr<args::MultiStringArg> multiStringArg(new args::MultiStringArg('s', "m_string", std::move(multiStringLenValidator)));
-	std::unique_ptr<args::MultiIntArg> multiIntArg(new args::MultiIntArg('i', "m_int"));
-	std::unique_ptr<args::MultiEmptyArg> multiEmptyArg(new args::MultiEmptyArg('e', "m_empty"));
-	std::unique_ptr<args::StringArg> stringArg(new args::StringArg("string", std::move(lenValidator)));
+	args::HelpArg helpArg('h', "help", arguments);
+	args::EmptyArg testArg('t', "test");
+	args::IntArg intArg("int_value");
+	args::IntArg shortIntArg('k', &rangeValidator);
+	args::IntArg positiveIntArg("positive_int", &posValidator);
+	args::BoolArg boolArg('b', "bool_value");
+	args::MultiStringArg multiStringArg('s', "m_string", &multiStringLenValidator);
+	args::MultiIntArg multiIntArg('i', "m_int");
+	args::MultiEmptyArg multiEmptyArg('e', "m_empty");
+	args::StringArg stringArg("string", &lenValidator);
 
-	arguments.push_back(helpArg.get());
-	arguments.push_back(testArg.get());
-	arguments.push_back(intArg.get());
-	arguments.push_back(shortIntArg.get());
-	arguments.push_back(positiveIntArg.get());
-	arguments.push_back(boolArg.get());
-	arguments.push_back(multiStringArg.get());
-	arguments.push_back(multiEmptyArg.get());
-	arguments.push_back(multiIntArg.get());
-	arguments.push_back(stringArg.get());
+	arguments.push_back(&helpArg);
+	arguments.push_back(&testArg);
+	arguments.push_back(&intArg);
+	arguments.push_back(&shortIntArg);
+	arguments.push_back(&positiveIntArg);
+	arguments.push_back(&boolArg);
+	arguments.push_back(&multiStringArg);
+	arguments.push_back(&multiEmptyArg);
+	arguments.push_back(&multiIntArg);
+	arguments.push_back(&stringArg);
 
 	for (int i = 0; i < arguments.size(); i++)
 	{

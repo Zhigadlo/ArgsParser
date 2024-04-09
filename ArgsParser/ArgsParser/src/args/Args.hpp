@@ -4,7 +4,6 @@
 #include <results/Result.hpp>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace args
 {
@@ -14,9 +13,9 @@ namespace args
 	class Arg
 	{
 	public:
-		Arg(char shortName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		Arg(std::string fullName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
+		Arg(char shortName, bool isReusable, bool isParamArg, validators::IValidator* validator = nullptr);
+		Arg(std::string fullName, bool isReusable, bool isParamArg, validators::IValidator* validator = nullptr);
+		Arg(char shortName, std::string fullName, bool isReusable, bool isParamArg, validators::IValidator* validator = nullptr);
 
 		[[nodiscard]] char GetShortName() const;
 		[[nodiscard]] const std::string& GetFullName() const;
@@ -43,7 +42,7 @@ namespace args
 		bool isDefined = false;
 		bool isReusable;
 		bool isParamArg;
-		std::unique_ptr<validators::IValidator> validator{};
+		validators::IValidator* validator;
 	};
 	class EmptyArg : public Arg
 	{
@@ -98,9 +97,9 @@ namespace args
 	class IntArg : public Arg
 	{
 	public:
-		IntArg(char shortName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		IntArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		IntArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
+		IntArg(char shortName, validators::IValidator* validator = nullptr);
+		IntArg(std::string fullName, validators::IValidator* validator = nullptr);
+		IntArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
 		std::string GetInfo() const override;
 		void SetValue(int value);
@@ -127,9 +126,9 @@ namespace args
 	class MultiIntArg : public Arg
 	{
 	public:
-		MultiIntArg(char shortName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		MultiIntArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		MultiIntArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
+		MultiIntArg(char shortName, validators::IValidator* validator = nullptr);
+		MultiIntArg(std::string fullName, validators::IValidator* validator = nullptr);
+		MultiIntArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
 		std::string GetInfo() const override;
 		void SetValue(int value);
@@ -143,9 +142,9 @@ namespace args
 	class MultiStringArg : public Arg
 	{
 	public:
-		MultiStringArg(char shortName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		MultiStringArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		MultiStringArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
+		MultiStringArg(char shortName, validators::IValidator* validator = nullptr);
+		MultiStringArg(std::string fullName, validators::IValidator* validator = nullptr);
+		MultiStringArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
 		std::string GetInfo() const override;
 		void SetValue(std::string value);
@@ -159,9 +158,9 @@ namespace args
 	class StringArg : public Arg
 	{
 	public:
-		StringArg(char shortName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		StringArg(std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
-		StringArg(char shortName, std::string fullName, std::unique_ptr<validators::IValidator> validator = std::unique_ptr<validators::IValidator>{});
+		StringArg(char shortName, validators::IValidator* validator = nullptr);
+		StringArg(std::string fullName, validators::IValidator* validator = nullptr);
+		StringArg(char shortName, std::string fullName, validators::IValidator* validator = nullptr);
 
 		std::string GetInfo() const override;
 		void SetValue(std::string value);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <args/Args.hpp>
+#include <args/BaseArg.hpp>
 #include <results/Result.hpp>
 #include <vector>
 
@@ -9,9 +9,9 @@ namespace parser
 	class ArgsParser
 	{
 	private:
-		std::vector<args::Arg*> args;
-		[[nodiscard]] args::Arg* FindByShortName(const char shortName) const;
-		[[nodiscard]] std::vector<args::Arg*> FindByFullName(const std::string_view& fullName) const;
+		std::vector<args::BaseArg*> args;
+		[[nodiscard]] args::BaseArg* FindByShortName(const char shortName) const;
+		[[nodiscard]] std::vector<args::BaseArg*> FindByFullName(const std::string_view& fullName) const;
 		/**
 		* @brief Handles concat short arguments like -hb=1, -hsValue, -thk=5
 		**/
@@ -19,7 +19,7 @@ namespace parser
 		/**
 		* @brief Handles single arguments like -h, --int 123, -b True
 		**/
-		[[nodiscard]] results::Result SingleArgHandle(args::Arg* arg, int* index, const char* argV[], int argC);
+		[[nodiscard]] results::Result SingleArgHandle(args::BaseArg* arg, int* index, const char* argV[], int argC);
 		/**
 		* @brief Finds and handles arguments by short names(like -h, -k=3, -t)
 		**/
@@ -30,7 +30,7 @@ namespace parser
 		[[nodiscard]] results::Result LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC);
 	public:
 		[[nodiscard]] results::Result Parse(int argC, const char* argV[]);
-		results::Result Add(args::Arg& arg);
+		results::Result Add(args::BaseArg& arg);
 		/**
 		* @brief Shows in console info about all defined arguments
 		**/

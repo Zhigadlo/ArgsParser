@@ -2,7 +2,7 @@
 
 #include <validators/Validators.hpp>
 #include <results/Result.hpp>
-#include <string>
+#include <utils/converter.hpp>
 #include <vector>
 
 namespace args
@@ -47,9 +47,9 @@ namespace args
 	class EmptyArg : public BaseArg
 	{
 	public:
-		EmptyArg(char shortName);
-		EmptyArg(std::string fullName);
-		EmptyArg(char shortName, std::string fullName);
+		EmptyArg(char shortName, bool isReusable);
+		EmptyArg(std::string fullName, bool isReusable);
+		EmptyArg(char shortName, std::string fullName, bool isReusable);
 
 		virtual results::Result Handle(const std::string& value) override;
 		bool IsValidatorExist() const override;
@@ -63,6 +63,7 @@ namespace args
 		HelpArg(char shortName, std::string fullName, const std::vector<BaseArg*>& args);
 
 		std::string GetInfo() const override;
+		virtual results::Result Handle(const std::string& value) override;
 	private:
 		const std::vector<BaseArg*>& allArgs;
 	};
@@ -71,15 +72,55 @@ namespace args
 	class ValueArg : public BaseArg
 	{
 	public:
-		ValueArg(char shortName, bool isReusable, bool isParamArg, validators::Validator<T>* validator = nullptr);
-		ValueArg(std::string fullName, bool isReusable, bool isParamArg, validators::Validator<T>* validator = nullptr);
-		ValueArg(char shortName, std::string fullName, bool isReusable, bool isParamArg, validators::Validator<T>* validator = nullptr);
+		ValueArg(char shortName, validators::Validator<T>* validator = nullptr)
+			: BaseArg(shortName, false, true), validator(validator)
+		{
+		}
+		ValueArg(std::string fullName, validators::Validator<T>* validator = nullptr)
+			: BaseArg(fullName, false, true), validator(validator)
+		{
+		}
+		ValueArg(char shortName, std::string fullName, validators::Validator<T>* validator = nullptr)
+			: BaseArg(shortName, fullName, false, true), validator(validator)
+		{
+		}
 
-		bool IsValidatorExist() const override;
-		virtual results::Result Handle(const std::string& value) override;
-		virtual std::string GetInfo() const override;
-		T GetValue() const;
+		bool IsValidatorExist() const override
+		{
+			if (validator == nullptr) return false;
+			return true;
+		}
+		virtual results::Result Handle(const std::string& value) override
+		{
+			T result{};
+			
+			results::Result convertResult = utils::StringToValue(value, result);
+			if (convertResult.IsSucceded()) return convertResult;
+
+			if (IsValidatorExist() && !validator->Validate(result))
+				return results::Result::NotValid(std::to_string(result));
+
+			SetValue(result);
+			Define();
+			return results::Result::Success();
+		}
+		virtual std::string GetInfo() const override
+		{
+			std::string info = BaseArg::GetInfo();
+			if(IsDefined())
+				info += std::to_string(GetValue());
+			return info;
+		}
+		T GetValue() const
+		{
+			return value;
+		}
 	private:
+		void SetValue(T value)
+		{
+			this->value = value;
+		}
 		T value;
+		validators::Validator<T>* validator;
 	};
 }

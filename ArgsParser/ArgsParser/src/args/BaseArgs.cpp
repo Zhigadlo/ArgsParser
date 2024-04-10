@@ -1,15 +1,22 @@
 #include "BaseArg.hpp"
+#include <utils/constants.hpp>
 
 namespace args
 {
 #pragma region BaseArg realisaton
 
 	BaseArg::BaseArg(char shortName, bool isReusable, bool isParamArg)
-		: shortName(shortName), isReusable(isReusable), isParamArg(isParamArg) {}
+		: shortName(shortName), isReusable(isReusable), isParamArg(isParamArg)
+	{
+	}
 	BaseArg::BaseArg(std::string fullName, bool isReusable, bool isParamArg)
-		: fullName(shortName), isReusable(isReusable), isParamArg(isParamArg) {}
+		: fullName(fullName), isReusable(isReusable), isParamArg(isParamArg)
+	{
+	}
 	BaseArg::BaseArg(char shortName, std::string fullName, bool isReusable, bool isParamArg)
-		: shortName(shortName), fullName(fullName), isReusable(isReusable), isParamArg(isParamArg) {}
+		: shortName(shortName), fullName(fullName), isReusable(isReusable), isParamArg(isParamArg)
+	{
+	}
 
 	bool BaseArg::IsShortNameExist() const
 	{
@@ -28,16 +35,16 @@ namespace args
 		std::string info;
 		if (IsShortNameExist())
 		{
-			info += ShortArgumentPrefix;
+			info += utils::ShortArgumentPrefix;
 			info += GetShortName();
-			info += SpaceChar;
+			info += utils::SpaceChar;
 		}
 
 		if (IsFullNameExist())
 		{
-			info += LongArgumentPrefix;
+			info += utils::LongArgumentPrefix;
 			info += GetFullName();
-			info += SpaceChar;
+			info += utils::SpaceChar;
 		}
 
 		return info;
@@ -46,7 +53,7 @@ namespace args
 	{
 		return shortName;
 	}
-	const std::string& GetFullName() const
+	const std::string& BaseArg::GetFullName() const
 	{
 		return fullName;
 	}
@@ -85,19 +92,21 @@ namespace args
 	{
 		return false;
 	}
-	bool EmptyArg::Validate()
-	{
-		return true;
-	}
 
 #pragma endregion
 #pragma region HelpArg realisation
-	HelpArg::HelpArg(char shortName, const std::vector<Arg*>& args)
-		: EmptyArg(shortName, true), allArgs(args) {}
-	HelpArg::HelpArg(std::string fullName, const std::vector<Arg*>& args)
-		: EmptyArg(fullName, true), allArgs(args) {}
-	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<Arg*>& args)
-		: EmptyArg(shortName, fullName, true), allArgs(args) {}
+	HelpArg::HelpArg(char shortName, const std::vector<BaseArg*>& args)
+		: EmptyArg(shortName, true), allArgs(args)
+	{
+	}
+	HelpArg::HelpArg(std::string fullName, const std::vector<BaseArg*>& args)
+		: EmptyArg(fullName, true), allArgs(args)
+	{
+	}
+	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<BaseArg*>& args)
+		: EmptyArg(shortName, fullName, true), allArgs(args)
+	{
+	}
 
 	std::string HelpArg::GetInfo() const
 	{
@@ -107,9 +116,11 @@ namespace args
 
 		for (int i = 0; i < allArgs.size(); i++)
 		{
-			if (allArgs[i]->IsShortNameExist()) str += ShortArgumentPrefix + allArgs[i]->GetShortName() + SpaceChar;
+			if (allArgs[i]->IsShortNameExist()) 
+				str += utils::ShortArgumentPrefix + allArgs[i]->GetShortName() + utils::SpaceChar;
 
-			if (allArgs[i]->IsFullNameExist()) str += LongArgumentPrefix + allArgs[i]->GetFullName() + SpaceChar;
+			if (allArgs[i]->IsFullNameExist()) 
+				str += utils::LongArgumentPrefix + allArgs[i]->GetFullName() + utils::SpaceChar;
 
 			str += "\n";
 		}
@@ -124,39 +135,4 @@ namespace args
 		return results::Result::Success();
 	}
 #pragma endregion 
-#pragma region ValueArg realisation
-	template<typename T>
-	ValueArg::ValueArg(char shortName, bool isReusable, bool isParamArg, validators::Validator<T>* validator) 
-		: BaseArg(shortName, isReusable, isParamArg), validator(validator) {}
-	template<typename T>
-	ValueArg::ValueArg(std::string fullName, bool isReusable, bool isParamArg, validators::Validator<T>* validator) 
-		: BaseArg(fullName, isReusable, isParamArg), validator(validator) {}
-	template<typename T>
-	ValueArg::ValueArg(char shortName, std::string fullName, bool isReusable, bool isParamArg, validators::Validator<T>* validator)
-		: BaseArg(shortName, fullName, isReusable, isParamArg), validator(validator) {}
-	template<typename T>
-	T ValueArg<T>::GetValue() const
-	{
-		return value;
-	}
-
-	bool ValueArg::IsValidatorExist() const
-	{
-		if (validator == nullptr) return false;
-		return true;
-	}
-	virtual results::Result Handle(const std::string& value) override
-	{
-
-	}
-	virtual std::string GetInfo() const override
-	{
-		std::string IntArg::GetInfo() const
-		{
-			std::string info = Arg::GetInfo();
-			info += std::to_string(GetValue());
-			return info;
-		}
-	}
-#pragma endregion
 }

@@ -1,22 +1,22 @@
 #include "ArgsParser.hpp"
-#include <constants/constants.hpp>
+#include <utils/constants.hpp>
 #include <iostream>
 #include <string_view>
 #include <algorithm>
 
 namespace parser
 {
-	args::Arg* ArgsParser::FindByShortName(const char shortName) const
+	args::BaseArg* ArgsParser::FindByShortName(const char shortName) const
 	{
-		auto it = std::find_if(args.begin(), args.end(), [&shortName](args::Arg* obj) { return obj->GetShortName() == shortName; });
+		auto it = std::find_if(args.begin(), args.end(), [&shortName](args::BaseArg* obj) { return obj->GetShortName() == shortName; });
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
-	std::vector<args::Arg*> ArgsParser::FindByFullName(const std::string_view& fullName) const
+	std::vector<args::BaseArg*> ArgsParser::FindByFullName(const std::string_view& fullName) const
 	{
-		std::vector<args::Arg*> matchingArgs;
+		std::vector<args::BaseArg*> matchingArgs;
 		std::copy_if(args.begin(), args.end(), std::back_inserter(matchingArgs),
-			[&fullName](args::Arg* obj)
+			[&fullName](args::BaseArg* obj)
 			{
 				std::string_view realFullNameView = std::string_view(obj->GetFullName());
 				return realFullNameView.substr(0, fullName.length()).compare(fullName) == 0; // check for string begining match
@@ -24,7 +24,7 @@ namespace parser
 
 		return matchingArgs;
 	}
-	results::Result ArgsParser::SingleArgHandle(args::Arg* arg, int* index, const char* argV[], int argC)
+	results::Result ArgsParser::SingleArgHandle(args::BaseArg* arg, int* index, const char* argV[], int argC)
 	{
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
@@ -42,7 +42,7 @@ namespace parser
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
 			const char shortName = concatArgs[j];
-			args::Arg* shortArg = FindByShortName(shortName);
+			args::BaseArg* shortArg = FindByShortName(shortName);
 			if (shortArg == nullptr) return results::Result::NoSuchArgument(std::to_string(shortName));
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
@@ -53,7 +53,7 @@ namespace parser
 			if (shortArg->IsParamArg())
 			{
 				j++; // go to next char and if it's = then go to another one
-				if (j < concatArgs.length() && concatArgs[j] == EqualsChar) j++;
+				if (j < concatArgs.length() && concatArgs[j] == utils::EqualsChar) j++;
 
 				if (j >= concatArgs.length()) // if there is no param after value arg return 
 					return results::Result::MissingParameter(shortArg->GetInfo());
@@ -71,14 +71,14 @@ namespace parser
 	}
 	results::Result ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC)
 	{
-		std::vector<args::Arg*> findedArgs = FindByFullName(longName);
+		std::vector<args::BaseArg*> findedArgs = FindByFullName(longName);
 		if (findedArgs.size() != 1) return results::Result::NoSuchArgument(std::string(longName));
-		args::Arg* arg = findedArgs.front();
+		args::BaseArg* arg = findedArgs.front();
 		return SingleArgHandle(arg, index, argV, argC);
 	}
 	results::Result ArgsParser::ShortArgHandle(const char shortName, int* index, const char* argV[], int argC)
 	{
-		args::Arg* arg = FindByShortName(shortName);
+		args::BaseArg* arg = FindByShortName(shortName);
 		if (arg == nullptr) return results::Result::NoSuchArgument(std::string(argV[*index]));
 		return SingleArgHandle(arg, index, argV, argC);
 	}
@@ -87,7 +87,7 @@ namespace parser
 		// i = 1 because first argument is ArgsParser.exe with 0 index
 		for (int i = 1; i < argC; i++)
 		{
-			args::Arg* arg = nullptr;
+			args::BaseArg* arg = nullptr;
 			std::string_view stringViewArg(argV[i]);
 			size_t argLength = stringViewArg.length();
 			std::string param;
@@ -95,7 +95,7 @@ namespace parser
 			// if < 2 then in stringViewArg only one char
 			if (argLength < 2) return results::Result::NoSuchArgument(std::string(stringViewArg));
 			// --string --out - long args
-			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
+			if (stringViewArg.compare(0, 2, utils::LongArgumentPrefix) == 0)
 			{
 				std::string_view fullName = stringViewArg.substr(2);
 				results::Result result = LongArgHandle(fullName, &i, argV, argC);
@@ -103,7 +103,7 @@ namespace parser
 				return result;
 			}
 			// -h -hcv=3 -jh -hc23 - short and concat args
-			if (stringViewArg[0] != ShortArgumentPrefix) return results::Result::ArgumentWithoutPrefix(std::string(stringViewArg));
+			if (stringViewArg[0] != utils::ShortArgumentPrefix) return results::Result::ArgumentWithoutPrefix(std::string(stringViewArg));
 
 			//concat argument -hb0 -hb=1 -hb
 			if (argLength == 2)
@@ -123,10 +123,10 @@ namespace parser
 		return results::Result::Success();
 	}
 
-	results::Result ArgsParser::Add(args::Arg& arg)
+	results::Result ArgsParser::Add(args::BaseArg& arg)
 	{
 		// Check if an argument with the same name already exists
-		auto it = std::find_if(args.begin(), args.end(),[&arg](args::Arg* a)
+		auto it = std::find_if(args.begin(), args.end(),[&arg](args::BaseArg* a)
 			{
 				if (a->IsFullNameExist() && arg.IsFullNameExist())
 					return a->GetFullName() == arg.GetFullName();

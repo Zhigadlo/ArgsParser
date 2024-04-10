@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.28)
 project(args LANGUAGES CXX)
 
 set(SOURCE_FILES
-	Args.hpp
-	Args.cpp
+	BaseArg.hpp
+	BaseArgs.cpp
 )
 
 add_library(args ${SOURCE_FILES})

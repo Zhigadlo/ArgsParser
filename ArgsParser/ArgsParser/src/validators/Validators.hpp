@@ -1,10 +1,13 @@
 #pragma once
 
+#include <string>
+
 namespace validators
 {
 	template<typename T>
 	class Validator
 	{
+	public:
 		[[nodiscard]] virtual bool Validate(T value) const = 0;
 	};
 	class IntRangeValidator : public Validator<int>

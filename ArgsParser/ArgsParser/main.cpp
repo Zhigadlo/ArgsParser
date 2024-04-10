@@ -7,6 +7,22 @@
 results::Result ConfigureParser(parser::ArgsParser& parser);
 std::vector<args::BaseArg*> arguments;
 
+validators::PositiveIntValidator posValidator;
+validators::StringLengthValidator lenValidator(5);
+validators::IntRangeValidator rangeValidator(-5, 5);
+validators::StringLengthValidator multiStringLenValidator(8);
+
+args::HelpArg helpArg('h', "help", arguments);
+args::EmptyArg testArg('t', "test");
+args::EmptyArg multiEmptyArg('e', "m_empty", true);
+args::ValueArg<int> intArg("int_value");
+args::ValueArg<int> shortIntArg('k', &rangeValidator);
+args::ValueArg<int> positiveIntArg("positive_int", &posValidator);
+args::ValueArg<bool> boolArg('b', "bool_value");
+args::ValueArg<std::string> stringArg("string", &lenValidator);
+args::MultiValueArg<std::string> multiStringArg('s', "m_string", &multiStringLenValidator);
+args::MultiValueArg<std::string> multiIntArg('i', "m_int");
+
 int main(int argC, const char* argV[])
 {
 	parser::ArgsParser parser;
@@ -25,32 +41,16 @@ int main(int argC, const char* argV[])
 
 results::Result ConfigureParser(parser::ArgsParser& parser)
 {
-	validators::PositiveIntValidator posValidator;
-	validators::StringLengthValidator lenValidator(5);
-	validators::IntRangeValidator rangeValidator(-5, 5);
-	validators::StringLengthValidator multiStringLenValidator(8);
-	
-	args::HelpArg helpArg('h', "help", arguments);
-	args::EmptyArg testArg('t', "test");
-	args::ValueArg<int> intArg("int_value");
-	args::ValueArg<int> shortIntArg('k', &rangeValidator);
-	args::ValueArg<int> positiveIntArg("positive_int", &posValidator);
-	args::ValueArg<bool> boolArg('b', "bool_value");
-	/*args::MultiStringArg multiStringArg('s', "m_string", &multiStringLenValidator);
-	args::MultiIntArg multiIntArg('i', "m_int");
-	args::MultiEmptyArg multiEmptyArg('e', "m_empty");
-	args::StringArg stringArg("string", &lenValidator);*/
-
 	arguments.push_back(&helpArg);
 	arguments.push_back(&testArg);
 	arguments.push_back(&intArg);
 	arguments.push_back(&shortIntArg);
 	arguments.push_back(&positiveIntArg);
 	arguments.push_back(&boolArg);
-	/*arguments.push_back(&multiStringArg);
+	arguments.push_back(&multiStringArg);
 	arguments.push_back(&multiEmptyArg);
 	arguments.push_back(&multiIntArg);
-	arguments.push_back(&stringArg);*/
+	arguments.push_back(&stringArg);
 
 	for (int i = 0; i < arguments.size(); i++)
 	{

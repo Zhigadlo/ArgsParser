@@ -6,28 +6,20 @@ namespace args
 #pragma region BaseArg realisaton
 
 	BaseArg::BaseArg(char shortName, bool isReusable, bool isParamArg)
-		: shortName(shortName), isReusable(isReusable), isParamArg(isParamArg)
-	{
-	}
+		: shortName(shortName), isReusable(isReusable), isParamArg(isParamArg) {}
 	BaseArg::BaseArg(std::string fullName, bool isReusable, bool isParamArg)
-		: fullName(fullName), isReusable(isReusable), isParamArg(isParamArg)
-	{
-	}
+		: fullName(fullName), isReusable(isReusable), isParamArg(isParamArg) {}
 	BaseArg::BaseArg(char shortName, std::string fullName, bool isReusable, bool isParamArg)
-		: shortName(shortName), fullName(fullName), isReusable(isReusable), isParamArg(isParamArg)
-	{
-	}
+		: shortName(shortName), fullName(fullName), isReusable(isReusable), isParamArg(isParamArg) {}
 
 	bool BaseArg::IsShortNameExist() const
 	{
 		if (shortName == CHAR_MAX) return false;
-
 		return true;
 	}
 	bool BaseArg::IsFullNameExist() const
 	{
 		if (fullName.empty()) return false;
-
 		return true;
 	}
 	std::string BaseArg::GetInfo() const
@@ -78,19 +70,27 @@ namespace args
 #pragma endregion
 #pragma region EmptyArg realisation
 
-	EmptyArg::EmptyArg(char shortName, bool isReusable) : BaseArg(shortName, isReusable, false) {}
-	EmptyArg::EmptyArg(std::string fullName, bool isReusable) : BaseArg(fullName, isReusable, false) {}
-	EmptyArg::EmptyArg(char shortName, std::string fullName, bool isReusable) : BaseArg(shortName, fullName, isReusable, false) {}
+	EmptyArg::EmptyArg(char shortName, bool isReusable) 
+		: BaseArg(shortName, isReusable, false) {}
+	EmptyArg::EmptyArg(std::string fullName, bool isReusable) 
+		: BaseArg(fullName, isReusable, false) {}
+	EmptyArg::EmptyArg(char shortName, std::string fullName, bool isReusable) 
+		: BaseArg(shortName, fullName, isReusable, false) {}
 
 	results::Result EmptyArg::Handle(const std::string& value)
 	{
-		if (IsDefined()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
+		if (IsDefined() && !IsReusable()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
 		Define();
+		handleCount++;
 		return results::Result::Success();
 	}
 	bool EmptyArg::IsValidatorExist() const
 	{
 		return false;
+	}
+	int EmptyArg::GetHandleCount() const
+	{
+		return handleCount;
 	}
 
 #pragma endregion

@@ -26,7 +26,6 @@ namespace utils
 		out = str;
 		return results::Result::Success();
 	}
-
 	template <>
 	inline results::Result StringToValue<bool>(const std::string& str, bool& out)
 	{
@@ -49,5 +48,19 @@ namespace utils
 		}
 
 		return results::Result::ConvertFail("string", "bool");
+	}
+
+	template<typename T>
+	inline const std::string& ValueToString(const T& value)
+	{
+		static std::ostringstream oss;
+		oss.clear();
+		oss << value;
+		return oss.str();
+	}
+	template<>
+	inline const std::string& ValueToString<std::string>(const std::string& value)
+	{
+		return value;
 	}
 }

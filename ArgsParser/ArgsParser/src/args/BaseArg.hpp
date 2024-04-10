@@ -43,16 +43,19 @@ namespace args
 		bool isReusable;
 		bool isParamArg;
 	};
-
+#pragma region Empty args realisation
 	class EmptyArg : public BaseArg
 	{
 	public:
-		EmptyArg(char shortName, bool isReusable);
-		EmptyArg(std::string fullName, bool isReusable);
-		EmptyArg(char shortName, std::string fullName, bool isReusable);
+		EmptyArg(char shortName, bool isReusable = false);
+		EmptyArg(std::string fullName, bool isReusable = false);
+		EmptyArg(char shortName, std::string fullName, bool isReusable = false);
 
 		virtual results::Result Handle(const std::string& value) override;
 		bool IsValidatorExist() const override;
+		[[nodiscard]] int GetHandleCount() const;
+	private:
+		int handleCount = 0;
 	};
 
 	class HelpArg : public EmptyArg
@@ -67,23 +70,18 @@ namespace args
 	private:
 		const std::vector<BaseArg*>& allArgs;
 	};
-
+#pragma endregion
+#pragma region Value args realisation
 	template<typename T>
 	class ValueArg : public BaseArg
 	{
 	public:
 		ValueArg(char shortName, validators::Validator<T>* validator = nullptr)
-			: BaseArg(shortName, false, true), validator(validator)
-		{
-		}
+			: BaseArg(shortName, false, true), validator(validator) {}
 		ValueArg(std::string fullName, validators::Validator<T>* validator = nullptr)
-			: BaseArg(fullName, false, true), validator(validator)
-		{
-		}
+			: BaseArg(fullName, false, true), validator(validator) {}
 		ValueArg(char shortName, std::string fullName, validators::Validator<T>* validator = nullptr)
-			: BaseArg(shortName, fullName, false, true), validator(validator)
-		{
-		}
+			: BaseArg(shortName, fullName, false, true), validator(validator) {}
 
 		bool IsValidatorExist() const override
 		{
@@ -95,10 +93,10 @@ namespace args
 			T result{};
 			
 			results::Result convertResult = utils::StringToValue(value, result);
-			if (convertResult.IsSucceded()) return convertResult;
+			if (!convertResult.IsSucceded()) return convertResult;
 
 			if (IsValidatorExist() && !validator->Validate(result))
-				return results::Result::NotValid(std::to_string(result));
+				return results::Result::NotValid(utils::ValueToString(result));
 
 			SetValue(result);
 			Define();
@@ -108,7 +106,7 @@ namespace args
 		{
 			std::string info = BaseArg::GetInfo();
 			if(IsDefined())
-				info += std::to_string(GetValue());
+				info += utils::ValueToString(GetValue());
 			return info;
 		}
 		T GetValue() const
@@ -123,4 +121,60 @@ namespace args
 		T value;
 		validators::Validator<T>* validator;
 	};
+	template<typename T>
+	class MultiValueArg : public BaseArg
+	{
+	public:
+		MultiValueArg(char shortName, validators::Validator<T>* validator = nullptr)
+			: BaseArg(shortName, true, true), validator(validator) {}
+		MultiValueArg(std::string fullName, validators::Validator<T>* validator = nullptr)
+			: BaseArg(fullName, true, true), validator(validator) {}
+		MultiValueArg(char shortName, std::string fullName, validators::Validator<T>* validator = nullptr)
+			: BaseArg(shortName, fullName, true, true), validator(validator) {}
+
+		bool IsValidatorExist() const override
+		{
+			if (validator == nullptr) return false;
+			return true;
+		}
+		virtual results::Result Handle(const std::string& value) override
+		{
+			T result{};
+
+			results::Result convertResult = utils::StringToValue(value, result);
+			if (!convertResult.IsSucceded()) return convertResult;
+
+			if (IsValidatorExist() && !validator->Validate(result))
+				return results::Result::NotValid(utils::ValueToString(result));
+
+			SetValue(result);
+			Define();
+			return results::Result::Success();
+		}
+		virtual std::string GetInfo() const override
+		{
+			std::string info = BaseArg::GetInfo();
+			if (!IsDefined()) return info;
+
+			for (int i = 0; i < values.size(); i++)
+			{
+				info += utils::ValueToString(values[i]);
+				info += utils::SpaceChar;
+			}
+
+			return info;
+		}
+		[[nodiscard]] const std::vector<T>& GetValues() const
+		{
+			return values;
+		}
+	private:
+		void SetValue(T value)
+		{
+			values.push_back(value);
+		}
+		std::vector<T> values;
+		validators::Validator<T>* validator;
+	};
+#pragma endregion
 }

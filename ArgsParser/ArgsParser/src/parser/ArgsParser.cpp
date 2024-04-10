@@ -87,10 +87,8 @@ namespace parser
 		// i = 1 because first argument is ArgsParser.exe with 0 index
 		for (int i = 1; i < argC; i++)
 		{
-			args::BaseArg* arg = nullptr;
 			std::string_view stringViewArg(argV[i]);
 			size_t argLength = stringViewArg.length();
-			std::string param;
 
 			// if < 2 then in stringViewArg only one char
 			if (argLength < 2) return results::Result::NoSuchArgument(std::string(stringViewArg));

@@ -30,7 +30,7 @@ namespace parser
 		[[nodiscard]] results::Result LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC);
 	public:
 		[[nodiscard]] results::Result Parse(int argC, const char* argV[]);
-		results::Result Add(args::BaseArg& arg);
+		[[nodiscard]] results::Result Add(args::BaseArg& arg);
 		/**
 		* @brief Shows in console info about all defined arguments
 		**/

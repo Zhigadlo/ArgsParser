@@ -14,26 +14,36 @@
 
 
 Пример запуска программы через консоль:<br/>
-ArgsParser.exe -hteek5 -eei=123 -s=test1 --m_s test2 --help --int 45 -ei=-54 --pos 1 -eeeeb=false --m_e --m_in -120<br/>
+ArgsParser.exe -l9223372036855 --ip 198.162.0.1 -f=5.3213 --ui 6 -hteek5 -eei=123 -s=test1 --m_s test2 --help --int 45 -ei=-54 --pos 1 -eeeeb=false --m_e --m_in -120<br/>
 <br/>
 Вывод:<br/>
 Arguments info<br/>
 --------------------<br/>
 -h --help<br/>
--t --test<br/>
+-t<br/>
 --int_value<br/>
 -k<br/>
 --positive_int<br/>
+--uint<br/>
+-f --float_value<br/>
 -b --bool_value<br/>
 -s --m_string<br/>
 -e --m_empty<br/>
 -i --m_int<br/>
+--string<br/>
+--ip_address<br/>
+-l --long_long<br/>
 --------------------<br/>
--t --test<br/>
+
+-t 1<br/>
 --int_value 45<br/>
 -k 5<br/>
 --positive_int 1<br/>
+--uint 6<br/>
+-f --float_value 5.3213<br/>
 -b --bool_value false<br/>
 -s --m_string test1 test2<br/>
 -e --m_empty 10<br/>
--i --m_int 123 -54 -120<br/>
+-i --m_int 123 -54 - 120<br/>
+--ip_address 198.162.0.1<br/>
+-l --long_long 9223372036855<br/>

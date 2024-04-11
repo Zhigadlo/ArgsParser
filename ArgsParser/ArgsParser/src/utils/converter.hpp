@@ -51,16 +51,20 @@ namespace utils
 	}
 
 	template<typename T>
-	inline const std::string& ValueToString(const T& value)
+	inline std::string ValueToString(const T& value)
 	{
-		static std::ostringstream oss;
-		oss.clear();
+		std::ostringstream oss;
 		oss << value;
 		return oss.str();
 	}
 	template<>
-	inline const std::string& ValueToString<std::string>(const std::string& value)
+	inline std::string ValueToString<std::string>(const std::string& value)
 	{
 		return value;
+	}
+	template<>
+	inline std::string ValueToString<bool>(const bool& value)
+	{
+		return value ? TrueString : FalseString;
 	}
 }

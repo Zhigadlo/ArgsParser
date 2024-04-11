@@ -53,6 +53,7 @@ namespace args
 
 		virtual results::Result Handle(const std::string& value) override;
 		bool IsValidatorExist() const override;
+		std::string GetInfo() const override;
 		[[nodiscard]] int GetHandleCount() const;
 	private:
 		int handleCount = 0;
@@ -105,8 +106,9 @@ namespace args
 		virtual std::string GetInfo() const override
 		{
 			std::string info = BaseArg::GetInfo();
-			if(IsDefined())
+			if (IsDefined())
 				info += utils::ValueToString(GetValue());
+
 			return info;
 		}
 		T GetValue() const

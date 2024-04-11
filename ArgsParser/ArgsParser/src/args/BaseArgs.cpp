@@ -1,5 +1,6 @@
 #include "BaseArg.hpp"
 #include <utils/constants.hpp>
+#include <sstream>
 
 namespace args
 {
@@ -84,6 +85,14 @@ namespace args
 		handleCount++;
 		return results::Result::Success();
 	}
+	std::string EmptyArg::GetInfo() const
+	{
+		std::string info = BaseArg::GetInfo();
+		if (IsDefined())
+			info += std::to_string(handleCount);
+
+		return info;
+	}
 	bool EmptyArg::IsValidatorExist() const
 	{
 		return false;
@@ -110,23 +119,23 @@ namespace args
 
 	std::string HelpArg::GetInfo() const
 	{
-		std::string str;
-		str += "Arguments info\n";
-		str += "--------------------\n";
+		std::stringstream ss;
+		ss << "Arguments info" << std::endl;
+		ss << "--------------------" << std::endl;
 
 		for (int i = 0; i < allArgs.size(); i++)
 		{
 			if (allArgs[i]->IsShortNameExist()) 
-				str += utils::ShortArgumentPrefix + allArgs[i]->GetShortName() + utils::SpaceChar;
+				ss << utils::ShortArgumentPrefix << allArgs[i]->GetShortName() << utils::SpaceChar;
 
 			if (allArgs[i]->IsFullNameExist()) 
-				str += utils::LongArgumentPrefix + allArgs[i]->GetFullName() + utils::SpaceChar;
+				ss << utils::LongArgumentPrefix << allArgs[i]->GetFullName() << utils::SpaceChar;
 
-			str += "\n";
+			ss << std::endl;
 		}
-		str += "--------------------\n";
+		ss << "--------------------" << std::endl;
 
-		return str;
+		return ss.str();
 	}
 
 	results::Result HelpArg::Handle(const std::string& value)

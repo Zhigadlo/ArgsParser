@@ -10,6 +10,7 @@ namespace utils
 	template <typename T>
 	inline results::Result StringToValue(const std::string& str, T& out)
 	{
+		if (str.empty()) return results::Result::StringValueIsEmpty();
 		std::istringstream iss(str);
 		T temp;
 		iss >> temp;
@@ -24,6 +25,20 @@ namespace utils
 	{
 		if (str.empty()) return results::Result::StringValueIsEmpty();
 		out = str;
+		return results::Result::Success();
+	}
+	template<>
+	inline results::Result StringToValue<unsigned int>(const std::string& str, unsigned int& out)
+	{
+		if (str.empty()) return results::Result::StringValueIsEmpty();
+		if (str[0] == ShortArgumentPrefix) return results::Result::ConvertFail("string", "unsigned int");
+		std::istringstream iss(str);
+		unsigned int temp;
+		iss >> temp;
+		if (iss.fail() || !(iss >> std::ws).eof())
+			return results::Result::ConvertFail("string", "unsigned int");
+
+		out = temp;
 		return results::Result::Success();
 	}
 	template <>

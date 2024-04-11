@@ -36,4 +36,11 @@ namespace validators
 	private:
 		unsigned int maxStringLength;
 	};
+	class IPValidator : public Validator<std::string>
+	{
+	public:
+		IPValidator();
+
+		virtual bool Validate(std::string value) const override;
+	};
 }

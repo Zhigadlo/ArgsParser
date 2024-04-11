@@ -11,6 +11,7 @@ validators::PositiveIntValidator posValidator;
 validators::StringLengthValidator lenValidator(5);
 validators::IntRangeValidator rangeValidator(-5, 5);
 validators::StringLengthValidator multiStringLenValidator(8);
+validators::IPValidator ipValidator;
 
 args::HelpArg helpArg('h', "help", arguments);
 args::EmptyArg testArg('t', "test");
@@ -18,10 +19,14 @@ args::EmptyArg multiEmptyArg('e', "m_empty", true);
 args::ValueArg<int> intArg("int_value");
 args::ValueArg<int> shortIntArg('k', &rangeValidator);
 args::ValueArg<int> positiveIntArg("positive_int", &posValidator);
+args::ValueArg<unsigned int> uintArg("uint");
+args::ValueArg<long long> longLong('l', "long_long");
+args::ValueArg<float> floatArg('f', "float_value");
 args::ValueArg<bool> boolArg('b', "bool_value");
 args::ValueArg<std::string> stringArg("string", &lenValidator);
 args::MultiValueArg<std::string> multiStringArg('s', "m_string", &multiStringLenValidator);
 args::MultiValueArg<std::string> multiIntArg('i', "m_int");
+args::ValueArg<std::string> ipArg("ip_address", &ipValidator);
 
 int main(int argC, const char* argV[])
 {
@@ -46,11 +51,15 @@ results::Result ConfigureParser(parser::ArgsParser& parser)
 	arguments.push_back(&intArg);
 	arguments.push_back(&shortIntArg);
 	arguments.push_back(&positiveIntArg);
+	arguments.push_back(&uintArg);
+	arguments.push_back(&floatArg);
 	arguments.push_back(&boolArg);
 	arguments.push_back(&multiStringArg);
 	arguments.push_back(&multiEmptyArg);
 	arguments.push_back(&multiIntArg);
 	arguments.push_back(&stringArg);
+	arguments.push_back(&ipArg);
+	arguments.push_back(&longLong);
 
 	for (int i = 0; i < arguments.size(); i++)
 	{

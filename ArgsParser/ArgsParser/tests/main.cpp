@@ -1,21 +1,11 @@
 #include <parser/ArgsParser.hpp>
-#include <args/IntArg.hpp>
-#include <args/BoolArg.hpp>
-#include <args/EmptyArg.hpp>
-#include <args/StringArg.hpp>
-#include <args/MultiStringArg.hpp>
-#include <args/MultiIntArg.hpp>
-#include <args/MultiEmptyArg.hpp>
-#include <results/HandleResult.hpp>
-#include <results/MissingParameter.hpp>
-#include <validators/PositiveIntValidator.hpp>
-#include <validators/StringLengthValidator.hpp>
-#include <validators/IntRangeValidator.hpp>
+#include <args/BaseArg.hpp>
+#include <validators/Validators.hpp>
+#include <results/Result.hpp>
 
 #include <catch2/catch_all.hpp>
 
 #include <iostream>
-#include <memory>
 
 TEST_CASE("args test", "[args]")
 {
@@ -26,17 +16,17 @@ TEST_CASE("args test", "[args]")
 	validators::IntRangeValidator rangeValidator{ minVal, maxVal };
 
 	unsigned int maxLen = 7;
-	validators::StringLengthValidator lengthValidator(maxLen);
+	validators::StringLengthValidator lengthValidator{ maxLen };
 	parser::ArgsParser parser;
 
 	args::EmptyArg testEmptyArg('e');
-	args::IntArg intRangeArg("test_int_range", &rangeValidator);
-	args::IntArg intPositiveArg('p', &positiveValidator);
-	args::BoolArg boolArg('b', "bool_test");
-	args::StringArg stringArg('S');
-	args::MultiStringArg multiStringLengthArg('s', "string_test", &lengthValidator);
-	args::MultiEmptyArg multiEmptyArg('m', "multi_empty");
-	args::MultiIntArg multiIntArg('i', "multi_int");
+	args::EmptyArg multiEmptyArg('m', "multi_empty", true);
+	args::ValueArg<int> intRangeArg("test_int_range", &rangeValidator);
+	args::ValueArg<int> intPositiveArg('p', &positiveValidator);
+	args::ValueArg<bool> boolArg('b', "bool_test");
+	args::ValueArg<std::string> stringArg('S');
+	args::MultiValueArg<std::string> multiStringLengthArg('s', "string_test", &lengthValidator);
+	args::MultiValueArg<int> multiIntArg('i', "multi_int");
 
 	parser.Add(testEmptyArg);
 	parser.Add(intRangeArg);
@@ -286,10 +276,10 @@ TEST_CASE("concat args test", "[concat args]")
 	args::EmptyArg testEmptyArg('e');
 	args::EmptyArg testEmptyArg2('v');
 	args::EmptyArg testEmptyLongArg('l', "long_empty");
-	args::IntArg intRangeArg("test_int_range");
-	args::IntArg intPositiveArg('p');
-	args::BoolArg boolArg('b', "bool_test");
-	args::MultiStringArg multiStringLengthArg('s', "string_test");
+	args::ValueArg<int> intRangeArg("test_int_range");
+	args::ValueArg<int> intPositiveArg('p');
+	args::ValueArg<bool> boolArg('b', "bool_test");
+	args::MultiValueArg<std::string> multiStringLengthArg('s', "string_test");
 
 	parser.Add(testEmptyArg);
 	parser.Add(testEmptyLongArg);
@@ -343,10 +333,10 @@ TEST_CASE("multiple args test", "[multiple args]")
 	args::EmptyArg testEmptyArg('e');
 	args::EmptyArg testEmptyArg2('v');
 	args::EmptyArg testEmptyLongArg('l', "long_empty");
-	args::IntArg intRangeArg("test_int_range");
-	args::IntArg intPositiveArg('p');
-	args::BoolArg boolArg('b', "bool_test");
-	args::MultiStringArg multiStringLengthArg('s', "string_test");
+	args::ValueArg<int> intRangeArg("test_int_range");
+	args::ValueArg<int> intPositiveArg('p');
+	args::ValueArg<bool> boolArg('b', "bool_test");
+	args::MultiValueArg<std::string> multiStringLengthArg('s', "string_test");
 
 	parser.Add(testEmptyArg);
 	parser.Add(testEmptyArg2);

@@ -3,12 +3,8 @@ cmake_minimum_required(VERSION 3.28)
 project(validators LANGUAGES CXX)
 
 set(SOURCE_FILES
-	PositiveIntValidator.hpp
-	PositiveIntValidator.cpp
-	StringLengthValidator.hpp
-	StringLengthValidator.cpp
-	IntRangeValidator.cpp
-	IntRangeValidator.hpp
+	Validators.hpp
+	Validators.cpp
 )
 
 add_library(validators ${SOURCE_FILES})

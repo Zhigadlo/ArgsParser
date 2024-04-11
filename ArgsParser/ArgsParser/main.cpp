@@ -1,20 +1,32 @@
-#include <results/Success.hpp>
 #include <parser/ArgsParser.hpp>
-#include <args/IntArg.hpp>
-#include <args/StringArg.hpp>
-#include <args/MultiStringArg.hpp>
-#include <args/MultiEmptyArg.hpp>
-#include <args/MultiIntArg.hpp>
-#include <args/BoolArg.hpp>
-#include <args/EmptyArg.hpp>
-#include <args/HelpArg.hpp>
-#include <validators/PositiveIntValidator.hpp>
-#include <validators/StringLengthValidator.hpp>
-#include <validators/IntRangeValidator.hpp>
+#include <args/BaseArg.hpp>
+#include <results/Result.hpp>
+#include <validators/Validators.hpp>
 #include <iostream>
 
 results::Result ConfigureParser(parser::ArgsParser& parser);
-std::vector<abstractions::Arg*> arguments;
+std::vector<args::BaseArg*> arguments;
+
+validators::PositiveIntValidator posValidator;
+validators::StringLengthValidator lenValidator(5);
+validators::IntRangeValidator rangeValidator(-5, 5);
+validators::StringLengthValidator multiStringLenValidator(8);
+validators::IPValidator ipValidator;
+
+args::HelpArg helpArg('h', "help", arguments);
+args::EmptyArg testArg('t', "test");
+args::EmptyArg multiEmptyArg('e', "m_empty", true);
+args::ValueArg<int> intArg("int_value");
+args::ValueArg<int> shortIntArg('k', &rangeValidator);
+args::ValueArg<int> positiveIntArg("positive_int", &posValidator);
+args::ValueArg<unsigned int> uintArg("uint");
+args::ValueArg<long long> longLong('l', "long_long");
+args::ValueArg<float> floatArg('f', "float_value");
+args::ValueArg<bool> boolArg('b', "bool_value");
+args::ValueArg<std::string> stringArg("string", &lenValidator);
+args::MultiValueArg<std::string> multiStringArg('s', "m_string", &multiStringLenValidator);
+args::MultiValueArg<std::string> multiIntArg('i', "m_int");
+args::ValueArg<std::string> ipArg("ip_address", &ipValidator);
 
 int main(int argC, const char* argV[])
 {
@@ -30,37 +42,24 @@ int main(int argC, const char* argV[])
 	}
 	else
 		std::cout << configureResult.GetError() << std::endl;
-
-	for (int i = 0; i < arguments.size(); i++)
-		delete arguments[i];
 }
 
 results::Result ConfigureParser(parser::ArgsParser& parser)
 {
-	validators::PositiveIntValidator* posValidator = new validators::PositiveIntValidator();
-	validators::StringLengthValidator* lenValidator = new validators::StringLengthValidator(5);
-	validators::IntRangeValidator* rangeValidator = new validators::IntRangeValidator(-5, 5);
-	validators::StringLengthValidator* multiStringLenValidator = new validators::StringLengthValidator(8);
-	
-	args::HelpArg* helpArg = new args::HelpArg('h', "help", arguments);
-	args::EmptyArg* testArg = new args::EmptyArg('t', "test");
-	args::IntArg* intArg = new args::IntArg("int_value");
-	args::IntArg* shortIntArg = new args::IntArg('k', rangeValidator);
-	args::IntArg* positiveIntArg = new args::IntArg("positive_int", posValidator);
-	args::BoolArg* boolArg = new args::BoolArg('b', "bool_value");
-	args::MultiStringArg* multiStringArg = new args::MultiStringArg('s', "m_string", multiStringLenValidator);
-	args::MultiIntArg* multiIntArg = new args::MultiIntArg('i', "m_int");
-	args::MultiEmptyArg* multiEmptyArg = new args::MultiEmptyArg('e', "m_empty");
-
-	arguments.push_back(helpArg);
-	arguments.push_back(testArg);
-	arguments.push_back(intArg);
-	arguments.push_back(shortIntArg);
-	arguments.push_back(positiveIntArg);
-	arguments.push_back(boolArg);
-	arguments.push_back(multiStringArg);
-	arguments.push_back(multiEmptyArg);
-	arguments.push_back(multiIntArg);
+	arguments.push_back(&helpArg);
+	arguments.push_back(&testArg);
+	arguments.push_back(&intArg);
+	arguments.push_back(&shortIntArg);
+	arguments.push_back(&positiveIntArg);
+	arguments.push_back(&uintArg);
+	arguments.push_back(&floatArg);
+	arguments.push_back(&boolArg);
+	arguments.push_back(&multiStringArg);
+	arguments.push_back(&multiEmptyArg);
+	arguments.push_back(&multiIntArg);
+	arguments.push_back(&stringArg);
+	arguments.push_back(&ipArg);
+	arguments.push_back(&longLong);
 
 	for (int i = 0; i < arguments.size(); i++)
 	{
@@ -68,5 +67,5 @@ results::Result ConfigureParser(parser::ArgsParser& parser)
 		if (!result.IsSucceded()) return result;
 	}
 
-	return results::Success();
+	return results::Result::Success();
 }

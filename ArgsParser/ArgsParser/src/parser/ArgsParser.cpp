@@ -1,39 +1,34 @@
 #include "ArgsParser.hpp"
-#include <results/Success.hpp>
-#include <results/ArgumentIsAlreadyDefined.hpp>
-#include <results/MissingParameter.hpp>
-#include <results/NoSuchArgument.hpp>
-#include <constants/constants.hpp>
+#include <utils/constants.hpp>
 #include <iostream>
 #include <string_view>
 #include <algorithm>
 
 namespace parser
 {
-	abstractions::Arg* ArgsParser::FindByShortName(const char shortName) const
+	args::BaseArg* ArgsParser::FindByShortName(const char shortName) const
 	{
-		auto it = std::find_if(args.begin(), args.end(), [&shortName](abstractions::Arg* obj) { return obj->GetShortName() == shortName; });
+		auto it = std::find_if(args.begin(), args.end(), [&shortName](args::BaseArg* obj) { return obj->GetShortName() == shortName; });
 		if (it == args.end()) return nullptr;
 		return *it;
 	}
-	std::vector<abstractions::Arg*> ArgsParser::FindByFullName(const std::string_view& fullName) const
+	std::vector<args::BaseArg*> ArgsParser::FindByFullName(const std::string_view& fullName) const
 	{
-		std::vector<abstractions::Arg*> matchingArgs;
+		std::vector<args::BaseArg*> matchingArgs;
 		std::copy_if(args.begin(), args.end(), std::back_inserter(matchingArgs),
-			[&fullName](abstractions::Arg* obj)
+			[&fullName](args::BaseArg* obj)
 			{
-				std::string findedFullName = obj->GetFullName();
-				std::string_view realFullNameView = std::string_view(findedFullName);
+				std::string_view realFullNameView = std::string_view(obj->GetFullName());
 				return realFullNameView.substr(0, fullName.length()).compare(fullName) == 0; // check for string begining match
 			});
 
 		return matchingArgs;
 	}
-	results::Result ArgsParser::SingleArgHandle(abstractions::Arg* arg, int* index, const char* argV[], int argC)
+	results::Result ArgsParser::SingleArgHandle(args::BaseArg* arg, int* index, const char* argV[], int argC)
 	{
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
-			return results::ArgumentIsAlreadyDefined(arg->GetInfo());
+			return results::Result::ArgumentIsAlreadyDefined(arg->GetInfo());
 		std::string param;
 		// when arg requires param we need to take it, 
 		if (arg->IsParamArg() && (*index)+1 < argC)
@@ -47,44 +42,44 @@ namespace parser
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
 			const char shortName = concatArgs[j];
-			abstractions::Arg* shortArg = FindByShortName(shortName);
-			if (shortArg == nullptr) return results::NoSuchArgument(std::to_string(shortName));
+			args::BaseArg* shortArg = FindByShortName(shortName);
+			if (shortArg == nullptr) return results::Result::NoSuchArgument(std::to_string(shortName));
 			// one value arg check
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
-				return results::ArgumentIsAlreadyDefined(shortArg->GetInfo());
+				return results::Result::ArgumentIsAlreadyDefined(shortArg->GetInfo());
 
 			std::string param;
 			// when arg requires param we need to take it, 
 			if (shortArg->IsParamArg())
 			{
 				j++; // go to next char and if it's = then go to another one
-				if (j < concatArgs.length() && concatArgs[j] == EqualsChar) j++;
+				if (j < concatArgs.length() && concatArgs[j] == utils::EqualsChar) j++;
 
 				if (j >= concatArgs.length()) // if there is no param after value arg return 
-					return results::MissingParameter(shortArg->GetInfo());
+					return results::Result::MissingParameter(shortArg->GetInfo());
 				// get all chars after last argument or after =
 				param = concatArgs.substr(j, concatArgs.length() - j);
 
 				return shortArg->Handle(param);
 			}
 			// else we pass to Handle method empty string
-			results::Result result = shortArg->Handle(param);
+			const results::Result& result = shortArg->Handle(param);
 			if (!result.IsSucceded()) return result;
 		}
 
-		return results::Success();
+		return results::Result::Success();
 	}
 	results::Result ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC)
 	{
-		std::vector<abstractions::Arg*> findedArgs = FindByFullName(longName);
-		if (findedArgs.size() != 1) return results::NoSuchArgument(std::string(longName));
-		abstractions::Arg* arg = findedArgs.front();
+		std::vector<args::BaseArg*> findedArgs = FindByFullName(longName);
+		if (findedArgs.size() != 1) return results::Result::NoSuchArgument(std::string(longName));
+		args::BaseArg* arg = findedArgs.front();
 		return SingleArgHandle(arg, index, argV, argC);
 	}
 	results::Result ArgsParser::ShortArgHandle(const char shortName, int* index, const char* argV[], int argC)
 	{
-		abstractions::Arg* arg = FindByShortName(shortName);
-		if (arg == nullptr) return results::NoSuchArgument(std::string(argV[*index]));
+		args::BaseArg* arg = FindByShortName(shortName);
+		if (arg == nullptr) return results::Result::NoSuchArgument(std::string(argV[*index]));
 		return SingleArgHandle(arg, index, argV, argC);
 	}
 	results::Result ArgsParser::Parse(int argC, const char* argV[])
@@ -92,15 +87,13 @@ namespace parser
 		// i = 1 because first argument is ArgsParser.exe with 0 index
 		for (int i = 1; i < argC; i++)
 		{
-			abstractions::Arg* arg = nullptr;
 			std::string_view stringViewArg(argV[i]);
 			size_t argLength = stringViewArg.length();
-			std::string param;
 
 			// if < 2 then in stringViewArg only one char
-			if (argLength < 2) return results::NoSuchArgument(std::string(stringViewArg));
+			if (argLength < 2) return results::Result::NoSuchArgument(std::string(stringViewArg));
 			// --string --out - long args
-			if (stringViewArg.compare(0, 2, LongArgumentPrefix) == 0)
+			if (stringViewArg.compare(0, 2, utils::LongArgumentPrefix) == 0)
 			{
 				std::string_view fullName = stringViewArg.substr(2);
 				results::Result result = LongArgHandle(fullName, &i, argV, argC);
@@ -108,7 +101,7 @@ namespace parser
 				return result;
 			}
 			// -h -hcv=3 -jh -hc23 - short and concat args
-			if (stringViewArg[0] != ShortArgumentPrefix) return results::Result(std::string(stringViewArg) + ": Argument without prefix");
+			if (stringViewArg[0] != utils::ShortArgumentPrefix) return results::Result::ArgumentWithoutPrefix(std::string(stringViewArg));
 
 			//concat argument -hb0 -hb=1 -hb
 			if (argLength == 2)
@@ -125,13 +118,13 @@ namespace parser
 				if (!result.IsSucceded()) return result;
 			}
 		}
-		return results::Success();
+		return results::Result::Success();
 	}
 
-	results::Result ArgsParser::Add(abstractions::Arg& arg)
+	results::Result ArgsParser::Add(args::BaseArg& arg)
 	{
 		// Check if an argument with the same name already exists
-		auto it = std::find_if(args.begin(), args.end(),[&arg](abstractions::Arg* a) 
+		auto it = std::find_if(args.begin(), args.end(),[&arg](args::BaseArg* a)
 			{
 				if (a->IsFullNameExist() && arg.IsFullNameExist())
 					return a->GetFullName() == arg.GetFullName();
@@ -146,9 +139,9 @@ namespace parser
 		
 		args.push_back(&arg);
 
-		return results::Success();
+		return results::Result::Success();
 	}
-	void ArgsParser::Show()
+	void ArgsParser::Show() const
 	{
 		for (int i = 0; i < args.size(); i++)
 		{

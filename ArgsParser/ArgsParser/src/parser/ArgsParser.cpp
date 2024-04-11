@@ -6,6 +6,25 @@
 
 namespace parser
 {
+	std::string ArgsParser::GetParam(int* index, const char* argV[], int argC, std::string param)
+	{
+		if (!param.empty()) param += utils::SpaceChar;
+		(*index)++; // Move to the next argument after the flag
+
+		// Concatenate arguments until the next flag or the end of the arguments
+		while (*index < argC && argV[*index][0] != utils::ShortArgumentPrefix)
+		{
+			param += argV[*index];
+			param += utils::SpaceChar;
+			(*index)++;
+		}
+
+		// If the parameter ended with a space, remove it
+		if (!param.empty() && param.back() == utils::SpaceChar)
+			param.pop_back();
+		
+		return param;
+	}
 	args::BaseArg* ArgsParser::FindByShortName(const char shortName) const
 	{
 		auto it = std::find_if(args.begin(), args.end(), [&shortName](args::BaseArg* obj) { return obj->GetShortName() == shortName; });
@@ -31,13 +50,13 @@ namespace parser
 			return results::Result::ArgumentIsAlreadyDefined(arg->GetInfo());
 		std::string param;
 		// when arg requires param we need to take it, 
-		if (arg->IsParamArg() && (*index)+1 < argC)
-			param = std::string(argV[++(*index)]);
+		if (arg->IsParamArg() && (*index) + 1 < argC)
+			param = GetParam(index, argV, argC);// std::string(argV[++(*index)]);
 
 		// else we pass to Handle method empty string
 		return arg->Handle(param);
 	}
-	results::Result ArgsParser::ConcatArgsHandle(std::string_view concatArgs)
+	results::Result ArgsParser::ConcatArgsHandle(std::string_view concatArgs, int* index, const char* argV[], int argC)
 	{
 		for (int j = 0; j < concatArgs.length(); j++)
 		{
@@ -49,7 +68,7 @@ namespace parser
 				return results::Result::ArgumentIsAlreadyDefined(shortArg->GetInfo());
 
 			std::string param;
-			// when arg requires param we need to take it, 
+			// when arg requires param we need to take it 
 			if (shortArg->IsParamArg())
 			{
 				j++; // go to next char and if it's = then go to another one
@@ -58,7 +77,7 @@ namespace parser
 				if (j >= concatArgs.length()) // if there is no param after value arg return 
 					return results::Result::MissingParameter(shortArg->GetInfo());
 				// get all chars after last argument or after =
-				param = concatArgs.substr(j, concatArgs.length() - j);
+				param = GetParam(index, argV, argC, std::string(concatArgs.substr(j, concatArgs.length() - j)));
 
 				return shortArg->Handle(param);
 			}
@@ -114,7 +133,7 @@ namespace parser
 			else
 			{
 				std::string_view shortNames = stringViewArg.substr(1); // get all chars after - like this -htk=4 -> htk=4
-				results::Result result = ConcatArgsHandle(shortNames);
+				results::Result result = ConcatArgsHandle(shortNames, &i, argV, argC);
 				if (!result.IsSucceded()) return result;
 			}
 		}

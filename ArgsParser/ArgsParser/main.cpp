@@ -28,8 +28,12 @@ args::MultiValueArg<std::string> multiStringArg('s', "m_string", &multiStringLen
 args::MultiValueArg<std::string> multiIntArg('i', "m_int");
 args::ValueArg<std::string> ipArg("ip_address", &ipValidator);
 
-int main(int argC, const char* argV[])
+int main(/*int argC, const char* argV[]*/)
 {
+	int argC = 22;
+	const char* argV[] = { "ArgsParser.exe", "-l9223372036855", "--ip", "198.162.0.1", "-f=5.3213", "--ui",
+		"6", "-hteek5", "-eei=123", "-s=test1", "--m_s", "test2", "--help", "--int", "45", "-ei=-54", "--pos", "1",
+		"-eeeeb=false", "--m_e", "--m_in" "-120", "new"};
 	parser::ArgsParser parser;
 	results::Result configureResult = ConfigureParser(parser);
 	if (configureResult.IsSucceded())

@@ -10,12 +10,13 @@ namespace parser
 	{
 	private:
 		std::vector<args::BaseArg*> args;
+		[[nodiscard]] std::string GetParam(int* index, const char* argV[], int argC, std::string param = std::string());
 		[[nodiscard]] args::BaseArg* FindByShortName(const char shortName) const;
 		[[nodiscard]] std::vector<args::BaseArg*> FindByFullName(const std::string_view& fullName) const;
 		/**
 		* @brief Handles concat short arguments like -hb=1, -hsValue, -thk=5
 		**/
-		[[nodiscard]] results::Result ConcatArgsHandle(std::string_view concatArgs);
+		[[nodiscard]] results::Result ConcatArgsHandle(std::string_view concatArgs, int* index, const char* argV[], int argC);
 		/**
 		* @brief Handles single arguments like -h, --int 123, -b True
 		**/

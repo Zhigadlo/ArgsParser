@@ -11,14 +11,14 @@ namespace parser
 		if (!param.empty()) param += utils::SpaceChar;
 		(*index)++; // Move to the next argument after the flag
 
-		// Concatenate arguments until the next flag or the end of the arguments
-		while (*index < argC && argV[*index][0] != utils::ShortArgumentPrefix)
+		// fixmae: need to check for argument existing 
+		while (*index < argC && argV[*index][0] != utils::ShortArgumentPrefix) 
 		{
 			param += argV[*index];
 			param += utils::SpaceChar;
 			(*index)++;
 		}
-
+		--(*index);
 		// If the parameter ended with a space, remove it
 		if (!param.empty() && param.back() == utils::SpaceChar)
 			param.pop_back();

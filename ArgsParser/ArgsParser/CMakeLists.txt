@@ -28,10 +28,13 @@ include(Catch)
 enable_testing()
 
 add_subdirectory(tests)
+add_subdirectory(folderInfo)
 
 add_executable(ArgsParser main.cpp)
 
 target_include_directories(ArgsParser PRIVATE src/args src/parser src/results src/utils src/validators tests)
 target_include_directories(tests PRIVATE src/args src/parser src/results src/utils src/validators Catch2::Catch2WithMain)
+target_include_directories(folderInfo PRIVATE src/args src/parser src/results src/utils src/validators)
 target_link_libraries(ArgsParser PRIVATE args parser results validators)
 target_link_libraries(tests PRIVATE args parser results validators Catch2::Catch2WithMain)
+target_link_libraries(folderInfo PRIVATE args parser results validators)

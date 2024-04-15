@@ -14,7 +14,6 @@ int main(int argC, const char* argV[])
 	validators::StringLengthValidator multiStringLenValidator(8);
 	validators::IPValidator ipValidator;
 
-	//args::HelpArg helpArg('h', "help", arguments);
 	args::EmptyArg testArg('t', "test");
 	args::EmptyArg multiEmptyArg('e', "m_empty", true);
 	args::ValueArg<int> intArg("int_value");
@@ -43,7 +42,7 @@ int main(int argC, const char* argV[])
 	AddArgToParser(parser, stringArg);
 	AddArgToParser(parser, ipArg);
 	AddArgToParser(parser, longLong);
-
+	parser.ShowHelp();
 	results::Result result = parser.Parse(argC, argV);
 	if (result.IsSucceded())
 		parser.Show();
@@ -57,5 +56,5 @@ void AddArgToParser(parser::ArgsParser& parser, args::BaseArg& arg)
 	if (addResult.IsSucceded()) return;
 
 	std::cout << addResult.GetError() << std::endl;
-	std::cout << arg.GetInfo() << " : Argument was not added to parser" << std::endl;
+	std::cout << arg.GetInfo() << ": Argument was not added to parser" << std::endl;
 }

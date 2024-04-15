@@ -29,7 +29,7 @@ namespace parser
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
 			return results::Result::ArgumentIsAlreadyDefined(arg->GetInfo());
-		std::string param;
+		std::string param;  //uodate to string_view
 		// when arg requires param we need to take it, 
 		if (arg->IsParamArg() && (*index)+1 < argC)
 			param = std::string(argV[++(*index)]);
@@ -39,7 +39,7 @@ namespace parser
 	}
 	results::Result ArgsParser::ConcatArgsHandle(std::string_view concatArgs)
 	{
-		for (int j = 0; j < concatArgs.length(); j++)
+		for (size_t j = 0; j < concatArgs.length(); j++)
 		{
 			const char shortName = concatArgs[j];
 			args::BaseArg* shortArg = FindByShortName(shortName);
@@ -48,7 +48,7 @@ namespace parser
 			if (!shortArg->IsReusable() && shortArg->IsDefined())
 				return results::Result::ArgumentIsAlreadyDefined(shortArg->GetInfo());
 
-			std::string param;
+			std::string param;//uodate to string_view
 			// when arg requires param we need to take it, 
 			if (shortArg->IsParamArg())
 			{
@@ -69,10 +69,12 @@ namespace parser
 
 		return results::Result::Success();
 	}
+	// ptr to link fix, don't use out param
 	results::Result ArgsParser::LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC)
 	{
 		std::vector<args::BaseArg*> findedArgs = FindByFullName(longName);
-		if (findedArgs.size() != 1) return results::Result::NoSuchArgument(std::string(longName));
+		if (findedArgs.size() == 0) return results::Result::NoSuchArgument(std::string(longName));
+		if (findedArgs.size() > 1) return results::Result::NoSuchArgument(std::string(longName));//fix
 		args::BaseArg* arg = findedArgs.front();
 		return SingleArgHandle(arg, index, argV, argC);
 	}
@@ -143,12 +145,37 @@ namespace parser
 	}
 	void ArgsParser::Show() const
 	{
-		for (int i = 0; i < args.size(); i++)
+		if (args.size() == 0)
+		{
+			std::cout << "There is no arguments in parser" << std::endl;
+			return;
+		}
+
+		std::cout << "Argument values" << std::endl;
+		std::cout << "--------------------" << std::endl;
+		for (size_t i = 0; i < args.size(); i++)
 		{
 			auto arg = args[i];
+
 			if (arg->IsDefined())
 				std::cout << arg->GetInfo() << std::endl;
 		}
+		std::cout << "--------------------" << std::endl;
+	}
+	void ArgsParser::ShowHelp() const
+	{
+		std::cout << "Arguments info" << std::endl;
+		std::cout << "--------------------" << std::endl;
+		for (size_t i = 0; i < args.size(); i++)
+		{
+			auto arg = args[i];
+			if (arg->IsShortNameExist())
+				std::cout << utils::ShortArgumentPrefix << arg->GetShortName() << utils::SpaceChar;
+			if (arg->IsFullNameExist()) 
+				std::cout << utils::LongArgumentPrefix << arg->GetFullName() << utils::SpaceChar;
+			std::cout << std::endl;
+		}
+		std::cout << "--------------------" << std::endl;
 	}
 }
 

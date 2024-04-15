@@ -4,6 +4,7 @@
 #include <results/Result.hpp>
 #include <utils/converter.hpp>
 #include <vector>
+#include <optional>
 
 namespace args
 {
@@ -58,19 +59,6 @@ namespace args
 	private:
 		int handleCount = 0;
 	};
-
-	class HelpArg : public EmptyArg
-	{
-	public:
-		HelpArg(char shortName, const std::vector<BaseArg*>& args);
-		HelpArg(std::string fullName, const std::vector<BaseArg*>& args);
-		HelpArg(char shortName, std::string fullName, const std::vector<BaseArg*>& args);
-
-		std::string GetInfo() const override;
-		virtual results::Result Handle(const std::string& value) override;
-	private:
-		const std::vector<BaseArg*>& allArgs;
-	};
 #pragma endregion
 #pragma region Value args realisation
 	template<typename T>
@@ -121,6 +109,7 @@ namespace args
 			this->value = value;
 		}
 		T value;
+		//std::optional<T> value;
 		validators::Validator<T>* validator;
 	};
 	template<typename T>

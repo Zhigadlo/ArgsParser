@@ -19,15 +19,15 @@ namespace parser
 		/**
 		* @brief Handles single arguments like -h, --int 123, -b True
 		**/
-		[[nodiscard]] results::Result SingleArgHandle(args::BaseArg* arg, int* index, const char* argV[], int argC);
+		[[nodiscard]] std::tuple<results::Result, int> SingleArgHandle(args::BaseArg* arg, int index, const char* argV[], int argC);
 		/**
 		* @brief Finds and handles arguments by short names(like -h, -k=3, -t)
 		**/
-		[[nodiscard]] results::Result ShortArgHandle(const char shortName, int* index, const char* argV[], int argC);
+		[[nodiscard]] std::tuple<results::Result, int> ShortArgHandle(const char shortName, int index, const char* argV[], int argC);
 		/**
 		* @brief Finds and handles arguments by long names(like --test, --int 3, --string_val example_string, --bool 1)
 		**/
-		[[nodiscard]] results::Result LongArgHandle(std::string_view longName, int* index, const char* argV[], int argC);
+		[[nodiscard]] std::tuple<results::Result, int> LongArgHandle(std::string_view longName, int index, const char* argV[], int argC);
 	public:
 		[[nodiscard]] results::Result Parse(int argC, const char* argV[]);
 		[[nodiscard]] results::Result Add(args::BaseArg& arg);

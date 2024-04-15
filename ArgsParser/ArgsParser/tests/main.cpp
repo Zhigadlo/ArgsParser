@@ -28,14 +28,23 @@ TEST_CASE("args test", "[args]")
 	args::MultiValueArg<std::string> multiStringLengthArg('s', "string_test", &lengthValidator);
 	args::MultiValueArg<int> multiIntArg('i', "multi_int");
 
-	parser.Add(testEmptyArg);
-	parser.Add(intRangeArg);
-	parser.Add(intPositiveArg);
-	parser.Add(boolArg);
-	parser.Add(stringArg);
-	parser.Add(multiStringLengthArg);
-	parser.Add(multiEmptyArg);
-	parser.Add(multiIntArg);
+	results::Result testAddResult = parser.Add(testEmptyArg);
+	results::Result intRangeAddResult = parser.Add(intRangeArg);
+	results::Result intPosAddResult = parser.Add(intPositiveArg);
+	results::Result boolAddResult = parser.Add(boolArg);
+	results::Result strAddResult = parser.Add(stringArg);
+	results::Result multiStrAddResult = parser.Add(multiStringLengthArg);
+	results::Result multiEmptyAddResult = parser.Add(multiEmptyArg);
+	results::Result multiIntAddResult = parser.Add(multiIntArg);
+
+	REQUIRE(testAddResult.IsSucceded());
+	REQUIRE(intRangeAddResult.IsSucceded());
+	REQUIRE(intPosAddResult.IsSucceded());
+	REQUIRE(boolAddResult.IsSucceded());
+	REQUIRE(strAddResult.IsSucceded());
+	REQUIRE(multiStrAddResult.IsSucceded());
+	REQUIRE(multiEmptyAddResult.IsSucceded());
+	REQUIRE(multiIntAddResult.IsSucceded());
 
 	SECTION("empty arg test")
 	{
@@ -281,12 +290,19 @@ TEST_CASE("concat args test", "[concat args]")
 	args::ValueArg<bool> boolArg('b', "bool_test");
 	args::MultiValueArg<std::string> multiStringLengthArg('s', "string_test");
 
-	parser.Add(testEmptyArg);
-	parser.Add(testEmptyLongArg);
-	parser.Add(intRangeArg);
-	parser.Add(intPositiveArg);
-	parser.Add(boolArg);
-	parser.Add(multiStringLengthArg);
+	results::Result testAddResult = parser.Add(testEmptyArg);
+	results::Result testEmptyAddResult = parser.Add(testEmptyLongArg);
+	results::Result intRangeAddResult = parser.Add(intRangeArg);
+	results::Result intPosAddResult = parser.Add(intPositiveArg);
+	results::Result boolAddResult = parser.Add(boolArg);
+	results::Result multiStrAddResult = parser.Add(multiStringLengthArg);
+
+	REQUIRE(testAddResult.IsSucceded());
+	REQUIRE(intRangeAddResult.IsSucceded());
+	REQUIRE(intPosAddResult.IsSucceded());
+	REQUIRE(testEmptyAddResult.IsSucceded());
+	REQUIRE(boolAddResult.IsSucceded());
+	REQUIRE(multiStrAddResult.IsSucceded());
 	int argC = 2;
 	const char* argV[] = { "ArgsParser.exe", "-ep=5" };
 	SECTION("valid concat arg section")
@@ -338,13 +354,21 @@ TEST_CASE("multiple args test", "[multiple args]")
 	args::ValueArg<bool> boolArg('b', "bool_test");
 	args::MultiValueArg<std::string> multiStringLengthArg('s', "string_test");
 
-	parser.Add(testEmptyArg);
-	parser.Add(testEmptyArg2);
-	parser.Add(testEmptyLongArg);
-	parser.Add(intRangeArg);
-	parser.Add(intPositiveArg);
-	parser.Add(boolArg);
-	parser.Add(multiStringLengthArg);
+	results::Result testAddResult = parser.Add(testEmptyArg);
+	results::Result test2AddResult = parser.Add(testEmptyArg2);
+	results::Result testLongAddResult = parser.Add(testEmptyLongArg);
+	results::Result intRangeAddResult = parser.Add(intRangeArg);
+	results::Result intPosAddResult = parser.Add(intPositiveArg);
+	results::Result boolAddResult = parser.Add(boolArg);
+	results::Result multiStrAddResult = parser.Add(multiStringLengthArg);
+
+	REQUIRE(testAddResult.IsSucceded());
+	REQUIRE(test2AddResult.IsSucceded());
+	REQUIRE(testLongAddResult.IsSucceded());
+	REQUIRE(intRangeAddResult.IsSucceded());
+	REQUIRE(multiStrAddResult.IsSucceded());
+	REQUIRE(intPosAddResult.IsSucceded());
+	REQUIRE(boolAddResult.IsSucceded());
 
 	SECTION("valid multi args section")
 	{

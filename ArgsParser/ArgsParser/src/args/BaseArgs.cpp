@@ -1,6 +1,5 @@
 #include "BaseArg.hpp"
 #include <utils/constants.hpp>
-#include <sstream>
 
 namespace args
 {
@@ -78,7 +77,7 @@ namespace args
 	EmptyArg::EmptyArg(char shortName, std::string fullName, bool isReusable) 
 		: BaseArg(shortName, fullName, isReusable, false) {}
 
-	results::Result EmptyArg::Handle(const std::string& value)
+	results::Result EmptyArg::Handle(const std::string_view& value)
 	{
 		if (IsDefined() && !IsReusable()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
 		Define();

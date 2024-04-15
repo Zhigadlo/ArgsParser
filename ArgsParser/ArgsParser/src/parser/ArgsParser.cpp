@@ -29,10 +29,10 @@ namespace parser
 		// one value arg check
 		if (!arg->IsReusable() && arg->IsDefined())
 			return results::Result::ArgumentIsAlreadyDefined(arg->GetInfo());
-		std::string param;  //uodate to string_view
+		std::string_view param;  //uodate to string_view
 		// when arg requires param we need to take it, 
 		if (arg->IsParamArg() && (*index)+1 < argC)
-			param = std::string(argV[++(*index)]);
+			param = std::string_view(argV[++(*index)]);
 
 		// else we pass to Handle method empty string
 		return arg->Handle(param);

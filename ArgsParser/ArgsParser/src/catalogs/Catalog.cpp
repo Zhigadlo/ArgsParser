@@ -1,6 +1,6 @@
 #include "Catalog.hpp"
 #include <utils/constants.hpp>
-#include <sstream>
+#include <iostream>
 
 namespace catalogs
 {
@@ -9,23 +9,22 @@ namespace catalogs
 		int catalogLevel) : fullPath(std::move(fullPath)),
 		catalogLevel(catalogLevel) {}
 
-	const std::filesystem::path& Catalog::GetFullPath()
+	const std::filesystem::path& Catalog::GetFullPath() const
 	{
 		return fullPath;
 	}
-	const std::string& Catalog::GetInfo()
+	void Catalog::ShowInfo() const
 	{
-		std::stringstream ss;
 		for (int j = 0; j < catalogLevel; j++)
-			ss << utils::SpaceChar;
-		ss << fullPath.filename().string() << std::endl;
+			std::cout << utils::SpaceChar << utils::SpaceChar;
+		std::cout << fullPath.filename().string() << std::endl;
 		if (files.size() > 0)
 		{
 			for (size_t i = 0; i < files.size(); i++)
 			{
 				for (int j = 0; j < catalogLevel + 1; j++)
-					ss << utils::SpaceChar;
-				ss << files[i].filename().string() << std::endl;
+					std::cout << utils::SpaceChar << utils::SpaceChar;
+				std::cout << files[i].filename().string() << std::endl;
 			}
 		}
 
@@ -33,15 +32,11 @@ namespace catalogs
 		{
 			for (Catalog catalog : childCatalogs)
 			{
-				for (int j = 0; j < catalogLevel + 1; j++)
-					ss << utils::SpaceChar;
-				ss << catalog.GetInfo();
+				catalog.ShowInfo();
 			}
 		}
-
-		return ss.str();
 	}
-	std::vector<std::filesystem::path>& Catalog::GetFiles()
+	const std::vector<std::filesystem::path>& Catalog::GetFiles() const
 	{
 		return files;
 	}

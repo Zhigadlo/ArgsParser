@@ -73,7 +73,7 @@ namespace parser
 	std::tuple<results::Result, int> ArgsParser::LongArgHandle(std::string_view longName, int index, const char* argV[], int argC)
 	{
 		std::vector<args::BaseArg*> findedArgs = FindByFullName(longName);
-		if (findedArgs.size() == 0) return std::make_tuple(results::Result::NoSuchArgument(std::string(longName)), index);
+		if (findedArgs.empty()) return std::make_tuple(results::Result::NoSuchArgument(std::string(longName)), index);
 		if (findedArgs.size() == 1)
 		{
 			args::BaseArg* arg = findedArgs.front();
@@ -153,9 +153,18 @@ namespace parser
 
 		return results::Result::Success();
 	}
+	void ArgsParser::AddWithoutResult(args::BaseArg& arg)
+	{
+		results::Result addResult = Add(arg);
+		if (addResult.IsSucceded()) return;
+
+		std::cout << addResult.GetError() << std::endl;
+		std::cout << arg.GetInfo() << ": Argument was not added to parser" << std::endl;
+	}
+
 	void ArgsParser::Show() const
 	{
-		if (args.size() == 0)
+		if (args.empty())
 		{
 			std::cout << "There is no arguments in parser" << std::endl;
 			return;

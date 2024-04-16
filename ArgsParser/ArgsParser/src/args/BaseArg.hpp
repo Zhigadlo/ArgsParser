@@ -91,8 +91,9 @@ namespace args
 			std::optional<T> result = std::get<std::optional<T>>(convertResultWithValue);
 			
 			if (!convertResult.IsSucceded()) return convertResult;
+			if (!result.has_value()) return results::Result::StringValueIsEmpty();
 
-			if (IsValidatorExist() && result.has_value() && !validator->Validate(result.value()))
+			if (IsValidatorExist() && !validator->Validate(result.value()))
 				return results::Result::NotValid(utils::ValueToString(result.value()));
 
 			SetValue(std::move(result));

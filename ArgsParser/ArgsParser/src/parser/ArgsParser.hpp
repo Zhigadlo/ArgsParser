@@ -32,6 +32,11 @@ namespace parser
 		[[nodiscard]] results::Result Parse(int argC, const char* argV[]);
 		[[nodiscard]] results::Result Add(args::BaseArg& arg);
 		/**
+		* Adds argument to parser and if something went wrong
+		* just print problem in console without program stopping
+		**/
+		void AddWithoutResult(args::BaseArg& arg);
+		/**
 		* @brief Shows in console info about all defined arguments
 		**/
 		void Show() const;

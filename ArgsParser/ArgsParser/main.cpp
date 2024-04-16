@@ -29,19 +29,19 @@ int main(int argC, const char* argV[])
 	args::ValueArg<std::string> ipArg("ip_address", &ipValidator);
 
 	parser::ArgsParser parser;
-	AddArgToParser(parser, testArg);
-	AddArgToParser(parser, intArg);
-	AddArgToParser(parser, shortIntArg);
-	AddArgToParser(parser, positiveIntArg);
-	AddArgToParser(parser, uintArg);
-	AddArgToParser(parser, floatArg);
-	AddArgToParser(parser, boolArg);
-	AddArgToParser(parser, multiStringArg);
-	AddArgToParser(parser, multiEmptyArg);
-	AddArgToParser(parser, multiIntArg);
-	AddArgToParser(parser, stringArg);
-	AddArgToParser(parser, ipArg);
-	AddArgToParser(parser, longLong);
+	parser.AddWithoutResult(testArg);
+	parser.AddWithoutResult(intArg);
+	parser.AddWithoutResult(shortIntArg);
+	parser.AddWithoutResult(positiveIntArg);
+	parser.AddWithoutResult(uintArg);
+	parser.AddWithoutResult(floatArg);
+	parser.AddWithoutResult(boolArg);
+	parser.AddWithoutResult(multiStringArg);
+	parser.AddWithoutResult(multiEmptyArg);
+	parser.AddWithoutResult(multiIntArg);
+	parser.AddWithoutResult(stringArg);
+	parser.AddWithoutResult(ipArg);
+	parser.AddWithoutResult(longLong);
 	parser.ShowHelp();
 	results::Result result = parser.Parse(argC, argV);
 	if (result.IsSucceded())
@@ -49,12 +49,4 @@ int main(int argC, const char* argV[])
 	else
 		std::cout << result.GetError() << std::endl;
 
-}
-void AddArgToParser(parser::ArgsParser& parser, args::BaseArg& arg)
-{
-	results::Result addResult = parser.Add(arg);
-	if (addResult.IsSucceded()) return;
-
-	std::cout << addResult.GetError() << std::endl;
-	std::cout << arg.GetInfo() << ": Argument was not added to parser" << std::endl;
 }

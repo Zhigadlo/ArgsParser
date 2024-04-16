@@ -6,6 +6,7 @@
 #include <sstream>
 #include <optional>
 #include <tuple>
+#include <chrono>
 
 namespace utils
 {
@@ -66,7 +67,19 @@ namespace utils
 
 		return std::make_tuple(results::Result::ConvertFail("string", "bool"), value);
 	}
+	template<>
+	inline std::tuple<results::Result, std::optional<std::chrono::milliseconds>> StringToValue<std::chrono::milliseconds>(const std::string_view& str)
+	{
+		auto convertResult = StringToValue<unsigned int>(str);
+		results::Result result = std::get<results::Result>(convertResult);
+		std::optional<unsigned int> valueResult = std::get<std::optional<unsigned int>>(convertResult);
+		if (!result.IsSucceded()) 
+			return std::make_tuple(result, std::optional<std::chrono::milliseconds>{0});
+		if(!valueResult.has_value())
+			return std::make_tuple(results::Result::StringValueIsEmpty(), std::optional<std::chrono::milliseconds>{0});
 
+		return std::make_tuple(result, std::optional<std::chrono::milliseconds>{valueResult.value()});
+	}
 	template<typename T>
 	inline std::string ValueToString(const T& value)
 	{
@@ -83,5 +96,10 @@ namespace utils
 	inline std::string ValueToString<bool>(const bool& value)
 	{
 		return value ? TrueString : FalseString;
+	}
+	template<>
+	inline std::string ValueToString<std::chrono::milliseconds>(const std::chrono::milliseconds& value)
+	{
+		return std::to_string(value.count());
 	}
 }

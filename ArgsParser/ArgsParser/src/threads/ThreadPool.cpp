@@ -40,8 +40,6 @@ namespace threads
 		// Notify all threads 
 		cv.notify_all();
 
-		// Joining all worker threads to ensure they have 
-		// completed their tasks 
 		for (auto& thread : threads)
 			if (thread.joinable()) thread.join();
 	}
@@ -53,5 +51,17 @@ namespace threads
 			tasks.emplace(move(task));
 		}
 		cv.notify_one();
+	}
+	void ThreadPool::waitForTasksToFinish()
+	{
+		{
+			std::unique_lock<std::mutex> lock(queueMutex);
+			stop = true;
+		}
+
+		cv.notify_all();
+
+		for (auto& thread : threads)
+			if (thread.joinable()) thread.join();
 	}
 }

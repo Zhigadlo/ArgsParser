@@ -16,7 +16,7 @@ namespace threads
 			= std::thread::hardware_concurrency());
 
 		~ThreadPool();
-
+		void waitForTasksToFinish();
 		void enqueue(std::function<void()> task);
 	private:
 		std::vector<std::thread> threads;

@@ -21,11 +21,17 @@ void CatalogHandle(catalogs::Catalog& catalog, threads::ThreadPool& pool, std::t
 
 int main(const int argC, const char* argV[])
 {
-	const std::filesystem::path path{ "D:\\Projects\\ArgsParser\\ArgsParser\\ArgsParser\\src" };
+	const std::filesystem::path path{ "D:\\Projects\\ArgsParser" };
 	catalogs::Catalog root{ path };
-	threads::ThreadPool pool{ 4 };
-	CatalogHandle(root, pool, std::this_thread::get_id());
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	threads::ThreadPool pool{ 2 };
+	pool.enqueue([&root, &pool]()
+	{
+		root.SetThreadIndex(std::this_thread::get_id());
+		CatalogHandle(root, pool, std::this_thread::get_id());
+	});
+	//pool.waitForTasksToFinish();
+	std::this_thread::sleep_for(std::chrono::seconds(1)); 
+
 	
 	root.ShowInfo();
 }

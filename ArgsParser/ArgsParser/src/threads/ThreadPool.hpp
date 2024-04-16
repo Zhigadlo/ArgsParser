@@ -12,8 +12,7 @@ namespace threads
 	class ThreadPool
 	{
 	public:
-		ThreadPool(int num_threads
-			= std::thread::hardware_concurrency());
+		ThreadPool(int num_threads);
 
 		~ThreadPool();
 		void WaitForTasksToFinish();
@@ -30,7 +29,6 @@ namespace threads
 		// Counter for the number of enqueued tasks
 		int taskCounter = 0;
 
-		// Mutex and condition variable for taskCounter
 		std::mutex taskCounterMutex;
 		std::condition_variable taskCounterCV;
 	};

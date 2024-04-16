@@ -125,7 +125,8 @@ namespace parser
 			}
 			else
 			{
-				std::string_view shortNames = stringViewArg.substr(1); // get all chars after - like this -htk=4 -> htk=4
+				// get all chars after - like this -htk=4 -> htk=4
+				std::string_view shortNames = stringViewArg.substr(1); 
 				results::Result result = ConcatArgsHandle(shortNames);
 				if (!result.IsSucceded()) return result;
 			}

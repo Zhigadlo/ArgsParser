@@ -68,7 +68,6 @@ namespace threads
 	}
 	void ThreadPool::WaitForTasksToFinish()
 	{
-		// Wait until all tasks are completed
 		std::unique_lock<std::mutex> lock(taskCounterMutex);
 		taskCounterCV.wait(lock, [this] { return taskCounter == 0; });
 	}

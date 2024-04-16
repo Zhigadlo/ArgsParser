@@ -3,25 +3,27 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 namespace catalogs
 {
 	class Catalog
 	{
 	public:
-		Catalog(std::string name);
-		Catalog(std::string name, int catalogLevel);
+		Catalog(std::filesystem::path fullPath);
+		Catalog(std::filesystem::path fullPath, int catalogLevel);
 
-		[[nodiscard]] std::string GetName();
-		[[nodiscard]] std::string GetInfo();
-		[[nodiscard]] std::vector<std::string>& GetFiles();
-		[[nodiscard]] std::list<Catalog*>& GetCatalogs();
-		[[nodiscard]] void AddFile(const std::string& file);
-		[[nodiscard]] void AddCatalog(const std::string& catalog);
+		[[nodiscard]] const std::filesystem::path& GetFullPath();
+		[[nodiscard]] const std::string& GetInfo();
+		[[nodiscard]] std::vector<std::filesystem::path>& GetFiles();
+		[[nodiscard]] std::list<Catalog>& GetCatalogs();
+		void AddFile(const std::filesystem::path& fullPath);
+		void AddCatalog(const std::filesystem::path& fullPath);
+		void FindFiles();
 	private:
-		std::string name;
-		std::vector<std::string> files;
-		std::list<Catalog*> childCatalogs;
+		std::filesystem::path fullPath;
+		std::vector<std::filesystem::path> files;
+		std::list<Catalog> childCatalogs;
 		int catalogLevel = 0;
 	};
 }

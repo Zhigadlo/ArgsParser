@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <thread>
 
 namespace catalogs
 {
@@ -20,10 +21,12 @@ namespace catalogs
 		void AddCatalog(const std::filesystem::path& fullPath);
 		void FindFiles();
 		void ShowInfo() const;
+		void SetThreadIndex(std::thread::id index);
 	private:
 		std::filesystem::path fullPath;
 		std::vector<std::filesystem::path> files;
 		std::list<Catalog> childCatalogs;
 		int catalogLevel = 0;
+		std::thread::id threadIndex;
 	};
 }

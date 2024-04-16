@@ -6,8 +6,8 @@ namespace catalogs
 {
 	Catalog::Catalog(std::filesystem::path fullPath) : fullPath(std::move(fullPath)) {}
 	Catalog::Catalog(std::filesystem::path fullPath,
-		int catalogLevel) : fullPath(std::move(fullPath)),
-		catalogLevel(catalogLevel) {}
+					               int catalogLevel) : fullPath(std::move(fullPath)),
+					                                   catalogLevel(catalogLevel) {}
 
 	const std::filesystem::path& Catalog::GetFullPath() const
 	{
@@ -17,8 +17,8 @@ namespace catalogs
 	{
 		for (int j = 0; j < catalogLevel; j++)
 			std::cout << utils::SpaceChar << utils::SpaceChar;
-		std::cout << fullPath.filename().string() << std::endl;
-		if (files.size() > 0)
+		std::cout << fullPath.filename().string() << "[" << threadIndex << "]" << std::endl;
+		if (!files.empty())
 		{
 			for (size_t i = 0; i < files.size(); i++)
 			{
@@ -28,7 +28,7 @@ namespace catalogs
 			}
 		}
 
-		if (childCatalogs.size() > 0)
+		if (!childCatalogs.empty())
 		{
 			for (Catalog catalog : childCatalogs)
 			{
@@ -53,7 +53,6 @@ namespace catalogs
 		Catalog newCatalog(fullPath, catalogLevel + 1);
 		childCatalogs.push_back(newCatalog);
 	}
-
 	void Catalog::FindFiles()
 	{
 		for (auto const& dir_entry : std::filesystem::directory_iterator{ fullPath })
@@ -63,5 +62,9 @@ namespace catalogs
 			else
 				AddFile(dir_entry.path());
 		}
+	}
+	void Catalog::SetThreadIndex(std::thread::id index)
+	{
+		threadIndex = index;
 	}
 }

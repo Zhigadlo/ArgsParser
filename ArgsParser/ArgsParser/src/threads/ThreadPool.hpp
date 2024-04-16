@@ -12,13 +12,12 @@ namespace threads
 	class ThreadPool
 	{
 	public:
-		ThreadPool(size_t num_threads
+		ThreadPool(int num_threads
 			= std::thread::hardware_concurrency());
 
 		~ThreadPool();
 
 		void enqueue(std::function<void()> task);
-
 	private:
 		std::vector<std::thread> threads;
 		std::queue<std::function<void()>> tasks;

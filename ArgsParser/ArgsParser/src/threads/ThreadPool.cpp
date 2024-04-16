@@ -2,10 +2,9 @@
 
 namespace threads
 {
-	ThreadPool::ThreadPool(size_t num_threads)
+	ThreadPool::ThreadPool(int num_threads)
 	{
-		// Creating worker threads 
-		for (size_t i = 0; i < num_threads; ++i)
+		for (int i = 0; i < num_threads; ++i)
 		{
 			threads.emplace_back([this]
 			{
@@ -44,7 +43,7 @@ namespace threads
 		// Joining all worker threads to ensure they have 
 		// completed their tasks 
 		for (auto& thread : threads)
-			thread.join();
+			if (thread.joinable()) thread.join();
 	}
 
 	void ThreadPool::enqueue(std::function<void()> task)

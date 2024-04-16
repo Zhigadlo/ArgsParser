@@ -16,15 +16,22 @@ namespace threads
 			= std::thread::hardware_concurrency());
 
 		~ThreadPool();
-		void waitForTasksToFinish();
-		void enqueue(std::function<void()> task);
+		void WaitForTasksToFinish();
+		void Enqueue(std::function<void()> task);
 	private:
 		std::vector<std::thread> threads;
 		std::queue<std::function<void()>> tasks;
 		std::mutex queueMutex;
-		std::condition_variable cv;
+		std::condition_variable queueCV;
 
 		// Indicate whether the thread pool should stop or not 
 		bool stop = false;
+
+		// Counter for the number of enqueued tasks
+		int taskCounter = 0;
+
+		// Mutex and condition variable for taskCounter
+		std::mutex taskCounterMutex;
+		std::condition_variable taskCounterCV;
 	};
 }

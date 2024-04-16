@@ -15,7 +15,7 @@ namespace threads
 					{
 						std::unique_lock<std::mutex> lock(queueMutex);
 
-						cv.wait(lock, [this] { return !tasks.empty() || stop; });
+						queueCV.wait(lock, [this] { return !tasks.empty() || stop; });
 
 						if (stop && tasks.empty()) return;
 
@@ -24,6 +24,13 @@ namespace threads
 					}
 
 					task();
+					{
+						std::unique_lock<std::mutex> taskCounterLock(taskCounterMutex);
+						--taskCounter;
+					}
+
+					// Notify the main thread that a task has been completed
+					taskCounterCV.notify_one();
 				}
 			});
 		}
@@ -38,30 +45,31 @@ namespace threads
 		}
 
 		// Notify all threads 
-		cv.notify_all();
+		queueCV.notify_all();
 
 		for (auto& thread : threads)
 			if (thread.joinable()) thread.join();
 	}
 
-	void ThreadPool::enqueue(std::function<void()> task)
+	void ThreadPool::Enqueue(std::function<void()> task)
 	{
 		{
 			std::unique_lock<std::mutex> lock(queueMutex);
+
+			// Increment the task counter when a new task is enqueued
+			{
+				std::unique_lock<std::mutex> taskCounterLock(taskCounterMutex);
+				++taskCounter;
+			}
+
 			tasks.emplace(move(task));
 		}
-		cv.notify_one();
+		queueCV.notify_one();
 	}
-	void ThreadPool::waitForTasksToFinish()
+	void ThreadPool::WaitForTasksToFinish()
 	{
-		{
-			std::unique_lock<std::mutex> lock(queueMutex);
-			stop = true;
-		}
-
-		cv.notify_all();
-
-		for (auto& thread : threads)
-			if (thread.joinable()) thread.join();
+		// Wait until all tasks are completed
+		std::unique_lock<std::mutex> lock(taskCounterMutex);
+		taskCounterCV.wait(lock, [this] { return taskCounter == 0; });
 	}
 }

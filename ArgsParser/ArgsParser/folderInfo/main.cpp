@@ -3,17 +3,17 @@
 #include <thread>
 #include <chrono>
 
-void CatalogHandle(catalogs::Catalog& catalog, threads::ThreadPool& pool, std::thread::id threadIndex)
+void CatalogHandle(catalogs::Catalog& catalog, threads::ThreadPool& pool)
 {
-	catalog.SetThreadIndex(threadIndex);
+	catalog.SetThreadIndex(std::this_thread::get_id());
 	catalog.FindFiles();
 	std::list<catalogs::Catalog>& childCatalogs = catalog.GetCatalogs();
 	if (childCatalogs.empty()) return;
 	for (catalogs::Catalog& childCatalog : childCatalogs)
 	{
-		pool.enqueue([&childCatalog, &pool]() 
+		pool.Enqueue([&childCatalog, &pool]() 
 		{ 
-			CatalogHandle(childCatalog, pool, std::this_thread::get_id());
+			CatalogHandle(childCatalog, pool);
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		});
 	}
@@ -21,17 +21,14 @@ void CatalogHandle(catalogs::Catalog& catalog, threads::ThreadPool& pool, std::t
 
 int main(const int argC, const char* argV[])
 {
-	const std::filesystem::path path{ "D:\\Projects\\ArgsParser" };
+	const std::filesystem::path path{ "../../src" };
 	catalogs::Catalog root{ path };
-	threads::ThreadPool pool{ 2 };
-	pool.enqueue([&root, &pool]()
+	threads::ThreadPool pool{ 4 };
+	pool.Enqueue([&root, &pool]()
 	{
-		root.SetThreadIndex(std::this_thread::get_id());
-		CatalogHandle(root, pool, std::this_thread::get_id());
+		CatalogHandle(root, pool);
 	});
-	//pool.waitForTasksToFinish();
-	std::this_thread::sleep_for(std::chrono::seconds(1)); 
-
+	pool.WaitForTasksToFinish();
 	
 	root.ShowInfo();
 }

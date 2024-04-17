@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace results
 {
@@ -21,6 +22,7 @@ namespace results
 		[[nodiscard]] static const Result ArgumentIsAlreadyDefined(std::string argName);
 		[[nodiscard]] static const Result ArgumentWithoutPrefix(std::string argName);
 		[[nodiscard]] static const Result ConvertFail(std::string from, std::string to);
+		[[nodiscard]] static const Result MoreThanOneMatch(std::string argMatchList);
 		[[nodiscard]] static const Result StringValueIsEmpty();
 		[[nodiscard]] static const Result Success();
 	private:

@@ -22,16 +22,21 @@ add_subdirectory(src/parser)
 add_subdirectory(src/results)
 add_subdirectory(src/utils)
 add_subdirectory(src/validators)
+add_subdirectory(src/catalogs)
+add_subdirectory(src/threads)
 
 include(CTest)
 include(Catch)
 enable_testing()
 
 add_subdirectory(tests)
+add_subdirectory(folderInfo)
 
 add_executable(ArgsParser main.cpp)
 
 target_include_directories(ArgsParser PRIVATE src/args src/parser src/results src/utils src/validators tests)
 target_include_directories(tests PRIVATE src/args src/parser src/results src/utils src/validators Catch2::Catch2WithMain)
+target_include_directories(folderInfo PRIVATE src/args src/parser src/results src/utils src/validators src/catalogs src/threads)
 target_link_libraries(ArgsParser PRIVATE args parser results validators)
 target_link_libraries(tests PRIVATE args parser results validators Catch2::Catch2WithMain)
+target_link_libraries(folderInfo PRIVATE args parser results validators catalogs threads)

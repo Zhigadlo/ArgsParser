@@ -36,6 +36,11 @@ namespace results
 	{
 		return Result(argName + ": Argument without prefix");
 	}
+	const Result Result::MoreThanOneMatch(std::string argMatchList)
+	{
+		std::string message = "There is more than one match\nMatches:\n";
+		return Result(message + argMatchList);
+	}
 	const Result Result::ConvertFail(std::string from, std::string to)
 	{
 		return Result("Failed to convert " + from + " to " + to);

@@ -4,47 +4,52 @@
 #include <results/Result.hpp>
 #include <string>
 #include <sstream>
+#include <optional>
+#include <tuple>
+#include <chrono>
 
 namespace utils
 {
 	template <typename T>
-	inline results::Result StringToValue(const std::string& str, T& out)
+	inline std::tuple<results::Result, std::optional<T>> StringToValue(const std::string_view& str)
 	{
-		if (str.empty()) return results::Result::StringValueIsEmpty();
-		std::istringstream iss(str);
+		std::optional<T> value;
+		if (str.empty()) return std::make_tuple(results::Result::StringValueIsEmpty(), value);
+		std::istringstream iss{ std::string(str) };
 		T temp;
 		iss >> temp;
 		if (iss.fail() || !(iss >> std::ws).eof())
-			return results::Result::ConvertFail("string", typeid(T).name());
-
-		out = temp;
-		return results::Result::Success();
+			return std::make_tuple(results::Result::ConvertFail("string", typeid(T).name()), value);
+		value = temp;
+		return std::make_tuple(results::Result::Success(), value);
 	}
 	template <>
-	inline results::Result StringToValue<std::string>(const std::string& str, std::string& out)
+	inline std::tuple<results::Result, std::optional<std::string>> StringToValue<std::string>(const std::string_view& str)
 	{
-		if (str.empty()) return results::Result::StringValueIsEmpty();
-		out = str;
-		return results::Result::Success();
+		std::optional<std::string> value{ str };
+		if (str.empty()) return std::make_tuple(results::Result::StringValueIsEmpty(), value);
+
+		return std::make_tuple(results::Result::Success(), value);
 	}
 	template<>
-	inline results::Result StringToValue<unsigned int>(const std::string& str, unsigned int& out)
+	inline std::tuple<results::Result, std::optional<unsigned int>> StringToValue<unsigned int>(const std::string_view& str)
 	{
-		if (str.empty()) return results::Result::StringValueIsEmpty();
-		if (str[0] == ShortArgumentPrefix) return results::Result::ConvertFail("string", "unsigned int");
-		std::istringstream iss(str);
+		std::optional<unsigned int> value;
+		if (str.empty()) return std::make_tuple(results::Result::StringValueIsEmpty(), value);
+		if (str[0] == ShortArgumentPrefix) return std::make_tuple(results::Result::ConvertFail("string", "unsigned int"), value);
+		std::istringstream iss{ std::string(str) };
 		unsigned int temp;
 		iss >> temp;
 		if (iss.fail() || !(iss >> std::ws).eof())
-			return results::Result::ConvertFail("string", "unsigned int");
-
-		out = temp;
-		return results::Result::Success();
+			return std::make_tuple(results::Result::ConvertFail("string", "unsigned int"), value);
+		value = temp;
+		return std::make_tuple(results::Result::Success(), value);
 	}
 	template <>
-	inline results::Result StringToValue<bool>(const std::string& str, bool& out)
+	inline std::tuple<results::Result, std::optional<bool>> StringToValue<bool>(const std::string_view& str)
 	{
-		if (str.empty()) return results::Result::StringValueIsEmpty();
+		std::optional<bool> value;
+		if (str.empty()) return std::make_tuple(results::Result::StringValueIsEmpty(), value);
 		std::string trimmed_str;
 		trimmed_str.reserve(str.size());
 
@@ -52,19 +57,29 @@ namespace utils
 			trimmed_str.push_back(std::tolower(c));
 
 		if (trimmed_str == TrueString || trimmed_str == TrueIntString)
-		{
-			out = true;
-			return results::Result::Success();
-		}
+			value = true;
+		
 		if (trimmed_str == FalseString || trimmed_str == FalseIntString)
-		{
-			out = false;
-			return results::Result::Success();
-		}
+			value = false;
 
-		return results::Result::ConvertFail("string", "bool");
+		if (value.has_value())
+			return std::make_tuple(results::Result::Success(), value);
+
+		return std::make_tuple(results::Result::ConvertFail("string", "bool"), value);
 	}
+	template<>
+	inline std::tuple<results::Result, std::optional<std::chrono::milliseconds>> StringToValue<std::chrono::milliseconds>(const std::string_view& str)
+	{
+		auto convertResult = StringToValue<unsigned int>(str);
+		results::Result result = std::get<results::Result>(convertResult);
+		std::optional<unsigned int> valueResult = std::get<std::optional<unsigned int>>(convertResult);
+		if (!result.IsSucceded()) 
+			return std::make_tuple(result, std::optional<std::chrono::milliseconds>{0});
+		if(!valueResult.has_value())
+			return std::make_tuple(results::Result::StringValueIsEmpty(), std::optional<std::chrono::milliseconds>{0});
 
+		return std::make_tuple(result, std::optional<std::chrono::milliseconds>{valueResult.value()});
+	}
 	template<typename T>
 	inline std::string ValueToString(const T& value)
 	{
@@ -81,5 +96,10 @@ namespace utils
 	inline std::string ValueToString<bool>(const bool& value)
 	{
 		return value ? TrueString : FalseString;
+	}
+	template<>
+	inline std::string ValueToString<std::chrono::milliseconds>(const std::chrono::milliseconds& value)
+	{
+		return std::to_string(value.count());
 	}
 }

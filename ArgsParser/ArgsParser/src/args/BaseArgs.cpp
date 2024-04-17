@@ -1,6 +1,5 @@
 #include "BaseArg.hpp"
 #include <utils/constants.hpp>
-#include <sstream>
 
 namespace args
 {
@@ -78,7 +77,7 @@ namespace args
 	EmptyArg::EmptyArg(char shortName, std::string fullName, bool isReusable) 
 		: BaseArg(shortName, fullName, isReusable, false) {}
 
-	results::Result EmptyArg::Handle(const std::string& value)
+	results::Result EmptyArg::Handle(const std::string_view& value)
 	{
 		if (IsDefined() && !IsReusable()) return results::Result::ArgumentIsAlreadyDefined(GetInfo());
 		Define();
@@ -103,45 +102,4 @@ namespace args
 	}
 
 #pragma endregion
-#pragma region HelpArg realisation
-	HelpArg::HelpArg(char shortName, const std::vector<BaseArg*>& args)
-		: EmptyArg(shortName, true), allArgs(args)
-	{
-	}
-	HelpArg::HelpArg(std::string fullName, const std::vector<BaseArg*>& args)
-		: EmptyArg(fullName, true), allArgs(args)
-	{
-	}
-	HelpArg::HelpArg(char shortName, std::string fullName, const std::vector<BaseArg*>& args)
-		: EmptyArg(shortName, fullName, true), allArgs(args)
-	{
-	}
-
-	std::string HelpArg::GetInfo() const
-	{
-		std::stringstream ss;
-		ss << "Arguments info" << std::endl;
-		ss << "--------------------" << std::endl;
-
-		for (int i = 0; i < allArgs.size(); i++)
-		{
-			if (allArgs[i]->IsShortNameExist()) 
-				ss << utils::ShortArgumentPrefix << allArgs[i]->GetShortName() << utils::SpaceChar;
-
-			if (allArgs[i]->IsFullNameExist()) 
-				ss << utils::LongArgumentPrefix << allArgs[i]->GetFullName() << utils::SpaceChar;
-
-			ss << std::endl;
-		}
-		ss << "--------------------" << std::endl;
-
-		return ss.str();
-	}
-
-	results::Result HelpArg::Handle(const std::string& value)
-	{
-		if (!IsDefined()) Define();
-		return results::Result::Success();
-	}
-#pragma endregion 
 }
